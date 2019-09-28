@@ -54,8 +54,16 @@ class Library {
         return this.notes;
     }
 }
-lib = null;
+var lib = null;
 function getLib(){
+    console.log("getting lib");
+    if(lib==null){
+        console.log("no lib found, creating one");
+        lib = new Library();
+    } else {
+        console.log("lib found");
+        console.log(lib.notes.length+" notes in library");
+    }
     //grab Library object when script starts
     //if not found(ie. first time using app on this machine), create new library object and save
     //lib = localStorage["lib"]
