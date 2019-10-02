@@ -1,0 +1,21 @@
+button {
+    height: 500px;
+    width: 400px;
+    outline: none;
+}
+
+.title {
+    font-size: 20px;
+}
+
+.notes-container {
+    width: 800px;
+}
+
+.note-display {
+    width: 60%;
+}
+
+.note-index {
+    width: 40%
+}
