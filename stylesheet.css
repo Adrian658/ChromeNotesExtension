@@ -1,21 +1,61 @@
-button {
-    height: 500px;
-    width: 400px;
-    outline: none;
-}
-
 .title {
     font-size: 20px;
 }
 
 .notes-container {
-    width: 800px;
+    width: 600px;
 }
 
 .note-display {
-    width: 60%;
+    background-color: blue;
 }
 
 .note-index {
-    width: 40%
+    background-color: orange;
+}
+
+.current-note-title {
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+.product-name {
+    background-color: brown;
+    font-size: 40px;
+}
+
+/* Column and row classes */
+
+.row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.cust-col-4 {
+    -ms-flex: 0 0 33.333333%;
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+}
+
+.cust-col-8 {
+    -ms-flex: 0 0 66.666667%;
+    flex: 0 0 66.666667%;
+    max-width: 66.666667%;
+}
+
+.cust-col-12 {
+    -ms-flex: 0 0 100.00%;
+    flex: 0 0 100.00%;
+    max-width: 100.00%;
+}
+
+.cust-col-4, .cust-col-8, .cust-col-12 {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
 }
