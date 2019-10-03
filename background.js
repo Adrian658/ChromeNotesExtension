@@ -5,7 +5,7 @@ chrome.runtime.onInstalled.addListener(function() {
         chrome.declarativeContent.onPageChanged.addRules([{
             //Checks if current page contains specified url
             conditions: [new chrome.declarativeContent.PageStateMatcher({
-                pageUrl: {hostEquals: 'developer.chrome.com'},
+                //pageUrl: {hostEquals: 'developer.chrome.com'},
             })],
             //action to take if previous condition checks out
             actions: [new chrome.declarativeContent.ShowPageAction()]

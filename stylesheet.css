@@ -1,3 +1,7 @@
+body {
+    height: 400px;
+}
+
 .title {
     font-size: 20px;
 }
@@ -12,6 +16,8 @@
 
 .note-index {
     background-color: orange;
+    overflow-y: scroll;
+    height: 425px;
 }
 
 .current-note-title {
