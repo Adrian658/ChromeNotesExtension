@@ -28,7 +28,8 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 /* Classes attached to elements concerning the current note container */
 
 .current-note-display {
-    background-color: blue;
+    background-color: white;
+    overflow: scroll;
 }
 
 .current-note-title {
@@ -38,7 +39,6 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 
 .current-note-body {
     width: 100%;
-    resize: none;
 }
 
 /* Column and row classes */
