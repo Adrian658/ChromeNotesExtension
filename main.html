@@ -1,40 +1,45 @@
 <!DOCTYPE html>
 <html>
-    <head>
+    <head>       
+        <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet"> 
         <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" media="screen">
         <link rel="stylesheet" href="stylesheet.css" media="screen">
     </head>
 
     <body>
-        <div class="notes-container row">
-            <div class="product-name cust-col-12 text-center text-white">
-                Chrome Notes
-            </div>
-            <div class="note-index cust-col-4">
-                <div class="btn btn-primary">
-                    Test button 1
+        <div class="extension-container">
+            <div class="cust-row">
+                <div class="product-name cust-col-12 text-white">
+                    Chrome Notes
                 </div>
-                <dir>asd</dir>
-                <dir>asd</dir>
-                <dir>asd</dir>
-                <dir>asd</dir>
-                <dir>asd</dir>
-                <dir>asd</dir>
-                <dir>asd</dir>
-                <dir>asd</dir>
-                <dir>asd</dir>
-                <dir>asd</dir>
-                <dir>asd</dir>
-                <dir>asd</dir>
-                <dir>asd</dir>
-            </div>
-            <div class="note-display cust-col-8">
-                <div class="current-note-title text-center text-white">
-                    Note Title
+                <div class="note-index text-center cust-col-4">
+                    <!-- Here we receive a list of all notes, then we iterate through all of them, rendering a new div for each note -->
+                    <div class="note-summary">Test Note 1</div>
+                    <div class="note-summary">Test Note 2</div>
+                    <div class="note-summary">Test Note 3</div>
+                    <div class="note-summary">Test Note 4</div>
+                    <div class="note-summary">Test Note 5</div>
+                    <div class="note-summary">Test Note 6</div>
+                    <div class="note-summary">Test Note 7</div>
+                    <div class="note-summary">Test Note 8</div>
+                    <div class="note-summary">Test Note 9</div>
+                    <div class="note-summary">Test Note 10</div>
+                    <div class="note-summary">Test Note 11</div>
+                    <div class="note-summary">Test Note 12</div>
+                    <div class="note-summary">Test Note 13</div>
+                    <div class="new-note-btn btn btn-primary">
+                        Create <i class="fas fa-plus"></i>
+                    </div>
                 </div>
-                <textarea class="current-note-body" rows="15">
-                    "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
-                </textarea>
+                <div class="current-note-display cust-col-8">
+                    <!-- Here we take the current note and extract and display its contents -->
+                    <div class="current-note-title text-center text-white">
+                        Note Title
+                    </div>
+                    <textarea class="current-note-body" rows="15">
+                        "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
+                    </textarea>
+                </div>
             </div>
         </div>
     </body>

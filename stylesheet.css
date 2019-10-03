@@ -1,23 +1,34 @@
-body {
-    height: 400px;
-}
+/* General and multipurpose classes */
 
-.title {
-    font-size: 20px;
-}
-
-.notes-container {
+.extension-container {
     width: 600px;
 }
 
-.note-display {
-    background-color: blue;
+.product-name {
+    background-color: brown;
+    font-size: 40px;
 }
+
+textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar { 
+    width: 0 !important
+}
+
+/* Classes attached to elements concerning the note index container */
 
 .note-index {
     background-color: orange;
-    overflow-y: scroll;
+    overflow-y: auto;
     height: 425px;
+}
+
+.note-summary {
+    padding: 10px 0px;
+}
+
+/* Classes attached to elements concerning the current note container */
+
+.current-note-display {
+    background-color: blue;
 }
 
 .current-note-title {
@@ -27,22 +38,16 @@ body {
 
 .current-note-body {
     width: 100%;
-}
-
-.product-name {
-    background-color: brown;
-    font-size: 40px;
+    resize: none;
 }
 
 /* Column and row classes */
 
-.row {
+.cust-row {
     display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    margin-right: -15px;
-    margin-left: -15px;
 }
 
 .cust-col-4 {
