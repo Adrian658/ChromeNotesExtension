@@ -2,6 +2,13 @@
  * Class: Notes
  * 
  */
+function print(str){
+    chrome.extension.getBackgroundPage().console.log(str);
+}
+
+print("starting notes.js");
+test();
+
 class Notes {
 
     constructor(id, title, text, color) {
@@ -68,7 +75,7 @@ function getLib(){
     //if not found(ie. first time using app on this machine), create new library object and save
     //lib = localStorage["lib"]
 }
-getLib();
+
 function getNotes(){
     return lib.getNotes();
 }
@@ -80,4 +87,16 @@ function createNote(title,text,color){
 }
 function deleteNote(id){
     lib.deleteNote(id);
+}
+
+var num = null;
+function test(){
+    chrome.storage.sync.get({'num':0},function(data){
+        num = data.num;
+        num+=1;
+        print("num = " + num);
+        chrome.storage.sync.set({'num':num},function(){
+            print("Saved num to sync'd storage");
+        });
+    });
 }
