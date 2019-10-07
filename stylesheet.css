@@ -5,7 +5,7 @@
 }
 
 .product-name {
-    background-color: brown;
+    background-color: lightblue;
     font-size: 40px;
 }
 
@@ -16,9 +16,9 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 /* Classes attached to elements concerning the note index container */
 
 .note-index {
-    background-color: orange;
+    background-color: lightcoral;
     overflow-y: auto;
-    height: 425px;
+    height: 500px;
 }
 
 .note-summary {
