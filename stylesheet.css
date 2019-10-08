@@ -6,6 +6,7 @@
 
 .product-name {
     background-color: #e0950b;
+    background-color: lightblue;
     font-size: 40px;
 }
 
@@ -17,8 +18,9 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 
 .note-index {
     background-color: #d1d3d6;
+    background-color: lightcoral;
     overflow-y: auto;
-    height: 425px;
+    height: 500px;
 }
 
 .note-tile {
@@ -48,7 +50,6 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 .current-note-display {
     background-color: white;
     overflow: scroll;
-	height: 425px;
 }
 
 .current-note-title {
