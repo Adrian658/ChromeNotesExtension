@@ -2,10 +2,11 @@
 
 .extension-container {
     width: 600px;
+	/*border: 3px solid silver;*/
 }
 
 .product-name {
-    background-color: #e0950b;
+    background-color: #314050;
     font-size: 40px;
 }
 
@@ -16,24 +17,24 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 /* Classes attached to elements concerning the note index container */
 
 .note-index {
-    background-color: #d1d3d6;
+    background-color: #ffcc6f;
     overflow-y: auto;
     height: 425px;
 }
 
 .note-tile {
     color: #000;
-    background-color: #fdfdfd;
+    background-color: #eca92b;
 	border-radius: 8px;
-    border-color: #78808a;
+    border-color: #ea9800;
 	padding: 10px;
 	margin-top: 8px;
 }
 .note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile {
     color: #000;
-    background-color: #ecd9c0;
+    background-color: #ffb831;
 	border-radius: 8px;
-    border-color: #78808a;
+    border-color: #ea9800;
 	padding: 10px;
 	margin-top: 8px;
 }
