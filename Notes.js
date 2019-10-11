@@ -1,6 +1,5 @@
 /*
- * Class: Notes
- * 
+ * Notes.js -> The main javascript file containing our implementation of Notes, Library, and important functions.
  */
 function print(str){
     chrome.extension.getBackgroundPage().console.log(str);
@@ -9,6 +8,10 @@ function print(str){
 print("starting notes.js");
 test();
 
+/*
+ * Class: Notes
+ * Objective: Contains the constructor for a note, as well as the ability to update the note and filter it by hashtags.
+ */
 class Notes {
 
     constructor(id, title, text, color) {
@@ -31,6 +34,8 @@ class Notes {
 
 /*
  * Class: Library
+ * Objective: Contains the constructor for a library, as well as 
+ *            methods to allow creation, deletion, updating, searching, and retrieval of notes.
  */
 class Library {
 
@@ -61,21 +66,34 @@ class Library {
         return this.notes;
     }
 }
+
+/*
+ * A function that gets a library or creates a new one if there was not one found.
+ */
 var lib = null;
 function getLib(){
-    console.log("getting lib");
+    console.log("Retrieveing the current library...");
+    chrome.storage.sync.get({'lib': lib}, function(currentLib){
+        lib = currentLib.lib;
+    });
     if(lib==null){
-        console.log("no lib found, creating one");
+        console.log("No library was found. A new library is being created...");
         lib = new Library();
+        chrome.storage.sync.set({'lib': lib}, function(){
+            console.log("Library successfully created.");
+        });
     } else {
-        console.log("lib found");
-        console.log(lib.notes.length+" notes in library");
+        console.log("A library was found. ");
+        console.log(lib.notes.length + " notes in library.");
     }
     //grab Library object when script starts
     //if not found(ie. first time using app on this machine), create new library object and save
     //lib = localStorage["lib"]
 }
 
+/*
+ * Functions for the library object. Allows for creation, deletion, editing, and retrieval of notes.
+ */
 function getNotes(){
     return lib.getNotes();
 }
@@ -89,6 +107,7 @@ function deleteNote(id){
     lib.deleteNote(id);
 }
 
+//Test function for the chrome storage API.
 var num = null;
 function test(){
     chrome.storage.sync.get({'num':0},function(data){
@@ -100,3 +119,4 @@ function test(){
         });
     });
 }
+
