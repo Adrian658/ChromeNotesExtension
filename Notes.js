@@ -6,7 +6,7 @@ function print(str){
 }
 
 print("starting notes.js");
-test();
+//test();
 
 /*
  * Class: Notes
@@ -70,8 +70,8 @@ class Library {
 /*
  * A function that gets a library or creates a new one if there was not one found.
  */
-var lib = null;
-function getLib(){
+async function getLib(){
+    var lib = null;
     console.log("Retrieveing the current library...");
     chrome.storage.sync.get({'lib': lib}, function(currentLib){
         lib = currentLib.lib;
@@ -89,22 +89,37 @@ function getLib(){
     //grab Library object when script starts
     //if not found(ie. first time using app on this machine), create new library object and save
     //lib = localStorage["lib"]
+    return lib;
+}
+
+async function saveLib(lib){
+    chrome.storage.sync.set({'lib': lib}, function(){
+            console.log("Library successfully created.");
+    });
+    return;
 }
 
 /*
  * Functions for the library object. Allows for creation, deletion, editing, and retrieval of notes.
  */
 function getNotes(){
+    var lib = await getLib();
     return lib.getNotes();
 }
 function editNote(id,title,text,color){
+    var lib = await getLib();
     lib.editNote(id,title,text,color);
+    saveLib(lib);
 }
 function createNote(title,text,color){
+    var lib = await getLib();
     lib.createNote(title,text,color);
+    saveLib(lib);
 }
 function deleteNote(id){
+    var lib = await getLib();
     lib.deleteNote(id);
+    saveLib(lib);
 }
 
 //Test function for the chrome storage API.
