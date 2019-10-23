@@ -73,7 +73,7 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 .cust-col-4 {
     -ms-flex: 0 0 33.333333%;
     flex: 0 0 33.333333%;
-    max-width: 33.333333%;
+    /*max-width: 33.333333%;*/
 }
 
 .cust-col-8 {
@@ -93,4 +93,14 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
     width: 100%;
     padding-right: 15px;
     padding-left: 15px;
+}
+
+.create-btn{
+    margin-left: 207px;
+}
+
+.delete-btn {
+    padding: 0.2rem;
+    position: relative;
+    left: 90px;
 }
