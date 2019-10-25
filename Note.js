@@ -9,10 +9,10 @@ print("starting notes.js");
 //test();
 
 /*
- * Class: Notes
+ * Class: Note
  * Objective: Contains the constructor for a note, as well as the ability to update the note and filter it by hashtags.
  */
-class Notes {
+class Note {
 
     constructor(id, title, text, color) {
         this.id = id;
@@ -44,22 +44,34 @@ class Library {
         this.notes = [];
     }
 
-    binarySearch(id){
-        //binary search this.notes, return array index
-    }
-
     createNote(title,text,color){
         //assign id based on this object's id counter
         //append new object to array
+        var note = new Note(this.idCounter,title,text,color);
+        this.notes.push(note);
         this.idCounter+=1;
     }
     editNote(id,title,text,color){
-        //binary search id => index
         //edit node object in array with corresponding index
+        var i;
+        for (i = 0; i < this.notes.length; i++) {
+          if(this.notes[i].id === id){
+            this.notes[i].title = title;
+            this.notes[i].text = text;
+            this.notes[i].color = color;
+            break;
+          }
+        }
     }
     deleteNote(id){
-        //binary search id => index
         //delete from array based on index
+        var i;
+        for (i = 0; i < this.notes.length; i++) {
+          if(this.notes[i].id === id){
+            this.notes.splice(i,1);
+            break;
+          }
+        }
     }
     getNotes(){
         //add filter later
