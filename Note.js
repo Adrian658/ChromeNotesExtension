@@ -27,8 +27,8 @@ class Note {
         this.color = color;
     }
 
-    filter(hashtags){
-        //todo, return boolean
+    filter(searchText){
+        return (this.text.includes(searchText) || this.title.includes(searchText));
     }
 }
 
@@ -74,9 +74,19 @@ class Library {
           }
         }
     }
-    getNotes(){
-        //add filter later
-        return this.notes;
+    getNotes(filter){
+        if(filter == null){
+            return this.notes;
+        } else {
+            var filteredNotes = [];
+            var i;
+            for(i=0;i<this.notes.length;i++){
+                if(this.notes[i].filter(filter)){
+                    filteredNotes.push(this.notes[i]);
+                }
+            }
+            return filteredNotes;
+        }
     }
 }
 
@@ -115,9 +125,9 @@ async function saveLib(lib){
 /*
  * Functions for the library object. Allows for creation, deletion, editing, and retrieval of notes.
  */
-function getNotes(){
+function getNotes(filter){
     var lib = await getLib();
-    return lib.getNotes();
+    return lib.getNotes(filter);
 }
 function editNote(id,title,text,color){
     var lib = await getLib();
