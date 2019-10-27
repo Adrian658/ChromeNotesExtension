@@ -50,6 +50,7 @@ class Library {
         var note = new Note(this.idCounter,title,text,color);
         this.notes.push(note);
         this.idCounter+=1;
+        return note;
     }
     editNote(id,title,text,color){
         //edit node object in array with corresponding index
@@ -125,8 +126,9 @@ function editNote(id,title,text,color){
 }
 function createNote(title,text,color){
     var lib = await getLib();
-    lib.createNote(title,text,color);
+    var newNote = lib.createNote(title,text,color);
     saveLib(lib);
+    return newNote;
 }
 function deleteNote(id){
     var lib = await getLib();
