@@ -8,8 +8,8 @@
 
         <script src="quill-1.3.6.js"></script>
         <script src="popup.js"></script>
-        <script src="Notes.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="Note.js"></script>
+        <script src="jquery.min.js"></script>
     </head>
 	
 	<style>
@@ -62,17 +62,5 @@
             </div>
         </div>
     </body>
-    <script>
-    $("#searcher").on("keyup click input", function () {
-    var val = $(this).val();
-    if (val.length) {
-        $(".note-index .note-tile").hide().filter(function () {
-            return $(this).get(0).innerText.toLowerCase().indexOf(val.toLowerCase()) != -1;
-        }).show();
-    }
-    else {
-        $(".note-index .note-tile").show();
-    }
-    });
-    </script>
+    <script src="searcher.js"></script>
 </html>

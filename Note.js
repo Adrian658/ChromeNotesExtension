@@ -2,7 +2,7 @@
  * Notes.js -> The main javascript file containing our implementation of Notes, Library, and important functions.
  */
 function print(str){
-    chrome.extension.getBackgroundPage().console.log(str);
+    //chrome.extension.getBackgroundPage().console.log(str);
 }
 
 print("starting notes.js");
@@ -125,25 +125,41 @@ async function saveLib(lib){
 /*
  * Functions for the library object. Allows for creation, deletion, editing, and retrieval of notes.
  */
-function getNotes(filter){
+async function getNotes(filter){
     var lib = await getLib();
     return lib.getNotes(filter);
 }
-function editNote(id,title,text,color){
+async function editNote(id,title,text,color){
     var lib = await getLib();
     lib.editNote(id,title,text,color);
     saveLib(lib);
 }
-function createNote(title,text,color){
+async function createNote(title,text,color){
     var lib = await getLib();
     var newNote = lib.createNote(title,text,color);
     saveLib(lib);
     return newNote;
 }
-function deleteNote(id){
+async function deleteNote(id){
     var lib = await getLib();
     lib.deleteNote(id);
     saveLib(lib);
+}
+
+async function populateNotes() {
+    var notes = getNotes();
+    console.log(notes);
+    if(notes) {
+    notes.forEach(function (note) {
+        $(".note-index").append('<div class="note-tile btn btn-block">' + note.title + '</div>');
+    });
+    $(".current-note-title").val(notes[0].title);
+    $(".current-note-title").html(notes[0].title);
+    $(".current-note-body").html(notes[0].text);
+    }
+    else {
+        $(".current-note-display").html('No notes to display');
+    }
 }
 
 //Test function for the chrome storage API.
