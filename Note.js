@@ -93,26 +93,29 @@ class Library {
 /*
  * A function that gets a library or creates a new one if there was not one found.
  */
-async function getLib(){
-    var lib = null;
-    console.log("Retrieveing the current library...");
-    chrome.storage.sync.get({'lib': lib}, function(currentLib){
-        lib = currentLib.lib;
-    });
-    if(lib==null){
-        console.log("No library was found. A new library is being created...");
-        lib = new Library();
-        chrome.storage.sync.set({'lib': lib}, function(){
-            console.log("Library successfully created.");
-        });
-    } else {
-        console.log("A library was found. ");
-        console.log(lib.notes.length + " notes in library.");
-    }
+async function getLib(callback){
     //grab Library object when script starts
     //if not found(ie. first time using app on this machine), create new library object and save
     //lib = localStorage["lib"]
-    return lib;
+
+    //var currentLib = null;
+    console.log("Retrieving the current library...");
+    chrome.storage.sync.get(['lib'], function(currentLib){
+        if(currentLib==null){
+            console.log("No library was found. A new library is being created...");
+            currentLib = new Library();
+            chrome.storage.sync.set({'lib': currentLib}, function(){
+                console.log("Library successfully created.");
+            });
+        } 
+        else {
+            console.log("Library ", currentLib, " was found.");
+        }
+        callback(currentLib);
+    });
+    /*setTimeout(function(){
+        
+    }, 2000);*/
 }
 
 async function saveLib(lib){
@@ -127,7 +130,7 @@ async function saveLib(lib){
  */
 async function getNotes(filter){
     var lib = await getLib();
-    return lib.getNotes(filter);
+    return lib;
 }
 async function editNote(id,title,text,color){
     var lib = await getLib();
@@ -135,10 +138,16 @@ async function editNote(id,title,text,color){
     saveLib(lib);
 }
 async function createNote(title,text,color){
-    var lib = await getLib();
-    var newNote = lib.createNote(title,text,color);
-    saveLib(lib);
-    return newNote;
+    var lib = await getLib(function(lib){
+        lib.createNote(title, text, color);
+    });
+    //var newNote = lib.createNote(title,text,color);
+    //saveLib(lib);
+
+    $("#current-note-title").html(title);
+    $("#current-note-body").html(text);
+
+    //return newNote;
 }
 async function deleteNote(id){
     var lib = await getLib();
@@ -164,14 +173,24 @@ async function populateNotes() {
 
 //Test function for the chrome storage API.
 var num = null;
-function test(){
-    chrome.storage.sync.get({'num':0},function(data){
+function storage_test(){
+    chrome.storage.async.get(['num'],function(data){
         num = data.num;
         num+=1;
         print("num = " + num);
-        chrome.storage.sync.set({'num':num},function(){
+        chrome.storage.async.set({'num':num},function(){
             print("Saved num to sync'd storage");
         });
     });
+    return true
 }
 
+function addCreateListener() {
+    document.getElementById('new-note-btn').onclick = function() {
+        createNote('New Note', 'New Note Body', 'red')
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+    addCreateListener()
+})

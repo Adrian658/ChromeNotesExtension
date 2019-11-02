@@ -23,7 +23,7 @@
             <div class="cust-row">
                 <div class="product-name cust-col-12 text-white">
                     Chrome Notes
-                    <div class="new-note-btn btn btn-primary create-btn">
+                    <div id="new-note-btn" class="new-note-btn btn btn-primary create-btn">
                         Create <i class="fas fa-plus"></i>
                     </div>
                 </div>
@@ -32,30 +32,20 @@
                 <div class="note-index text-center cust-col-4">
                     <!-- Here we receive a list of all notes, then we iterate through all of them, rendering a new div for each note -->
                     <div class="note-tile btn btn-block">Test Note 1</div>
-                    <div class="note-tile btn btn-block">Test Note 2</div>
-                    <div class="note-tile btn btn-block">Test Note 3</div>
-                    <div class="note-tile btn btn-block">Test Note 4</div>
-                    <div class="note-tile btn btn-block">Test Note 5</div>
-                    <div class="note-tile btn btn-block">Test Note 6</div>
-                    <div class="note-tile btn btn-block">Test Note 7</div>
-                    <div class="note-tile btn btn-block">Test Note 8</div>
-                    <div class="note-tile btn btn-block">Test Note 9</div>
-                    <div class="note-tile btn btn-block">Test Note 10</div>
-                    <div class="note-tile btn btn-block">Test Note 11</div>
-                    <div class="note-tile btn btn-block">Test Note 12</div>
-					<div class="note-tile btn btn-block">Test Note 13</div>
                 </div>
                 </div>
                 <div class="current-note-display cust-col-8">
                     <!-- Here we take the current note and extract and display its contents -->
                     <div class="current-note-title text-center">
-                        Truth or Dare
+                        <span id="current-note-title">
+                            Truth or Dare
+                        </span>
                         <div class="btn btn-danger delete-btn">
                             Delete <i class="fas fa-trash"></i>
                         </div>
                         <!-- <i style="cursor: pointer; position: relative; left: 20px;" onclick="console.log('hello');" class="fa fa-trash" aria-hidden="true"></i> -->
                     </div>
-                    <div class="current-note-body">
+                    <div id="current-note-body" class="current-note-body">
                         Some text
                     </div>
                 </div>

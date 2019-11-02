@@ -2,7 +2,7 @@
     "name": "Chrome Notes",
     "version": "1.0",
     "description": "Create notepad for google chrome!",
-    "permissions": ["declarativeContent","storage"],
+    "permissions": ["declarativeContent", "storage"],
     "background": {
         "scripts": ["background.js"],
         "persistent": false
