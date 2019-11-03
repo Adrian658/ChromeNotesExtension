@@ -1,18 +1,12 @@
 /*
  * Notes.js -> The main javascript file containing our implementation of Notes, Library, and important functions.
  */
-function print(str){
-    //chrome.extension.getBackgroundPage().console.log(str);
-}
-
-print("starting notes.js");
-//test();
 
 /*
  * Class: Note
  * Objective: Contains the constructor for a note, as well as the ability to update the note and filter it by hashtags.
  */
-class Note {
+/*class Note {
 
     constructor(id, title, text, color) {
         this.id = id;
@@ -30,14 +24,14 @@ class Note {
     filter(searchText){
         return (this.text.includes(searchText) || this.title.includes(searchText));
     }
-}
+}*/
 
 /*
  * Class: Library
  * Objective: Contains the constructor for a library, as well as 
  *            methods to allow creation, deletion, updating, searching, and retrieval of notes.
  */
-class Library {
+/*class Library {
 
     constructor() {
         this.idCounter = 1;
@@ -88,7 +82,7 @@ class Library {
             return filteredNotes;
         }
     }
-}
+}*/
 
 /*
  * A function that returns a list of notes or creates one if it does not exist
@@ -124,87 +118,171 @@ async function saveLib(lib){
 
 }
 
-/*
- * Functions for the library object. Allows for creation, deletion, editing, and retrieval of notes.
- */
-async function getNotes(filter){
-    var lib = await getLib();
-    return lib;
-}
-
-
-async function editNote(id,title,text,color){
-    var lib = await getLib();
-    lib.editNote(id,title,text,color);
-    saveLib(lib);
-}
-
 /* 
  * Takes new note metadata as input, retrieves the Library, creates a new Note with the params, and adds to the Library
  */
-async function createNote(title,text,color){
+async function createNote(title,body,color){
 
-    //Note is created which is a dictionary
-    var newNote = {
-        "title": title,
-        "text": text,
-        "color": color
-    };
+    //Get the value of idCounter
+    chrome.storage.sync.get({'idCounter': 0}, function(curID){
 
-    //Get the library. Add the new note to it. Save Library.
-    await getLib(function(lib){
-        console.log("lib is: ", lib);
-        lib.push(newNote);
-        saveLib(lib);
+        //Get numeric value of idCounter
+        curID = curID.idCounter;
+
+        //Note is created which is a dictionary
+        var newNote = {
+            "id": curID,
+            "title": title,
+            "body": body,
+            "color": color
+        };
+
+        //Increment value of idCounter
+        chrome.storage.sync.set({'idCounter': curID+1}, function(){
+            return;
+        });
+
+        //Get the library. Add the new note to it. Save Library.
+        getLib(function(lib){
+            console.log("lib is: ", lib);
+            lib.push(newNote);
+            saveLib(lib);
+        });
+
+        //Populate DOM elements with new note information
+        $("#current-note-display").attr("data-id", curID);
+        $("#current-note-title").html(title);
+        Quill.find(document.querySelector("#current-note-body")).setText(body);
+        $(".note-index").append('<div class="note-tile btn btn-block">' + title + '</div>');
+        
     });
 
-    //Populate DOM elements with new note information
-    $("#current-note-title").html(title);
-    $("#current-note-body").html(text);
 }
 
-async function deleteNote(id){
-    var lib = await getLib();
-    lib.deleteNote(id);
-    saveLib(lib);
+/*
+ * Functions for the library object. Allows for creation, deletion, editing, and retrieval of notes.
+ */
+
+async function editNote(id, title, body, color){
+    
+    getLib(function(lib){
+
+        //Find the Note with matching ID and change values
+        for (note of lib) {
+            if (note["id"] == id) {
+                if (title) { note["title"] = title };
+                if (body) { note["body"] = body };
+                if (color) {note["color"] = color };
+            };
+        };
+
+        saveLib(lib);
+
+    });
+
+}
+
+
+async function deleteNote(deleteID){
+    
+    getLib(function(lib){
+
+        //Filter the library to remove note with ID matching deleteID
+        lib = lib.filter(function(note){
+            return note["id"] != deleteID;
+        });
+
+        saveLib(lib);
+
+    });
+
 }
 
 async function populateNotes() {
-    var notes = getNotes();
-    console.log(notes);
-    if(notes) {
-    notes.forEach(function (note) {
-        $(".note-index").append('<div class="note-tile btn btn-block">' + note.title + '</div>');
-    });
-    $(".current-note-title").val(notes[0].title);
-    $(".current-note-title").html(notes[0].title);
-    $(".current-note-body").html(notes[0].text);
-    }
-    else {
-        $(".current-note-display").html('No notes to display');
-    }
-}
 
-//Test function for the chrome storage API.
-var num = null;
-function storage_test(){
-    chrome.storage.async.get(['num'],function(data){
-        num = data.num;
-        num+=1;
-        print("num = " + num);
-        chrome.storage.async.set({'num':num},function(){
-            print("Saved num to sync'd storage");
+    getLib(function(lib){
+
+        lib.forEach(function(note){
+            $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + note["id"] + '>' + note.title + '</div>');
         });
+
     });
-    return true
+
 }
 
-function addCreateListener() {
+function openNote(id) {
+
+    getLib(function(lib){
+
+        for (note of lib) {
+            if (note["id"] == id) {
+                $("#current-note-display").attr("data-id", id);
+                $("#current-note-title").html(note["title"]);
+                Quill.find(document.querySelector("#current-note-body")).setText(note["body"]);
+            };
+        };
+
+    });
+
+}
+
+function addCreateNoteListener() {
     document.getElementById('new-note-btn').onclick = function() {
-        createNote('New Note', 'New Note Body', 'red')
+        createNote('New Note', 'New Note Body', 'red');
     }
+}
+
+function addEditNoteListener() {
+    document.getElementById("save-btn").onclick = function() {
+        //Retrieve Title and Body content and pass in to editNote function
+        var id = $("#current-note-display")[0].getAttribute("data-id");
+        var title = $("#current-note-title").text();
+        var body = Quill.find(document.querySelector("#current-note-body")).getText();
+        var color = "Some random color";
+        editNote(id=id, title=title, body=body, color=color);
+    }
+}
+
+function addDeleteNoteListener() {
+    document.getElementById("delete-btn").onclick = function() {
+        //Retrieve note ID and pass to deleteNote function
+        deleteNote();
+    }
+}
+
+/* THIS DOES NOT WORK AS INTENDED
+ * Intended functionality is to add onclick function to each note tile that displays its contents in the editor
+ * Currently it just displays the contents of the last note tile no matter which tile is clicked on
+ *  This is because when adding the onclick function, I cant figure out how to freeze the value of 'id', so id's last value
+ *  is 2, which is what is passed into openNote and diplays contents of note with id=2
+ *  Not sure how to fix
+ */
+function addOpenNoteListener() {
+
+    setTimeout(function(){
+
+        notes = document.getElementsByClassName("note-tile");
+
+        for (var i = 0; i < notes.length; i++) {
+            var id = notes[i].getAttribute("data-id");
+            notes[i].addEventListener("click", function() {
+                console.log(id);
+                openNote(id);
+            });
+            
+        }
+
+    }, 500);
+
 }
 
 document.addEventListener("DOMContentLoaded", function(){
-    addCreateListener()
+    getLib(function(){
+        console.log("Library initialization finished.");
+    });
+    populateNotes();
+    addOpenNoteListener();
+    addCreateNoteListener();
+    addEditNoteListener();
+    addDeleteNoteListener();
 })
