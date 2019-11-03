@@ -91,38 +91,37 @@ class Library {
 }
 
 /*
- * A function that gets a library or creates a new one if there was not one found.
+ * A function that returns a list of notes or creates one if it does not exist
  */
-async function getLib(callback){
-    //grab Library object when script starts
-    //if not found(ie. first time using app on this machine), create new library object and save
-    //lib = localStorage["lib"]
+async function getLib(callbackFunc){
+    /* 
+     * Calls chrome storage to retrieve array of notes, which is passed into a callback function.
+     * The notes only persist within the callback function, so any functionality that needs access to it 
+     * must be inside the callback function param
+    */
 
-    //var currentLib = null;
     console.log("Retrieving the current library...");
-    chrome.storage.sync.get(['lib'], function(currentLib){
-        if(currentLib==null){
-            console.log("No library was found. A new library is being created...");
-            currentLib = new Library();
-            chrome.storage.sync.set({'lib': currentLib}, function(){
-                console.log("Library successfully created.");
-            });
-        } 
-        else {
-            console.log("Library ", currentLib, " was found.");
-        }
-        callback(currentLib);
+    chrome.storage.sync.get({'library': []}, function(lib){
+        lib = lib.library;
+        chrome.storage.sync.set({'library': lib}, function(){
+            console.log("Library successfully retrieved.");
+        });
+
+        //Do stuff with the library
+        callbackFunc(lib);
     });
-    /*setTimeout(function(){
-        
-    }, 2000);*/
 }
 
+/*
+ * Wrapper method for chrome.storage.set(library)
+ * Updates the 'library' key value in chrom storage with the param value
+ */
 async function saveLib(lib){
-    chrome.storage.sync.set({'lib': lib}, function(){
-            console.log("Library successfully created.");
+
+    chrome.storage.sync.set({'library': lib}, function(){
+            console.log("Library successfully saved.");
     });
-    return;
+
 }
 
 /*
@@ -132,23 +131,38 @@ async function getNotes(filter){
     var lib = await getLib();
     return lib;
 }
+
+
 async function editNote(id,title,text,color){
     var lib = await getLib();
     lib.editNote(id,title,text,color);
     saveLib(lib);
 }
-async function createNote(title,text,color){
-    var lib = await getLib(function(lib){
-        lib.createNote(title, text, color);
-    });
-    //var newNote = lib.createNote(title,text,color);
-    //saveLib(lib);
 
+/* 
+ * Takes new note metadata as input, retrieves the Library, creates a new Note with the params, and adds to the Library
+ */
+async function createNote(title,text,color){
+
+    //Note is created which is a dictionary
+    var newNote = {
+        "title": title,
+        "text": text,
+        "color": color
+    };
+
+    //Get the library. Add the new note to it. Save Library.
+    await getLib(function(lib){
+        console.log("lib is: ", lib);
+        lib.push(newNote);
+        saveLib(lib);
+    });
+
+    //Populate DOM elements with new note information
     $("#current-note-title").html(title);
     $("#current-note-body").html(text);
-
-    //return newNote;
 }
+
 async function deleteNote(id){
     var lib = await getLib();
     lib.deleteNote(id);
