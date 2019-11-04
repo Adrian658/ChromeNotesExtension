@@ -15,11 +15,10 @@ async function loadNotes(){
     console.log("Retrieving the current library...");
     chrome.storage.sync.get({'library': []}, function(lib){
         raw_notes = lib.library;
-        console.log(raw_notes);
-        /*raw_notes.forEach(function(note){
-        $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + note["id"] + '>' + note.title + '</div>');
-        });*/
         makeDivs();
+        chrome.storage.sync.get({'activeNote':-1},function(activeID){
+            openNote(activeID.activeNote);
+        });
     });
 }
 
@@ -27,6 +26,7 @@ async function makeDivs(){
     raw_notes.forEach(function(note){
         $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + note["id"] + '>' + note.title + '</div>');
     });
+    addOpenNoteListener();
 }
 
 /*
@@ -104,7 +104,6 @@ async function deleteNote(deleteID){
     $(".btn-block").remove();
     raw_notes.splice(delIndex,1);
     makeDivs();
-    addOpenNoteListener();
     openNote(-1);
     saveLib();
 }
@@ -127,13 +126,17 @@ function openNote(id) {
             return;
         }
     }
-    console.log("NOT FOUND");
+    console.log("Note with id ("+id+") not found");
+    openNote(-1);
 }
 
 function populateCanvas(id,title,body){
     $("#current-note-display").attr("data-id", id);
     $("#current-note-title").html(title);
     Quill.find(document.querySelector("#current-note-body")).setText(body);
+    chrome.storage.sync.set({'activeNote': id}, function(){
+            console.log("Active note id("+id+") successfully saved.");
+    });
 }
 
 function addCreateNoteListener() {
@@ -190,7 +193,6 @@ function addOpenNoteListener() {
 
 document.addEventListener("DOMContentLoaded", function(){
     loadNotes();
-    addOpenNoteListener();
     addCreateNoteListener();
     addEditNoteListener();
     addDeleteNoteListener();
