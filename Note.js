@@ -136,7 +136,7 @@ function openNote(id) {
 function populateCanvas(id,title,body){
     $("#current-note-display").attr("data-id", id);
     $("#current-note-title").html(title);
-    Quill.find(document.querySelector("#current-note-body")).setText(body);
+    Quill.find(document.querySelector("#current-note-body")).root.innerHTML = body;
     chrome.storage.sync.set({'activeNote': id}, function(){
             console.log("Active note id("+id+") successfully saved.");
     });
@@ -153,7 +153,7 @@ function addEditNoteListener() {
         //Retrieve Title and Body content and pass in to editNote function
         var id = $("#current-note-display")[0].getAttribute("data-id");
         var title = $("#current-note-title").text();
-        var body = Quill.find(document.querySelector("#current-note-body")).getText();
+        var body = Quill.find(document.querySelector("#current-note-body")).root.innerHTML;
         var color = "Some random color";
         console.log("id: "+id+" title: "+title+" body: "+body+" color: "+color); 
         editNote(id=id, title=title, body=body, color=color);
