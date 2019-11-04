@@ -134,6 +134,7 @@ function populateCanvas(id,title,body){
     $("#current-note-display").attr("data-id", id);
     $("#current-note-title").html(title);
     Quill.find(document.querySelector("#current-note-body")).setText(body);
+    //set active note id in storage
     chrome.storage.sync.set({'activeNote': id}, function(){
             console.log("Active note id("+id+") successfully saved.");
     });
@@ -164,12 +165,8 @@ function addDeleteNoteListener() {
     }
 }
 
-/* THIS DOES NOT WORK AS INTENDED
- * Intended functionality is to add onclick function to each note tile that displays its contents in the editor
- * Currently it just displays the contents of the last note tile no matter which tile is clicked on
- *  This is because when adding the onclick function, I cant figure out how to freeze the value of 'id', so id's last value
- *  is 2, which is what is passed into openNote and diplays contents of note with id=2
- *  Not sure how to fix
+/*
+ * Adds onclick function to each note tile that displays its contents in the editor
  */
 function addOpenNoteListener() {
 
