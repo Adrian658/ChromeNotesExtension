@@ -87,6 +87,9 @@ async function editNote(id, title, body, color){
         };
     };
     saveLib();
+    $(".btn-block").remove();
+    makeDivs();
+    addOpenNoteListener();
 }
 
 
@@ -100,7 +103,7 @@ async function deleteNote(deleteID){
         };
     };
     
-    console.log(deleteID);
+    //console.log($(".btn-block"));
     $(".btn-block").remove();
     raw_notes.splice(delIndex,1);
     makeDivs();
@@ -161,7 +164,8 @@ function addEditNoteListener() {
 function addDeleteNoteListener() {
     document.getElementById("delete-btn").onclick = function() {
         //Retrieve note ID and pass to deleteNote function
-        deleteNote();
+        var id = $("#current-note-display")[0].getAttribute("data-id");
+        deleteNote(id);
     }
 }
 
