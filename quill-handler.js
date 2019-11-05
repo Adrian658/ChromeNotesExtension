@@ -13,7 +13,7 @@ function createEditor() {
     });
 
     //Set Quill editor to auto-save after making changes
-    var Delta = Quill.import('delta');
+    
     quill.on('text-change', function(delta) {
 
         $('#autosave-label').text('Saving changes...');

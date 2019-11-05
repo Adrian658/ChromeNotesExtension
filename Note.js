@@ -56,7 +56,8 @@ async function createNote(title,body,color){
             "id": curID,
             "title": title,
             "body": body,
-            "color": color
+            "color": color,
+            "hashes": []
         };
 
         //Increment value of idCounter
@@ -81,14 +82,15 @@ async function createNote(title,body,color){
  * Updates a notes content and replaces front end elements with updated values
  */
 
-async function editNote(id, title, body, color){  
+async function editNote(id, title, body, color, hashes){
 
      //Find the Note with matching ID and change values in backend storage
     for (note of raw_notes) {
         if (note["id"] == id) {
             if (title) { note["title"] = title };
             if (body) { note["body"] = body };
-            if (color) {note["color"] = color };
+            if (color) { note["color"] = color };
+            if (hashes) { note["hashes"] = hashes };
         };
     };
     saveLib();
@@ -107,12 +109,19 @@ function saveNote() {
     //Updated variables of current note
     var id = $("#current-note-display")[0].getAttribute("data-id");
     var title = $("#current-note-title").text();
-    var body = Quill.find(document.querySelector("#current-note-body")).root.innerHTML;
+    var editor = Quill.find(document.querySelector("#current-note-body"))
+    var body = editor.root.innerHTML;
+    var body_text = editor.getText();
+
+    //Find and store all hashtags
+    regex = /\B(\#[a-zA-Z]+\b)/g
+    var hashes = body_text.match(regex);
 
     //Save note with new variables
     //Ideally we should just be saving the body here
-    editNote(id=id, title=title, body=body);
+    editNote(id=id, title=title, body=body, color=null, hashes=hashes);
     $('#autosave-label').text('Changes saved');
+    $("#categories").html(hashes);
 
 }
 
@@ -149,16 +158,16 @@ function openNote(id) {
     if (id == -1) { //id is -1 when no id was found in parent function, so open first note in library
         if(raw_notes.length>0){
             var note = raw_notes[0];
-            populateCanvas(note["id"],note["title"],note["body"]);
+            populateCanvas(note["id"], note["title"], note["body"], note["hashes"]);
         } else {
-            populateCanvas(null,"not a note","not a note");
+            populateCanvas(null,"not a note","not a note", null);
         }
         return;
     }
     else { //open note with specified id
         for (note of raw_notes) {
             if (note["id"] == id) {
-                populateCanvas(id,note["title"],note["body"]);
+                populateCanvas(id, note["title"], note["body"], note["hashes"]);
                 return;
             }
         }
@@ -172,9 +181,10 @@ function openNote(id) {
 /*
  * Fill note display fields with current note values
  */
-function populateCanvas(id,title,body){
+function populateCanvas(id,title,body,hashes){
     $("#current-note-display").attr("data-id", id);
     $("#current-note-title").html(title);
+    $("#categories").html(hashes);
     Quill.find(document.querySelector("#current-note-body")).root.innerHTML = body;
     chrome.storage.sync.set({'activeNote': id}, function(){
             console.log("Active note id("+id+") successfully saved.");
@@ -242,8 +252,8 @@ function addOpenNoteFunctionality(note) {
 
     note.addEventListener("click", function(event){ 
 
-        saveNote()
         changeNoteHighlight();
+        $("#categories").html("");
 
         var targetElement = event.target || event.srcElement;
         var id = targetElement.getAttribute("data-id");
