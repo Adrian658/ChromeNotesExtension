@@ -36,9 +36,6 @@
                 <div id="current-note-display" class="current-note-display cust-col-8">
                     <!-- Here we take the current note and extract and display its contents -->
                     <div class="current-note-title text-center">
-                        <!-- <div id="save-btn" class="btn btn-success save-btn">
-                            Save <i class="fas fa-save"></i>
-                        </div> -->
                         <span id="autosave-label"></span>
                         <span id="current-note-title" contenteditable="true">
                             New Note
@@ -46,11 +43,14 @@
                         <div id="delete-btn" class="btn btn-danger delete-btn">
                             Delete <i class="fas fa-trash"></i>
                         </div>
-                        <!-- <i style="cursor: pointer; position: relative; left: 20px;" onclick="console.log('hello');" class="fa fa-trash" aria-hidden="true"></i> -->
                     </div>
-                    <div id="current-note-body" class="current-note-body">
-                        Some text
+
+                    <div id="scrolling-container">
+                        <div id="current-note-body" name="editor" class="current-note-body">
+                            Test
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>

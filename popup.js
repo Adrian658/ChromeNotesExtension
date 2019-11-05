@@ -7,8 +7,9 @@ var changeCount = 0; //Keeps track of the number of changes made to Quill editor
 function createEditor() {
 
     //Assign instance of Quill to appropriate HTML section
-    var quill = new Quill('.current-note-body', {
-        theme: 'snow'
+    var quill = new Quill('#current-note-body', {
+        theme: 'snow',
+        scrollingContainer: '#scrolling-container',
     });
 
     //Set Quill editor to auto-save after making changes
