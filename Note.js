@@ -205,6 +205,7 @@ function addDeleteNoteListener() {
     }
 }
 
+
 /* 
  * Add onclick function to each note tile that displays its contents in the editor
  */
