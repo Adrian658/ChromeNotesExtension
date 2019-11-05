@@ -107,12 +107,12 @@ function saveNote() {
     //Updated variables of current note
     var id = $("#current-note-display")[0].getAttribute("data-id");
     var title = $("#current-note-title").text();
-    var body = Quill.find(document.querySelector("#current-note-body")).getText();
+    var body = Quill.find(document.querySelector("#current-note-body")).root.innerHTML;
 
     //Save note with new variables
     //Ideally we should just be saving the body here
     editNote(id=id, title=title, body=body);
-    $('#autosave-label').text('Autosave completed');
+    $('#autosave-label').text('Changes saved');
 
 }
 
@@ -198,21 +198,6 @@ function addCreateNoteListener() {
 /*
  *
  */
-function addEditNoteListener() {
-    document.getElementById("save-btn").onclick = function() {
-        //Retrieve Title and Body content and pass in to editNote function
-        var id = findCurrentNote();
-        var title = $("#current-note-title").text();
-        var body = Quill.find(document.querySelector("#current-note-body")).root.innerHTML;
-        var color = "Some random color";
-        console.log("id: "+id+" title: "+title+" body: "+body+" color: "+color); 
-        editNote(id=id, title=title, body=body, color=color);
-    }
-}
-
-/*
- *
- */
 function addDeleteNoteListener() {
     document.getElementById("delete-btn").onclick = function() {
         //Retrieve note ID and pass to deleteNote function
@@ -279,7 +264,7 @@ function changeNoteHighlight(id) {
     if (id == undefined) { //remove highlighting from currently highlighted element
         var id = findCurrentNote();
         var sourceElement = findNoteElement(id);
-        sourceElement.style.cssText = 'background-color: white';
+        sourceElement.classList.remove('active-note');
     }
     else { //add highlighting to selected element
         if (id == -1) {
@@ -287,7 +272,7 @@ function changeNoteHighlight(id) {
             id = note["id"];
         }
         var targetElement = findNoteElement(id);
-        targetElement.style.cssText = 'background-color: blue';
+        targetElement.classList.add('active-note');
     }
 
 }
@@ -313,6 +298,5 @@ function findCurrentNote() {
 document.addEventListener("DOMContentLoaded", function(){
     loadNotes();
     addCreateNoteListener();
-    addEditNoteListener();
     addDeleteNoteListener();
 })

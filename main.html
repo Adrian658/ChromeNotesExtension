@@ -23,14 +23,14 @@
             <div class="cust-row">
                 <div class="product-name cust-col-12 text-white">
                     Chrome Notes
-                    <div id="new-note-btn" class="new-note-btn btn btn-primary create-btn">
-                        Create <i class="fas fa-plus"></i>
-                    </div>
                 </div>
             </div>
             <div class="cust-row note-content">
                     <div class="note-container cust-col-4">
                         <input type="text" id="searcher" placeholder="Search notes...">
+                        <div id="new-note-btn" class="new-note-btn note-tile btn btn-block">
+                            Create <i class="fas fa-plus"></i>
+                        </div>
                         <div class="note-index text-center">
                             <!-- Here we receive a list of all notes, then we iterate through all of them, rendering a new div for each note -->
                         </div>
@@ -38,18 +38,20 @@
                     <div id="current-note-display" class="current-note-display cust-col-8">
                         <div class="cust-row" style="height: 10%">
                             <div class="cust-col-12" style="height: 100%">
-                                <div class="current-note-title text-center">
-                                    <span id="autosave-label"></span>
-                                    <span id="current-note-title" contenteditable="true">
-                                        New Note
+                                <div class="current-note-title">
+                                    <span id="current-note-title" contenteditable="true" maxlength="20"></span>
+                                    <span id="delete-btn" class="btn btn-danger delete-btn">
+                                        <i class="fas fa-trash"></i>
                                     </span>
-                                    <div id="delete-btn" class="btn btn-danger delete-btn">
-                                        Delete <i class="fas fa-trash"></i>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="cust-row" style="height: 90%">
+                        <div class="cust-row" style="height: 5%">
+                            <div class="cust-col-12">
+                                <span id="autosave-label"></span>
+                            </div>
+                        </div>
+                        <div class="cust-row" style="height: 85%">
                             <div class="cust-col-12" style="height: 95%">
                                 <div id="scrolling-container">
                                     <div id="current-note-body" name="editor" class="current-note-body">

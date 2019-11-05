@@ -18,7 +18,7 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 /* Classes attached to elements concerning the note index container */
 
 .note-container {
-    background-color: lightcoral;
+    background-color: lightgreen;
     overflow-y: auto;
     height: 100%;
 }
@@ -26,23 +26,28 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 .note-tile {
     color: #000;
     background-color: #fdfdfd;
-	border-radius: 8px;
-    border-color: #78808a;
+	border-radius: 5px;
 	padding: 10px;
 	margin-top: 8px;
 }
+
 .note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile {
-    color: #000;
-    background-color: #ecd9c0;
-	border-radius: 8px;
-    border-color: #78808a;
+    color: white;
+    background-color: rgba(221, 14, 240, 0.5);
+	border-radius: 12px;
 	padding: 10px;
 	margin-top: 8px;
 }
 
 .new-note-btn {
-    margin-top: 8px;
-	margin-bottom: 10px;
+    /*margin-top: 8px;
+	margin-bottom: 10px;*/
+}
+
+.active-note, .active-note:hover {
+    background-color: purple !important;
+    color: white;
+    border-radius: 5px;
 }
 
 /* Classes attached to elements concerning the current note container */
@@ -59,6 +64,7 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 .current-note-title {
     padding-bottom: 10px;
     padding-top: 10px;
+    font-size: 1.5rem;
 }
 
 #scrolling-container {
@@ -68,7 +74,7 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 }
 
 #current-note-body {
-    min-height: inherit;
+    min-height: 80%;
     height: auto;
 }
 
@@ -110,14 +116,8 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
     padding-left: 15px;
 }
 
-.create-btn{
-    margin-left: 207px;
-}
-
 .delete-btn {
-    padding: 0.2rem;
-    position: relative;
-    left: 70px;
+    float: right;
 }
 
 .save-btn {
@@ -128,6 +128,4 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 
 #autosave-label {
     font-size: 10px;
-    right: 72px;
-    position: relative;
 }
