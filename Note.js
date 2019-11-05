@@ -35,7 +35,6 @@ async function makeDivs(){
 async function saveLib(){
     chrome.storage.sync.set({'library': raw_notes}, function(){
             console.log("Library successfully saved.");
-            $('#autosave-label').text('Autosave completed');
     });
 }
 
@@ -89,8 +88,6 @@ async function editNote(id, title, body, color){
     saveLib();
     $(".btn-block").remove();
     makeDivs();
-    $('.note-tile').removeClass('current-note-tile');
-    $(".note-tile[data-id='" + id + "']").addClass('current-note-tile');
     addOpenNoteListener();
 }
 
@@ -113,6 +110,7 @@ async function deleteNote(deleteID){
     saveLib();
 }
 
+
 function openNote(id) {
     console.log("opening note "+id);
     if(id == -1){
@@ -126,8 +124,6 @@ function openNote(id) {
     }
     for (note of raw_notes) {
         if (note["id"] == id) {
-            $('.note-tile').removeClass('current-note-tile');
-            $("div[data-id='" + id + "']").addClass('current-note-tile');
             populateCanvas(id,note["title"],note["body"]);
             return;
         }
@@ -159,7 +155,6 @@ function addEditNoteListener() {
         var title = $("#current-note-title").text();
         var body = Quill.find(document.querySelector("#current-note-body")).getText();
         var color = "Some random color";
-
         console.log("id: "+id+" title: "+title+" body: "+body+" color: "+color); 
         editNote(id=id, title=title, body=body, color=color);
     }
