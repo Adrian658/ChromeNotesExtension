@@ -47,6 +47,10 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 
 /* Classes attached to elements concerning the current note container */
 
+.current-note-tile {
+    background-color: yellow;
+}
+
 .current-note-display {
     background-color: white;
     overflow: scroll;
@@ -102,5 +106,17 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 .delete-btn {
     padding: 0.2rem;
     position: relative;
-    left: 90px;
+    left: 70px;
+}
+
+.save-btn {
+    position: relative;
+    right: 72px;
+    display: none;
+}
+
+#autosave-label {
+    font-size: 10px;
+    right: 72px;
+    position: relative;
 }

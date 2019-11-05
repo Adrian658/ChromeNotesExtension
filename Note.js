@@ -2,7 +2,6 @@
  * Notes.js -> The main javascript file containing our implementation of Notes, Library, and important functions.
  */
 var raw_notes = [];
-
 /*
  * Retrieved from Chrome storage all notes, displays previews of all notes, and brings up editing function for most recently
  * accessed note
