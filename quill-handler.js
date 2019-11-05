@@ -44,23 +44,6 @@ function saveNoteWrapper(changeCount, timeoutValue=3000) {
     }, timeoutValue);
 }
 
-/*
- *  Retrieve the body of the Quill editor and update the note's contents in storage
- */
-function saveNote() {
-
-    //Updated variables of current note
-    var id = $("#current-note-display")[0].getAttribute("data-id");
-    var title = $("#current-note-title").text();
-    var body = Quill.find(document.querySelector("#current-note-body")).getText();
-
-    //Save note with new variables
-    //Ideally we should just be saving the body here
-    editNote(id=id, title=title, body=body);
-    $('#autosave-label').text('Autosave completed');
-
-}
-
 //Executes when the page is loaded
 document.addEventListener("DOMContentLoaded", function(){
     createEditor()

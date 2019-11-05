@@ -2,6 +2,7 @@
 
 .extension-container {
     width: 600px;
+    height: 500px;
 }
 
 .product-name {
@@ -16,11 +17,10 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 
 /* Classes attached to elements concerning the note index container */
 
-.note-index {
-    background-color: #d1d3d6;
+.note-container {
     background-color: lightcoral;
     overflow-y: auto;
-    height: 500px;
+    height: 100%;
 }
 
 .note-tile {
@@ -53,7 +53,7 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 
 .current-note-display {
     background-color: white;
-    /*overflow: scroll;*/
+    height: 100%;
 }
 
 .current-note-title {
@@ -62,18 +62,18 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 }
 
 #scrolling-container {
-    height:10em; 
-    min-height:100%; 
+    height: 100%;
+    min-height: 100%; 
     overflow-y:auto;
 }
 
 #current-note-body {
-    min-height:100%; 
-    height:auto;
+    min-height: inherit;
+    height: auto;
 }
-.ql-toolbar {
-    position: relative;
-    top: 0;
+
+.note-content {
+    height: inherit;
 }
 
 /* Column and row classes */

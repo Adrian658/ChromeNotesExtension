@@ -100,6 +100,23 @@ async function editNote(id, title, body, color){
 }
 
 /*
+ *  Retrieve the body of the Quill editor and update the note's contents in storage
+ */
+function saveNote() {
+
+    //Updated variables of current note
+    var id = $("#current-note-display")[0].getAttribute("data-id");
+    var title = $("#current-note-title").text();
+    var body = Quill.find(document.querySelector("#current-note-body")).getText();
+
+    //Save note with new variables
+    //Ideally we should just be saving the body here
+    editNote(id=id, title=title, body=body);
+    $('#autosave-label').text('Autosave completed');
+
+}
+
+/*
  *  Deletes a specified note from Chrome storage and from DOM
  */
 async function deleteNote(deleteID){
@@ -238,8 +255,9 @@ function addNoteListener(id) {
  */
 function addOpenNoteFunctionality(note) {
 
-    note.addEventListener("click", function(event){  
-        
+    note.addEventListener("click", function(event){ 
+
+        saveNote()
         changeNoteHighlight();
 
         var targetElement = event.target || event.srcElement;
