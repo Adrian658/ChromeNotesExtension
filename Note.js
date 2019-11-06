@@ -2,32 +2,80 @@
  * Notes.js -> The main javascript file containing our implementation of Notes, Library, and important functions.
  */
 var raw_notes = [];
+var hashtagRegex = /\B(\#[a-zA-Z]+\b)/g;
 /*
  * Retrieved from Chrome storage all notes, displays previews of all notes, and brings up editing function for most recently
  * accessed note
  */
-async function loadNotes(){
+function loadNotes(hash){
 
     console.log("Retrieving the current library...");
     chrome.storage.sync.get({'library': []}, function(lib){
         raw_notes = lib.library;
         renderNotes();
+        if (hash) {
+            chooseFilter(hash);
+            document.getElementById("searcher").value = hash;
+        }
         chrome.storage.sync.get({'activeNote':-1},function(activeID){
             openNote(activeID.activeNote);
             changeNoteHighlight(activeID.activeNote);
         });
 
     });
+    
 }
 
 /*
  *  Renders a new note tile div for each note in storage in the note index section
  */
-async function renderNotes(){
+function renderNotes(){
+
+    clearNotesDisplay("notes");
     raw_notes.forEach(function(note){
         $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + note["id"] + '>' + note.title + '</div>');
     });
-    addNoteListener();
+    addTileListener();
+
+}
+
+function loadHashes() {
+
+    global_hashes = new Set([]);
+    for (note of raw_notes) {
+        hashes = note["hashes"];
+        if (hashes == null) {
+            continue;
+        }
+        for (hash of hashes) {
+            global_hashes.add(hash);
+        }
+    }
+
+    renderHashes(global_hashes);
+
+}
+
+function renderHashes(hashes) {
+
+    clearNotesDisplay("hashes");
+    hashes.forEach(function(hash) {
+        $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + hash + '>' + hash + '</div>');
+    });
+    addTileListener(id=null, type="hash");
+
+}
+
+function clearNotesDisplay(type) {
+
+    noteIdx = $(".note-index");
+    noteIdx.removeClass("notes hashes");
+    noteIdx.addClass(type);
+    noteIdx = noteIdx[0];
+    var range = document.createRange();
+    range.selectNodeContents(noteIdx);
+    range.deleteContents();
+
 }
 
 /*
@@ -72,7 +120,7 @@ async function createNote(title,body,color){
         $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + curID + '>' + title + '</div>');
         changeNoteHighlight();
         changeNoteHighlight(curID);
-        addNoteListener(curID); //Add openNote listener to newly created note tile
+        addTileListener(curID); //Add openNote listener to newly created note tile
         openNote(curID);//Open current note in note display
     });
 
@@ -90,14 +138,16 @@ async function editNote(id, title, body, color, hashes){
             if (title) { note["title"] = title };
             if (body) { note["body"] = body };
             if (color) { note["color"] = color };
-            if (hashes) { note["hashes"] = hashes };
+            note["hashes"] = hashes;
         };
     };
     saveLib();
 
     //Replace title of note block in notes display with new title
     var curNote = findNoteElement(id);
-    curNote.innerHTML = title;
+    if (curNote != null) {
+        curNote.innerHTML = title;
+    }
 
 }
 
@@ -114,12 +164,15 @@ function saveNote() {
     var body_text = editor.getText();
 
     //Find and store all hashtags
-    regex = /\B(\#[a-zA-Z]+\b)/g
-    var hashes = body_text.match(regex);
+    var hashes = body_text.match(hashtagRegex);
 
     //Save note with new variables
     //Ideally we should just be saving the body here
+    console.log("Saving Note: ", id);
     editNote(id=id, title=title, body=body, color=null, hashes=hashes);
+    if ($('.note-index').hasClass('hashes')) {
+        loadHashes();
+    }
     $('#autosave-label').text('Changes saved');
     $("#categories").html(hashes);
 
@@ -216,28 +269,40 @@ function addDeleteNoteListener() {
     }
 }
 
+function addFilterNoteListener() {
+    document.getElementById("note-filter-btn").onclick = function() {
+        loadNotes();
+    }
+}
+
+function addFilterHashesListener() {
+    document.getElementById("category-filter-btn").onclick = function() {
+        loadHashes();
+    }
+}
+
 
 /* 
  * Add onclick function to each note tile that displays its contents in the editor
  */
-function addNoteListener(id) {
+function addTileListener(id, type="note") {
 
     setTimeout(function(){
 
         //Get all note tiles
-        notes = document.getElementsByClassName("note-tile");
+        elements = document.getElementsByClassName("note-tile");
 
         if (id != undefined) { //if a specific note is specified
-            for (var i = 0; i < notes.length; i++) { //find the note and add onclick function
-                note = notes[i];
+            for (var i = 0; i < elements.length; i++) { //find the note and add onclick function
+                note = elements[i];
                 if (note.getAttribute('data-id') == id) {
-                    addOpenNoteFunctionality(note);
+                    addOpenNoteFunctionality(note, type);
                 }
             }
         }
         else { //else add listeners to all notes
-            for (var i = 0; i < notes.length; i++) {
-                addOpenNoteFunctionality(notes[i]);
+            for (var i = 0; i < elements.length; i++) {
+                addOpenNoteFunctionality(elements[i], type);
             }
         }
 
@@ -248,20 +313,32 @@ function addNoteListener(id) {
 /*
  * Adds the open note onclick function to a specified note block div
  */
-function addOpenNoteFunctionality(note) {
+function addOpenNoteFunctionality(element, type) {
 
-    note.addEventListener("click", function(event){ 
+    if (type == "note") {
+        element.addEventListener("click", function(event){ 
 
-        changeNoteHighlight();
-        $("#categories").html("");
+            changeNoteHighlight();
+            $("#categories").html("");
+    
+            var targetElement = event.target || event.srcElement;
+            var id = targetElement.getAttribute("data-id");
+            changeNoteHighlight(id);
+    
+            openNote(id);
+    
+        });
+    }
+    else if (type == "hash") {
+        element.addEventListener("click", function(event){ 
+    
+            var targetElement = event.target || event.srcElement;
+            var hash = targetElement.innerHTML;
 
-        var targetElement = event.target || event.srcElement;
-        var id = targetElement.getAttribute("data-id");
-        changeNoteHighlight(id);
-
-        openNote(id);
-
-    });
+            loadNotes(hash);
+    
+        });
+    }
 }
 
 /*
@@ -302,6 +379,15 @@ function findCurrentNote() {
     return $("#current-note-display")[0].getAttribute("data-id");
 }
 
+function findNote(id) {
+    for (note of raw_notes) {
+        if (note["id"] == id) {
+            return note;
+        }
+    }
+    return "No note with matching ID";
+}
+
 /*
  * Code that is run when document loads
  */
@@ -309,4 +395,6 @@ document.addEventListener("DOMContentLoaded", function(){
     loadNotes();
     addCreateNoteListener();
     addDeleteNoteListener();
+    addFilterNoteListener();
+    addFilterHashesListener();
 })

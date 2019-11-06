@@ -23,7 +23,7 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
     height: 100%;
 }
 
-.note-tile {
+.note-tile, .new-note-btn {
     color: #000;
     background-color: #fdfdfd;
 	border-radius: 5px;
@@ -31,7 +31,7 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
 	margin-top: 8px;
 }
 
-.note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile {
+.note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile, .new-note-btn:hover {
     color: white;
     background-color: rgba(221, 14, 240, 0.5);
 	border-radius: 12px;
