@@ -51,10 +51,34 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
     background-color: purple;
 }
 
-.current-note-title {
+.current-note-title-container {
     padding-bottom: 10px;
     padding-top: 10px;
     font-size: 1.5rem;
+    position: relative;
+    display: inline-block;
+}
+
+#delete-btn, #download-btn {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#note-options {
+   float: right;
+}
+
+#note-options-display {
+    display: none;
+    z-index: 1000;
+    position: absolute;
+    left: 78%;
+    padding: 15px 15px 10px 15px;
+    background-color: blue;
+}
+
+#autosave-label {
+    font-size: 10px;
 }
 
 #scrolling-container {
@@ -121,16 +145,6 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
     padding-left: 15px;
 }
 
-.delete-btn {
-    float: right;
-}
-
-.save-btn {
-    position: relative;
-    right: 72px;
-    display: none;
-}
-
-#autosave-label {
-    font-size: 10px;
+.btn {
+    cursor: pointer;
 }

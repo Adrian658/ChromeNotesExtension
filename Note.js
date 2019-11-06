@@ -357,6 +357,37 @@ function addOpenNoteFunctionality(element, type) {
     }
 }
 
+function addDownloadListener() {
+
+    element = $('#download-btn');
+
+    element.hover(function(event){
+
+        var targetElement = $(this)[0];
+        var text = Quill.find(document.querySelector("#current-note-body")).getText();
+        var blob = new Blob([text], {type: 'text/plain'});
+        var output = window.URL.createObjectURL(blob);
+        targetElement.download = $("#current-note-title")[0].innerHTML;
+        targetElement.href = output;
+    });
+}
+
+function addNoteOptionsListener() {
+    $('#note-options').on('click', function(event){
+        var slideDownMenu = $('#note-options-display');
+        if (slideDownMenu.hasClass('open')) {
+            slideDownMenu.slideUp(200);
+            slideDownMenu.removeClass('open');
+            slideDownMenu.addClass('closed');
+        }
+        else if (slideDownMenu.hasClass('closed')) {
+            slideDownMenu.slideDown(200);
+            slideDownMenu.removeClass('closed');
+            slideDownMenu.addClass('open');
+        }
+    });
+}
+
 /*
  * Highlights a note depending on context of arguments
  * If no context is given, removes highlighting from the currently highlighted note
@@ -423,14 +454,20 @@ function findNote(id) {
     return "No note with matching ID";
 }
 
-/*
- * Code that is run when document loads
- */
-document.addEventListener("DOMContentLoaded", function(){
-    loadNotes();
+function addElementListeners() {
     addCreateNoteListener();
     addDeleteNoteListener();
     addFilterNoteListener();
     addFilterHashesListener();
     addTitleListener();
+    addDownloadListener();
+    addNoteOptionsListener();
+}
+
+/*
+ * Code that is run when document loads
+ */
+document.addEventListener("DOMContentLoaded", function(){
+    loadNotes();
+    addElementListeners();
 })
