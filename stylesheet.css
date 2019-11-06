@@ -2,13 +2,7 @@
 
 .extension-container {
     width: 600px;
-    height: 500px;
-}
-
-.product-name {
-    background-color: #e0950b;
-    background-color: lightblue;
-    font-size: 40px;
+    height: 600px;
 }
 
 textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar { 
@@ -56,9 +50,14 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
     background-color: yellow;
 }
 
-.current-note-display {
+#current-note-display {
     background-color: white;
     height: 100%;
+    padding: 0px;
+}
+
+.title-container {
+    background-color: purple;
 }
 
 .current-note-title {
@@ -68,8 +67,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
 }
 
 #scrolling-container {
-    height: 100%;
-    min-height: 100%; 
+    height: 90%;
+    /*min-height: 100%; */
     overflow-y:auto;
 }
 
@@ -78,8 +77,21 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
     height: auto;
 }
 
+#cur-note-body-container {
+    padding: 0px;
+}
+
 .note-content {
     height: inherit;
+}
+
+.ql-container.ql-snow {
+    border: none;
+}
+
+#toolbar {
+    border: none;
+    border-bottom: 1px solid lightgrey;
 }
 
 /* Column and row classes */
