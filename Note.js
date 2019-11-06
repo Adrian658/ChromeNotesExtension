@@ -33,7 +33,7 @@ function renderNotes(){
 
     clearNotesDisplay("notes");
     raw_notes.forEach(function(note){
-        $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + note["id"] + '>' + note.title + '</div>');
+        $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + note["id"] + '>' + trimTitle(note["title"]) + '</div>');
     });
     addTileListener();
 
@@ -143,12 +143,6 @@ async function editNote(id, title, body, color, hashes){
     };
     saveLib();
 
-    //Replace title of note block in notes display with new title
-    var curNote = findNoteElement(id);
-    if (curNote != null) {
-        curNote.innerHTML = title;
-    }
-
 }
 
 /*
@@ -158,7 +152,7 @@ function saveNote() {
 
     //Updated variables of current note
     var id = $("#current-note-display")[0].getAttribute("data-id");
-    var title = $("#current-note-title").text();
+    //var title = $("#current-note-title").text();
     var editor = Quill.find(document.querySelector("#current-note-body"))
     var body = editor.root.innerHTML;
     var body_text = editor.getText();
@@ -168,13 +162,34 @@ function saveNote() {
 
     //Save note with new variables
     //Ideally we should just be saving the body here
-    editNote(id=id, title=title, body=body, color=null, hashes=hashes);
+    editNote(id=id, title=null, body=body, color=null, hashes=hashes);
     if ($('.note-index').hasClass('hashes')) {
         loadHashes();
     }
     $('#autosave-label').text('Changes saved');
     $("#tags").html(hashes);
 
+}
+
+function saveTitle() {
+
+    var id = $("#current-note-display")[0].getAttribute("data-id");
+    var title = $("#current-note-title").text();
+    editNote(id=id, title=title);
+
+    //Replace title of note block in notes display with new title
+    var curNote = findNoteElement(id);
+    if (curNote != null) {
+        curNote.innerHTML = trimTitle(title);
+    }
+
+}
+
+function trimTitle(title) {
+    if (title.length > 17) {
+        return title.slice(0, 15) + "...";
+    }
+    return title;
 }
 
 /*
@@ -294,16 +309,15 @@ function addTileListener(id, type="note") {
         elements = document.getElementsByClassName("note-tile");
 
         if (id != undefined) { //if a specific note is specified
-            for (var i = 0; i < elements.length; i++) { //find the note and add onclick function
-                note = elements[i];
+            for (note of elements) { //find the note and add onclick function
                 if (note.getAttribute('data-id') == id) {
                     addOpenNoteFunctionality(note, type);
                 }
             }
         }
         else { //else add listeners to all notes
-            for (var i = 0; i < elements.length; i++) {
-                addOpenNoteFunctionality(elements[i], type);
+            for (note of elements) {
+                addOpenNoteFunctionality(note, type);
             }
         }
 
@@ -366,8 +380,27 @@ function changeNoteHighlight(id) {
 
 }
 
+function addTitleListener() {
+
+    $('#current-note-title').blur(function() {
+        saveTitle();
+    });
+
+    document.getElementById('current-note-title').addEventListener('keydown' ,function(event) {
+        console.log(event.key);
+        var targetElement = event.target || event.srcElement;
+        if (event.key == "Enter") {
+            targetElement.blur();
+        }
+        else if (targetElement.innerHTML.length > 25 && event.key != "Backspace" && event.key != "ArrowLeft" && event.key != "ArrowRight") {
+            event.preventDefault();
+        }
+    });
+
+}
+
 /*
- * Finda a note tile from the note tile display corresponding to passed in id
+ * Find a note tile from the note tile display corresponding to passed in id
  * @param id - id of note to find from notes display
  */
 function findNoteElement(id) {
@@ -399,4 +432,5 @@ document.addEventListener("DOMContentLoaded", function(){
     addDeleteNoteListener();
     addFilterNoteListener();
     addFilterHashesListener();
+    addTitleListener();
 })
