@@ -11,8 +11,8 @@
     font-size: 40px;
 }
 
-textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar { 
-    width: 0 !important
+textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar { 
+    width: 0 !important;
 }
 
 /* Classes attached to elements concerning the note index container */

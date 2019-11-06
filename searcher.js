@@ -29,7 +29,6 @@ function hashFilter(val, elements) {
     var id = $(elements).get(0).getAttribute("data-id");
     var note = findNote(id);
     var hashes = note["hashes"]
-    console.log(hashes, "for note ", id);
     if (hashes) {
         hashes = hashes.filter(function(hash){
             return hash.toLowerCase().indexOf(val.toLowerCase()) != -1;

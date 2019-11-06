@@ -2,7 +2,7 @@
  * Notes.js -> The main javascript file containing our implementation of Notes, Library, and important functions.
  */
 var raw_notes = [];
-var hashtagRegex = /\B(\#[a-zA-Z]+\b)/g;
+var hashtagRegex = /\B(\#[a-zA-Z0-9]+\b)/g;
 /*
  * Retrieved from Chrome storage all notes, displays previews of all notes, and brings up editing function for most recently
  * accessed note
@@ -168,7 +168,6 @@ function saveNote() {
 
     //Save note with new variables
     //Ideally we should just be saving the body here
-    console.log("Saving Note: ", id);
     editNote(id=id, title=title, body=body, color=null, hashes=hashes);
     if ($('.note-index').hasClass('hashes')) {
         loadHashes();
@@ -271,12 +270,14 @@ function addDeleteNoteListener() {
 
 function addFilterNoteListener() {
     document.getElementById("note-filter-btn").onclick = function() {
+        document.getElementById("searcher").value = "";
         loadNotes();
     }
 }
 
 function addFilterHashesListener() {
     document.getElementById("category-filter-btn").onclick = function() {
+        document.getElementById("searcher").value = "";
         loadHashes();
     }
 }
@@ -318,6 +319,7 @@ function addOpenNoteFunctionality(element, type) {
     if (type == "note") {
         element.addEventListener("click", function(event){ 
 
+            saveNote();
             changeNoteHighlight();
             $("#categories").html("");
     
