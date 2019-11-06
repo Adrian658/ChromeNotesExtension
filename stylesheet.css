@@ -33,11 +33,6 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
 	margin-top: 8px;
 }
 
-.new-note-btn {
-    /*margin-top: 8px;
-	margin-bottom: 10px;*/
-}
-
 .active-note, .active-note:hover {
     background-color: purple !important;
     color: white;
@@ -45,10 +40,6 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
 }
 
 /* Classes attached to elements concerning the current note container */
-
-.current-note-tile {
-    background-color: yellow;
-}
 
 #current-note-display {
     background-color: white;
@@ -84,6 +75,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
 .note-content {
     height: inherit;
 }
+
+/* Quill editor overrides */
 
 .ql-container.ql-snow {
     border: none;

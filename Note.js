@@ -173,7 +173,7 @@ function saveNote() {
         loadHashes();
     }
     $('#autosave-label').text('Changes saved');
-    $("#categories").html(hashes);
+    $("#tags").html(hashes);
 
 }
 
@@ -236,7 +236,7 @@ function openNote(id) {
 function populateCanvas(id,title,body,hashes){
     $("#current-note-display").attr("data-id", id);
     $("#current-note-title").html(title);
-    $("#categories").html(hashes);
+    $("#tags").html(hashes);
     Quill.find(document.querySelector("#current-note-body")).root.innerHTML = body;
     chrome.storage.sync.set({'activeNote': id}, function(){
             console.log("Active note id("+id+") successfully saved.");
@@ -276,7 +276,7 @@ function addFilterNoteListener() {
 }
 
 function addFilterHashesListener() {
-    document.getElementById("category-filter-btn").onclick = function() {
+    document.getElementById("tags-filter-btn").onclick = function() {
         document.getElementById("searcher").value = "";
         loadHashes();
     }
@@ -321,7 +321,7 @@ function addOpenNoteFunctionality(element, type) {
 
             saveNote();
             changeNoteHighlight();
-            $("#categories").html("");
+            $("#tags").html("");
     
             var targetElement = event.target || event.srcElement;
             var id = targetElement.getAttribute("data-id");
