@@ -22,13 +22,25 @@ function createEditor() {
 
     //Set Quill editor to auto-save after making changes
     
-    quill.on('text-change', function(delta) {
+    quill.on('text-change', function(delta, oldDelta, source) {
 
-        $('#autosave-label').text('Saving changes...');
-        changeCount += 1;
+        //If the change was made by a user
+        if (source == "user") {
 
-        //Save the note if the user does not make changes after current change
-        saveNoteWrapper(changeCount, 1500);
+            //If the change made was the user pressing the spacebar, check if they were finishing typing a hash
+            if (delta.ops[1].insert == " ") {
+                highlightHashes(delta.ops[0].retain);
+            }
+            else { //highlight all hashes
+                highlightHashes();
+            }
+
+            $('#autosave-label').text('Saving changes...');
+            changeCount += 1;
+
+            //Save the note if the user does not make changes after current change
+            saveNoteWrapper(changeCount, 1500);
+        }
 
     });
 

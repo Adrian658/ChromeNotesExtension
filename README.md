@@ -16,8 +16,8 @@ You can then:
 - search for notes by tags they contain
 
 # Storage
-Notes are stored using Chrome Sync Storage, meaning they are associated with the account you are logged in as.
-If you're not logged in, notes are stored on the machine you are currently using.
+Notes are stored using Chrome Local Storage, meaning they are stored on the machine you are currently using.  
+Chrome sync storage can not be used for this application as the restricitons on data size are far too stringent.
 
 # Searching
 Search criteria input into the search bar can search through notes in two different ways

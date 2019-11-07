@@ -177,7 +177,6 @@ function saveNote() {
         }
         var hashes = Array.from(hash_set);
     }
-    console.log(hashes);
 
     //Save note with new variables
     //Ideally we should just be saving the body here
@@ -187,6 +186,28 @@ function saveNote() {
     }
     $('#autosave-label').text('Changes saved');
     $("#tags").html(hashes);
+
+}
+
+function highlightHashes(input) {
+
+    quill = Quill.find(document.querySelector("#current-note-body"));
+    str = quill.getText();
+    var hashMatch;
+    var hashEndIndices = [];
+
+    while ( (hashMatch = hashtagRegex.exec(str)) != null ) {
+        var hash = hashMatch[0];
+        var startIndex = hashMatch.index;
+        var length = hash.length;
+        //console.log("hash: ", hash, "index: ", startIndex, "length: ", length);
+        hashEndIndices.push(hashtagRegex.lastIndex);
+        quill.formatText(startIndex, length, 'bold', true);
+    }
+
+    if (hashEndIndices.includes(input)) {
+        quill.formatText(input, 1, 'bold', false);
+    }
 
 }
 
@@ -392,19 +413,46 @@ function addDownloadListener() {
 }
 
 function addNoteOptionsListener() {
-    $('#note-options').on('click', function(event){
-        var slideDownMenu = $('#note-options-display');
-        if (slideDownMenu.hasClass('open')) {
-            slideDownMenu.slideUp(200);
-            slideDownMenu.removeClass('open');
-            slideDownMenu.addClass('closed');
+    
+    document.body.addEventListener('click', function(event) {
+
+        var optionsBtn = document.getElementById('note-options');
+        var optionsMenu = $('#note-options-display');
+        var path = event.path;
+        var element = event.target;
+
+        if (path.includes(optionsBtn)) {
+            if (optionsMenu.hasClass('closed')) {
+                handleNoteOptionsDisplay(optionsMenu, 'open');
+            }
+            else {
+                handleNoteOptionsDisplay(optionsMenu, 'closed');
+            }
         }
-        else if (slideDownMenu.hasClass('closed')) {
-            slideDownMenu.slideDown(200);
-            slideDownMenu.removeClass('closed');
-            slideDownMenu.addClass('open');
+        else {
+            if (optionsMenu.hasClass('open')) {
+                handleNoteOptionsDisplay(optionsMenu, 'closed');
+            }
         }
+
     });
+
+}
+
+function handleNoteOptionsDisplay(optionsMenu, status) {
+    if (status == 'open') {
+        optionsMenu.slideDown(200);
+        optionsMenu.removeClass('closed');
+        optionsMenu.addClass('open');
+    }
+    else if (status == 'closed') {
+        optionsMenu.slideUp(200);
+        optionsMenu.removeClass('open');
+        optionsMenu.addClass('closed');
+    }
+    else {
+        console.log("Error opening or closing note options menu");
+    }
 }
 
 /*

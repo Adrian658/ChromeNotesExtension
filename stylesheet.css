@@ -5,7 +5,7 @@
     height: 600px;
 }
 
-textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar { 
+textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container::-webkit-scrollbar { 
     width: 0 !important;
 }
 
@@ -67,6 +67,11 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
 
 #note-options {
    float: right;
+}
+
+#tags-container {
+    max-width: 240px;
+    overflow-x: auto;
 }
 
 #note-options-display {
@@ -149,6 +154,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
 .btn {
     cursor: pointer;
 }
+
+/* Set customf fonts for Quill editor */
 
 #toolbar .ql-font span[data-label="Sans Serif"], .ql-font-sans-serif {
     font-family: "Sans Serif";
