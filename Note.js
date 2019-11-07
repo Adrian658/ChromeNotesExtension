@@ -3,6 +3,7 @@
  */
 var raw_notes = [];
 var hashtagRegex = /\B(\#[a-zA-Z0-9]+\b)/g;
+
 /*
  * Retrieved from Chrome storage all notes, displays previews of all notes, and brings up editing function for most recently
  * accessed note
@@ -10,14 +11,21 @@ var hashtagRegex = /\B(\#[a-zA-Z0-9]+\b)/g;
 function loadNotes(hash){
 
     console.log("Retrieving the current library...");
-    chrome.storage.sync.get({'library': []}, function(lib){
+    chrome.storage.local.get({'library': []}, function(lib){
         raw_notes = lib.library;
+
+        if (raw_notes.length == 0) { //If the user has no notes, create a default new one and open it for them
+            createNote("New Note", "Start your new note!", "green");
+            openNote(-1);
+            return;
+        }
+
         renderNotes();
         if (hash) {
             chooseFilter(hash);
             document.getElementById("searcher").value = hash;
         }
-        chrome.storage.sync.get({'activeNote':-1},function(activeID){
+        chrome.storage.local.get({'activeNote':-1},function(activeID){
             openNote(activeID.activeNote);
             changeNoteHighlight(activeID.activeNote);
         });
@@ -83,7 +91,7 @@ function clearNotesDisplay(type) {
  * Updates the 'library' key value in chrome storage with the param value
  */
 async function saveLib(){
-    chrome.storage.sync.set({'library': raw_notes}, function(){
+    chrome.storage.local.set({'library': raw_notes}, function(){
             console.log("Library successfully saved.");
     });
 }
@@ -94,7 +102,7 @@ async function saveLib(){
 async function createNote(title,body,color){
 
     //Get the value of idCounter
-    chrome.storage.sync.get({'idCounter': 0}, function(curID){
+    chrome.storage.local.get({'idCounter': 0}, function(curID){
 
         //Get numeric value of idCounter
         curID = curID.idCounter;
@@ -109,7 +117,7 @@ async function createNote(title,body,color){
         };
 
         //Increment value of idCounter
-        chrome.storage.sync.set({'idCounter': curID+1}, function(){
+        chrome.storage.local.set({'idCounter': curID+1}, function(){
             return;
         });
 
@@ -118,7 +126,10 @@ async function createNote(title,body,color){
 
         //Add note tile to notes display
         $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + curID + '>' + title + '</div>');
-        changeNoteHighlight();
+        try {
+            changeNoteHighlight();
+        }
+        catch (error) {}
         changeNoteHighlight(curID);
         addTileListener(curID); //Add openNote listener to newly created note tile
         openNote(curID);//Open current note in note display
@@ -158,7 +169,15 @@ function saveNote() {
     var body_text = editor.getText();
 
     //Find and store all hashtags
+    var hash_set = new Set([]);
     var hashes = body_text.match(hashtagRegex);
+    if (hashes) {
+        for (hash of hashes) {
+            hash_set.add(hash);
+        }
+        var hashes = Array.from(hash_set);
+    }
+    console.log(hashes);
 
     //Save note with new variables
     //Ideally we should just be saving the body here
@@ -253,7 +272,7 @@ function populateCanvas(id,title,body,hashes){
     $("#current-note-title").html(title);
     $("#tags").html(hashes);
     Quill.find(document.querySelector("#current-note-body")).root.innerHTML = body;
-    chrome.storage.sync.set({'activeNote': id}, function(){
+    chrome.storage.local.set({'activeNote': id}, function(){
             console.log("Active note id("+id+") successfully saved.");
     });
 }

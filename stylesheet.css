@@ -163,11 +163,11 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
 }
 
 #toolbar .ql-font span[data-label="Mirza"], .ql-font-mirza {
-    font-family: "mirza";
+    font-family: "Mirza";
 }
 
 #toolbar .ql-font span[data-label="Arial"], .ql-font-arial {
-    font-family: "arial";
+    font-family: "Arial";
 }
 
 #toolbar .ql-font span[data-label="Snell"], .ql-font-snellroundhand {
