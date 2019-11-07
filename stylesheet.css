@@ -12,7 +12,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
 /* Classes attached to elements concerning the note index container */
 
 .note-container {
-    background-color: lightgreen;
+    background-color: rgb(126, 9, 194);
+    overflow-x: visible;
     overflow-y: auto;
     height: 100%;
 }
@@ -27,14 +28,14 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
 
 .note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile, .new-note-btn:hover {
     color: white;
-    background-color: rgba(221, 14, 240, 0.5);
+    background-color: rgb(238, 150, 18, 0.8);
 	border-radius: 12px;
 	padding: 10px;
 	margin-top: 8px;
 }
 
 .active-note, .active-note:hover {
-    background-color: purple !important;
+    background-color: rgb(255, 153, 0) !important;
     color: white;
     border-radius: 5px;
 }
@@ -48,7 +49,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
 }
 
 .title-container {
-    background-color: purple;
+    background-color: rgb(48, 125, 226);
 }
 
 .current-note-title-container {
@@ -82,7 +83,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
 }
 
 #scrolling-container {
-    height: 90%;
+    height: 80%;
     /*min-height: 100%; */
     overflow-y:auto;
 }
@@ -147,4 +148,32 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar {
 
 .btn {
     cursor: pointer;
+}
+
+#toolbar .ql-font span[data-label="Sans Serif"], .ql-font-sans-serif {
+    font-family: "Sans Serif";
+}
+
+#toolbar .ql-font span[data-label="Roboto"], .ql-font-roboto {
+    font-family: "Roboto";
+}
+
+#toolbar .ql-font span[data-label="Inconsolata"], .ql-font-inconsolata {
+    font-family: "Inconsolata";
+}
+
+#toolbar .ql-font span[data-label="Mirza"], .ql-font-mirza {
+    font-family: "mirza";
+}
+
+#toolbar .ql-font span[data-label="Arial"], .ql-font-arial {
+    font-family: "arial";
+}
+
+#toolbar .ql-font span[data-label="Snell"], .ql-font-snellroundhand {
+    font-family: "Snell Roundhand";
+}
+
+.ql-tooltip {
+    z-index: 5000;
 }

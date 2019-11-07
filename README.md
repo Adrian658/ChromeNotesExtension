@@ -7,11 +7,7 @@ Steps to test our project:
 4. Click 'load unpacked' and select the folder of our project
 5. Click the little c in the upper right of the browser to open the extension
 
-### Storage
-Notes are stored using Chrome Sync Storage, meaning they are associated with the account you are logged in as.
-If you're not logged in, notes are stored on the machine you are currently using.
-
-### Tagging Notes
+# Tagging Notes
 You can tag a note by adding # immediately followed by a tag phrase anywhere within the note body.
 This will assign that tag to the note.  
 You can then:
@@ -19,7 +15,16 @@ You can then:
 - filter notes by tag name
 - search for notes by tags they contain
 
-### Saving
+# Storage
+Notes are stored using Chrome Sync Storage, meaning they are associated with the account you are logged in as.
+If you're not logged in, notes are stored on the machine you are currently using.
+
+# Searching
+Search criteria input into the search bar can search through notes in two different ways
+- If only normal text is entered: notes with titles that contain the search criteria will be returned
+- If the search criteria begins with a #: notes that contain hashes matching the search criteria will be returned
+
+# Saving
 Notes are saved automatically
 - 1.5 seconds after the last change is made to the editor
 - When a new note is opened
