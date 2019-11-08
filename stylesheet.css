@@ -181,6 +181,6 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     font-family: "Snell Roundhand";
 }
 
-.ql-tooltip {
-    z-index: 5000;
+.ql-font-impact {
+    font-family: "Impact";
 }

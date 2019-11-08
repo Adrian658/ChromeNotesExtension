@@ -189,25 +189,97 @@ function saveNote() {
 
 }
 
-function highlightHashes(input) {
+function highlightHashes(changeIndex, changeType) {
 
     quill = Quill.find(document.querySelector("#current-note-body"));
     str = quill.getText();
     var hashMatch;
+    var hashBeginIndices = [];
+    var hashLengths = [];
     var hashEndIndices = [];
 
     while ( (hashMatch = hashtagRegex.exec(str)) != null ) {
         var hash = hashMatch[0];
         var startIndex = hashMatch.index;
         var length = hash.length;
-        //console.log("hash: ", hash, "index: ", startIndex, "length: ", length);
+
+        hashBeginIndices.push(startIndex);
+        hashLengths.push(length);
         hashEndIndices.push(hashtagRegex.lastIndex);
-        quill.formatText(startIndex, length, 'bold', true);
+        quill.formatText(startIndex, length, 'font', 'impact');
     }
 
-    if (hashEndIndices.includes(input)) {
-        quill.formatText(input, 1, 'bold', false);
+    //Depending on the user keyboard event, check for potential implications on hashes in Quill body
+    if (changeType == "space" && hashEndIndices.includes(changeIndex)) {
+        formatTextAfterHash(quill, hashEndIndices, hashLengths, changeIndex);
     }
+    else if (changeType == "backspace") {
+        unboldHash();
+    }
+
+}
+
+/*
+ *  **** HOLY SHIT I AM WRITTEN SO POORLY I FEEL LIKE A STEPHEN KING NOVEL. PLEASE REWRITE ME AT SOME POINT ****
+ *  Changes the font at the users cursor when they finish typing a hash back to the font 
+ *  ie. when they type a space or punctuation immdeiately following the hash text
+ */
+function formatTextAfterHash(quill, hashEndIndices, hashLengths, changeIndex) {
+
+    var previousFontIndex = changeIndex;
+    var font;
+    while (true) {
+        font = quill.getFormat(previousFontIndex-1, previousFontIndex).font;
+        previousFontIndex -= 1;
+        if (previousFontIndex == 0) {
+            font = "arial";
+            break;
+        }
+        if (font == null) {
+            continue;
+        }
+        if (font[0] == "impact" || font == "impact") {
+            continue;
+        }
+        font = font[0];
+        break;
+    }
+    console.log("previousFontIndex: ", previousFontIndex);
+    quill.formatText(changeIndex, 1, 'font', font);
+
+}
+
+/*
+ *  When the user deletes the # from a hash, clear formatting on the remaining hash text
+ */
+function unboldHash() {
+
+    previousHashes = document.getElementsByClassName('ql-font-impact');
+    for (hash of previousHashes) {
+        if (!hash.innerHTML.includes("#")) {
+            hash.classList.remove("ql-font-impact");
+        }
+    }
+
+}
+
+/*
+ * **** DEPRECATED ****
+ * **** See unboldHash() for current implementation ****
+ * When the user deletes the # from a hash, clear formatting on the remaining hash text
+ */
+function checkUnboldHash(quill, hashBeginIndices, hashEndIndices) {
+
+    var beginClearIndex = 0;
+    var endClearIndex;
+    var clearLength;
+    while ( (endClearIndex = hashBeginIndices.shift()) )  {
+        clearLength = endClearIndex - beginClearIndex;
+        quill.formatText(beginClearIndex, clearLength, 'bold', false);
+        beginClearIndex = hashEndIndices.shift();
+    }
+    endClearIndex = quill.getText().length-1;
+    quill.formatText(beginClearIndex, endClearIndex, 'bold', false);
 
 }
 

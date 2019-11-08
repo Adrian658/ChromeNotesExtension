@@ -7,7 +7,7 @@ var changeCount = 0; //Keeps track of the number of changes made to Quill editor
 function createEditor() {
 
     var Font = Quill.import('formats/font');
-    Font.whitelist = ['roboto', 'inconsolata', 'mirza', 'arial', 'snellroundhand'];
+    Font.whitelist = ['roboto', 'inconsolata', 'mirza', 'arial', 'snellroundhand', 'impact'];
     Quill.register(Font, true);
 
     //Assign instance of Quill to appropriate HTML section
@@ -27,13 +27,18 @@ function createEditor() {
         //If the change was made by a user
         if (source == "user") {
 
+            console.log("Delta: ", delta);
             //If the change made was the user pressing the spacebar, check if they were finishing typing a hash
             if (delta.ops[1].insert == " ") {
-                highlightHashes(delta.ops[0].retain);
+                highlightHashes(delta.ops[0].retain, "space");
+            }
+            else if (delta.ops[1].delete == 1) {
+                highlightHashes(delta.ops[0].retain, "backspace");
             }
             else { //highlight all hashes
                 highlightHashes();
             }
+            
 
             $('#autosave-label').text('Saving changes...');
             changeCount += 1;
