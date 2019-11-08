@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" href="katex/katex.min.css">
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
         <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet"> 
         <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" media="screen">
         <link rel="stylesheet" href="stylesheet.css" media="screen">
 
+        <script src="katex/katex.min.js"></script>
         <script src="quill-1.3.6.js"></script>
-        <script src="popup.js"></script>
+        <script src="quill-handler.js"></script>
         <script src="Note.js"></script>
         <script src="jquery.min.js"></script>
     </head>
@@ -20,38 +22,106 @@
 
     <body>
         <div class="extension-container">
-            <div class="cust-row">
-                <div class="product-name cust-col-12 text-white">
-                    Chrome Notes
-                    <div id="new-note-btn" class="new-note-btn btn btn-primary create-btn">
-                        Create <i class="fas fa-plus"></i>
-                    </div>
-                </div>
-                <div class="note-container">
-                <input type="text" id="searcher" placeholder="Search notes..."></input>
-                <div class="note-index text-center cust-col-4">
-                    <!-- Here we receive a list of all notes, then we iterate through all of them, rendering a new div for each note -->
-                </div>
-                </div>
-                <div id="current-note-display" class="current-note-display cust-col-8">
-                    <!-- Here we take the current note and extract and display its contents -->
-                    <div class="current-note-title text-center">
-                        <!-- <div id="save-btn" class="btn btn-success save-btn">
-                            Save <i class="fas fa-save"></i>
-                        </div> -->
-                        <span id="autosave-label"></span>
-                        <span id="current-note-title" contenteditable="true">
-                            New Note
-                        </span>
-                        <div id="delete-btn" class="btn btn-danger delete-btn">
-                            Delete <i class="fas fa-trash"></i>
+            <div class="cust-row note-content">
+                    <div id="note-container" class="note-container scroll-toggle cust-col-4">
+                        <div id="filter-container">
+                            <div id="note-filter-btn" class="btn btn-primary">
+                                Notes
+                            </div>
+                            <div id="tags-filter-btn" class="btn btn-primary">
+                                Tags
+                            </div>
                         </div>
-                        <!-- <i style="cursor: pointer; position: relative; left: 20px;" onclick="console.log('hello');" class="fa fa-trash" aria-hidden="true"></i> -->
+                        <input type="text" id="searcher" placeholder="Search notes...">
+                        <div id="new-note-btn" class="new-note-btn btn btn-block">
+                            Create <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="note-index text-center">
+                            <!-- Here we receive a list of all notes, then we iterate through all of them, rendering a new div for each note -->
+                        </div>
                     </div>
-                    <div id="current-note-body" class="current-note-body">
-                        Some text
+                    <div id="current-note-display" class="current-note-display cust-col-8">
+                        <div class="title-container text-light" style="height: 15%">
+                            <div class="cust-row">
+                                <div class="cust-col-12 current-note-title-container">
+                                    <span id="current-note-title" contenteditable="true" spellcheck="false"></span>
+                                    <div id="note-options" class="btn btn-info">
+                                        <i class="fas fa-sort-down"></i>
+                                    </div>
+                                    <div id="note-options-display" class="closed">
+                                        <a id="download-btn" download="mk" class="btn btn-secondary download-btn" href="">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                        <div id="delete-btn" class="btn btn-danger delete-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cust-row">
+                                <div class="cust-col-4">
+                                    <span id="autosave-label"></span>
+                                </div>
+                                <div id="tags-container" class="cust-col-8">
+                                    <span id="tags"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cust-row" style="height: 85%">
+                            <div id="cur-note-body-container" class="cust-col-12" style="height: 100%">
+                                <div id="toolbar">
+                                    <span class="ql-formats">
+                                        <select class="ql-font">
+                                            <option selected>Sans Serif</option>
+                                            <option value="inconsolata">Inconsolata</option>
+                                            <option value="roboto">Roboto</option>
+                                            <option value="mirza">Mirza</option>
+                                            <option value="arial">Arial</option>
+                                            <option value="snellroundhand">Snell</option>
+                                        </select>
+                                        <select class="ql-size"></select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-header" value="1"></button>
+                                        <button class="ql-header" value="2"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-blockquote"></button>
+                                        <button class="ql-code-block"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-bold"></button>
+                                        <button class="ql-italic"></button>
+                                        <button class="ql-underline"></button>
+                                        <button class="ql-strike"></button>
+                                        <button class="ql-script" value="sub"></button>
+                                        <button class="ql-script" value="super"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <select class="ql-color"></select>
+                                        <select class="ql-background"></select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-list" value="ordered"></button>
+                                        <button class="ql-list" value="bullet"></button>
+                                        <select class="ql-align"></select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-formula"></button>
+                                        <button class="ql-image"></button>
+                                        <button class="ql-link"></button>
+                                        <button class="ql-clean"></button>
+                                    </span>
+                                </div>
+                                <div id="scrolling-container">
+                                    <div id="current-note-body" name="editor" class="current-note-body">
+                                        Test
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
                     </div>
-                </div>
             </div>
         </div>
     </body>

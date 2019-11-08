@@ -2,67 +2,119 @@
 
 .extension-container {
     width: 600px;
+    height: 600px;
 }
 
-.product-name {
-    background-color: #e0950b;
-    background-color: lightblue;
-    font-size: 40px;
-}
-
-textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar { 
-    width: 0 !important
+textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container::-webkit-scrollbar { 
+    width: 0 !important;
 }
 
 /* Classes attached to elements concerning the note index container */
 
-.note-index {
-    background-color: #d1d3d6;
-    background-color: lightcoral;
+.note-container {
+    background-color: rgb(126, 9, 194);
+    overflow-x: visible;
     overflow-y: auto;
-    height: 500px;
+    height: 100%;
 }
 
-.note-tile {
+.note-tile, .new-note-btn {
     color: #000;
     background-color: #fdfdfd;
-	border-radius: 8px;
-    border-color: #78808a;
-	padding: 10px;
-	margin-top: 8px;
-}
-.note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile {
-    color: #000;
-    background-color: #ecd9c0;
-	border-radius: 8px;
-    border-color: #78808a;
+	border-radius: 5px;
 	padding: 10px;
 	margin-top: 8px;
 }
 
-.new-note-btn {
-    margin-top: 8px;
-	margin-bottom: 10px;
+.note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile, .new-note-btn:hover {
+    color: white;
+    background-color: rgb(238, 150, 18, 0.8);
+	border-radius: 12px;
+	padding: 10px;
+	margin-top: 8px;
+}
+
+.active-note, .active-note:hover {
+    background-color: rgb(255, 153, 0) !important;
+    color: white;
+    border-radius: 5px;
 }
 
 /* Classes attached to elements concerning the current note container */
 
-.current-note-tile {
-    background-color: yellow;
-}
-
-.current-note-display {
+#current-note-display {
     background-color: white;
-    overflow: scroll;
+    height: 100%;
+    padding: 0px;
 }
 
-.current-note-title {
+.title-container {
+    background-color: rgb(48, 125, 226);
+}
+
+.current-note-title-container {
     padding-bottom: 10px;
     padding-top: 10px;
+    font-size: 1.5rem;
+    position: relative;
+    display: inline-block;
 }
 
-.current-note-body {
-    width: 100%;
+#delete-btn, #download-btn {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#note-options {
+   float: right;
+}
+
+#tags-container {
+    max-width: 240px;
+    overflow-x: auto;
+}
+
+#note-options-display {
+    display: none;
+    z-index: 1000;
+    position: absolute;
+    left: 78%;
+    padding: 15px 15px 10px 15px;
+    background-color: blue;
+}
+
+#autosave-label {
+    font-size: 10px;
+}
+
+#scrolling-container {
+    height: 80%;
+    /*min-height: 100%; */
+    overflow-y:auto;
+}
+
+#current-note-body {
+    min-height: 80%;
+    height: auto;
+}
+
+#cur-note-body-container {
+    padding: 0px;
+}
+
+.note-content {
+    height: inherit;
+}
+
+/* Quill editor overrides */
+
+.ql-container.ql-snow {
+    border: none;
+}
+
+#toolbar {
+    border: none;
+    border-bottom: 1px solid lightgrey;
 }
 
 /* Column and row classes */
@@ -99,24 +151,36 @@ textarea::-webkit-scrollbar, .note-index::-webkit-scrollbar {
     padding-left: 15px;
 }
 
-.create-btn{
-    margin-left: 207px;
+.btn {
+    cursor: pointer;
 }
 
-.delete-btn {
-    padding: 0.2rem;
-    position: relative;
-    left: 70px;
+/* Set customf fonts for Quill editor */
+
+#toolbar .ql-font span[data-label="Sans Serif"], .ql-font-sans-serif {
+    font-family: "Sans Serif";
 }
 
-.save-btn {
-    position: relative;
-    right: 72px;
-    display: none;
+#toolbar .ql-font span[data-label="Roboto"], .ql-font-roboto {
+    font-family: "Roboto";
 }
 
-#autosave-label {
-    font-size: 10px;
-    right: 72px;
-    position: relative;
+#toolbar .ql-font span[data-label="Inconsolata"], .ql-font-inconsolata {
+    font-family: "Inconsolata";
+}
+
+#toolbar .ql-font span[data-label="Mirza"], .ql-font-mirza {
+    font-family: "Mirza";
+}
+
+#toolbar .ql-font span[data-label="Arial"], .ql-font-arial {
+    font-family: "Arial";
+}
+
+#toolbar .ql-font span[data-label="Snell"], .ql-font-snellroundhand {
+    font-family: "Snell Roundhand";
+}
+
+.ql-font-impact {
+    font-family: "Impact";
 }
