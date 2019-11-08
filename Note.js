@@ -4,6 +4,21 @@
 var raw_notes = [];
 var hashtagRegex = /\B(\#[a-zA-Z0-9]+\b)/g;
 
+function logNotes(){
+    console.log(raw_notes);
+}
+
+function filterNotes(filter){
+    filter = filter.toLowerCase();
+    filteredIds = [];
+    raw_notes.forEach(function(note){
+        if(note["title"].toLowerCase().includes(filter) || note["body"].toLowerCase().includes(filter)){
+            filteredIds.push(Number(note["id"]));
+        }
+    });
+    return filteredIds;
+}
+
 /*
  * Retrieved from Chrome storage all notes, displays previews of all notes, and brings up editing function for most recently
  * accessed note
@@ -602,6 +617,22 @@ function addElementListeners() {
     addDownloadListener();
     addNoteOptionsListener();
 }
+
+function addFilterListener(){
+    $("#searcher").on("keyup click input", function () {
+        var val = $(this).val();
+        if (val.length) {
+            $(".note-index .note-tile").hide().filter(function () {
+                console.log($(this).get(0));
+                return $(this).get(0).innerText.toLowerCase().indexOf(val.toLowerCase()) != -1;
+            }).show();
+        }
+        else {
+            $(".note-index .note-tile").show();
+        }
+    });
+}
+
 
 /*
  * Code that is run when document loads
