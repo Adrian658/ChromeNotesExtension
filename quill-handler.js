@@ -1,5 +1,6 @@
 
 var changeCount = 0; //Keeps track of the number of changes made to Quill editor
+var hashtagRegexEnd = /[ .!?\\:;(){}]/
 
 /*
  *  Creates the Quill editor
@@ -27,23 +28,34 @@ function createEditor() {
         //If the change was made by a user
         if (source == "user") {
 
-            //console.log("Delta: ", delta);
-            //If the change made was the user pressing the spacebar, check if they were finishing typing a hash
-            /*if (delta.ops[1].insert == " ") {
-                highlightHashes(delta.ops[0].retain, "space");
+            console.log(delta);
+
+            quillLength = quill.getText().length;
+
+            //If the user changes the font of the whole document at once, rehighlight hashes
+            if (delta.ops[0].retain == quillLength-1) {
+                highlightHashes();
             }
+
+            //Check if the user is entering the first character in the editor, and change font to Arial if so
+            if (quillLength <= 2) {
+                quill.formatText(0, 1, 'font', 'arial');
+            }
+
+            //If the change made was the user pressing the spacebar, check if they finished or modified a hash and apply formatting
+            if (hashtagRegexEnd.exec(delta.ops[1].insert)) {
+                highlightHashes(delta.ops[0].retain, "punctuation");
+            } //If the user pressed backspace, check if they deleted a # and remove formatting from the truncated hash text
             else if (delta.ops[1].delete == 1) {
                 highlightHashes(delta.ops[0].retain, "backspace");
             }
             else { //highlight all hashes
                 highlightHashes();
-            }*/
+            }
             
-
+            //Save the note if the user does not make changes after current change
             $('#autosave-label').text('Saving changes...');
             changeCount += 1;
-
-            //Save the note if the user does not make changes after current change
             saveNoteWrapper(changeCount, 1500);
         }
 

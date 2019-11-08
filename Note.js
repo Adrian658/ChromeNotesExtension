@@ -179,7 +179,7 @@ function saveNote() {
     //Updated variables of current note
     var id = $("#current-note-display")[0].getAttribute("data-id");
     //var title = $("#current-note-title").text();
-    var editor = Quill.find(document.querySelector("#current-note-body"))
+    var editor = Quill.find(document.querySelector("#current-note-body"));
     var body = editor.root.innerHTML;
     var body_text = editor.getText();
 
@@ -225,8 +225,8 @@ function highlightHashes(changeIndex, changeType) {
     }
 
     //Depending on the user keyboard event, check for potential implications on hashes in Quill body
-    if (changeType == "space" && hashEndIndices.includes(changeIndex)) {
-        formatTextAfterHash(quill, hashEndIndices, hashLengths, changeIndex);
+    if (changeType == "punctuation" && hashBeginIndices.length > 0) {
+        formatTextAfterHashBreak(quill, changeIndex);
     }
     else if (changeType == "backspace") {
         unboldHash();
@@ -235,20 +235,49 @@ function highlightHashes(changeIndex, changeType) {
 }
 
 /*
- *  **** HOLY SHIT I AM WRITTEN SO POORLY I FEEL LIKE A STEPHEN KING NOVEL. PLEASE REWRITE ME AT SOME POINT ****
- *  Changes the font at the users cursor when they finish typing a hash back to the font 
- *  ie. when they type a space or punctuation immdeiately following the hash text
+ *  When the user ends or breaks up a hash using punctuation, change the font at the users cursor to the font
+ *  of text immediately preceding the hash, as well as changing the font of the string spliced from the # phrase if exists
  */
-function formatTextAfterHash(quill, hashEndIndices, hashLengths, changeIndex) {
+function formatTextAfterHashBreak(quill, changeIndex) {
+
+    var newFont = getPrecedingFont(quill, changeIndex);
+    var bodyLength = quill.getText().length;
+    var changeToFontIndex = changeIndex;
+
+    while (changeToFontIndex <= bodyLength) {
+        font = quill.getFormat(changeToFontIndex, changeToFontIndex+1).font;
+        console.log("FONT: ", font, "at index ", changeToFontIndex);
+        changeToFontIndex += 1;
+        if (font == null) {
+            continue;
+        }
+        if (font[0] == "impact" || font == "impact") {
+            continue;
+        }
+        break;
+    }
+
+    console.log("Final Change to Index: ", changeToFontIndex);
+    var length = changeToFontIndex - changeIndex;
+    quill.formatText(changeIndex, length, 'font', newFont);
+
+}
+
+/*
+ *  **** HOLY SHIT I AM WRITTEN SO POORLY I FEEL LIKE A STEPHEN KING NOVEL. PLEASE REWRITE ME AT SOME POINT ****
+ *  Returns the font style of text preceding the hash changed at given changeIndex
+ */
+function getPrecedingFont(quill, changeIndex) {
 
     var previousFontIndex = changeIndex;
     var font;
-    while (true) {
+
+    while (previousFontIndex > 0) {
         font = quill.getFormat(previousFontIndex-1, previousFontIndex).font;
+        console.log(font);
         previousFontIndex -= 1;
-        if (previousFontIndex == 0) {
+        if (previousFontIndex == 1) {
             font = "arial";
-            break;
         }
         if (font == null) {
             continue;
@@ -256,11 +285,11 @@ function formatTextAfterHash(quill, hashEndIndices, hashLengths, changeIndex) {
         if (font[0] == "impact" || font == "impact") {
             continue;
         }
-        font = font[0];
+        (typeof(font) == "string") ? {} : font=font[0];
         break;
     }
     console.log("previousFontIndex: ", previousFontIndex);
-    quill.formatText(changeIndex, 1, 'font', font);
+    return font;
 
 }
 
@@ -281,7 +310,6 @@ function unboldHash() {
 /*
  * **** DEPRECATED ****
  * **** See unboldHash() for current implementation ****
- * When the user deletes the # from a hash, clear formatting on the remaining hash text
  */
 function checkUnboldHash(quill, hashBeginIndices, hashEndIndices) {
 
