@@ -27,9 +27,9 @@ function createEditor() {
         //If the change was made by a user
         if (source == "user") {
 
-            console.log("Delta: ", delta);
+            //console.log("Delta: ", delta);
             //If the change made was the user pressing the spacebar, check if they were finishing typing a hash
-            if (delta.ops[1].insert == " ") {
+            /*if (delta.ops[1].insert == " ") {
                 highlightHashes(delta.ops[0].retain, "space");
             }
             else if (delta.ops[1].delete == 1) {
@@ -37,7 +37,7 @@ function createEditor() {
             }
             else { //highlight all hashes
                 highlightHashes();
-            }
+            }*/
             
 
             $('#autosave-label').text('Saving changes...');
