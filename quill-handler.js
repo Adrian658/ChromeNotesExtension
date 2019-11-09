@@ -29,6 +29,8 @@ function createEditor() {
         if (source == "user") {
 
             console.log(delta);
+            console.log(oldDelta);
+            console.log(source);
 
             quillLength = quill.getText().length;
 
@@ -44,13 +46,19 @@ function createEditor() {
 
             //If the change made was the user pressing the spacebar, check if they finished or modified a hash and apply formatting
             if (hashtagRegexEnd.exec(delta.ops[1].insert)) {
-                highlightHashes(delta.ops[0].retain, "punctuation");
+                highlightHashes(delta.ops[0].retain, "punctuation", oldDelta);
             } //If the user pressed backspace, check if they deleted a # and remove formatting from the truncated hash text
             else if (delta.ops[1].delete == 1) {
-                highlightHashes(delta.ops[0].retain, "backspace");
+                //newGetPrecedingFormat(quill, oldDelta, delta.ops[0].retain);
+                highlightHashes(delta.ops[0].retain, "backspace", oldDelta);
             }
             else { //highlight all hashes
-                highlightHashes();
+                if (delta.ops[0].retain && delta.ops[1].attributes.font == null) {
+                    console.log("Rejected");
+                }
+                else {
+                    highlightHashes();
+                }
             }
             
             //Save the note if the user does not make changes after current change

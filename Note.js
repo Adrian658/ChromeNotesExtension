@@ -204,7 +204,7 @@ function saveNote() {
 
 }
 
-function highlightHashes(changeIndex, changeType) {
+function highlightHashes(changeIndex, changeType, oldDelta) {
 
     quill = Quill.find(document.querySelector("#current-note-body"));
     str = quill.getText();
@@ -224,35 +224,107 @@ function highlightHashes(changeIndex, changeType) {
         quill.formatText(startIndex, length, 'font', 'impact');
     }
 
+    console.log(hashEndIndices, changeIndex);
     //Depending on the user keyboard event, check for potential implications on hashes in Quill body
-    if (changeType == "punctuation" && hashBeginIndices.length > 0) {
-        formatTextAfterHashBreak(quill, changeIndex);
+    if (changeType == "punctuation" && hashBeginIndices.length > 0 && hashEndIndices.includes(changeIndex)) {
+        hashSplitFontChange(quill, oldDelta, changeIndex);
     }
     else if (changeType == "backspace") {
-        unboldHash();
+        var font = getPrecedingFont(oldDelta, changeIndex, "backspace");
+        unboldHash(font);
     }
 
 }
 
-/*
+function hashSplitFontChange(quill, oldDelta, changeIndex) {
+    
+    var font = getPrecedingFont(oldDelta, changeIndex, "punctuation");
+    quill.formatText(changeIndex, 1, 'font', font);
+    console.log(font);
+    unboldHash("ql-font-" + font);
+
+}
+
+/*  
+ *  Returns the font style of text preceding the hash changed at given changeIndex
+ */
+function getPrecedingFont(oldDelta, changeIndex, changeType) {
+
+    var indexCounter = -1;
+    var opsCounter = -1;
+    if (changeType == "punctuation") {
+        changeIndex = changeIndex-1;
+    }
+    
+    while (indexCounter < changeIndex) {
+        opsCounter += 1;
+        var templ = oldDelta.ops[opsCounter].insert.length;
+        indexCounter += templ;
+    }
+
+    try {
+        console.log("OpsIndex: ", opsCounter);
+        var font = oldDelta.ops[opsCounter-1].attributes.font;
+    }
+    catch (e) {
+        var font = 'arial';
+    }
+
+    //console.log("ChangedIndex, ", changeIndex);
+    console.log("Changing to font: ", font);
+    return font;
+
+}
+
+/*  
+ *  When the user deletes the # from a hash, clear formatting on the remaining hash text
+ */
+function unboldHash(fontClass) {
+    var previousHashes = $('.ql-font-impact');
+    var previousElements = $('.ql-font-impact').prev();
+    var counter = 0
+
+    for (hash of previousHashes) {
+        if (!hash.innerHTML.includes("#")) {
+            if (fontClass) {
+                hash.remove();
+                previousElements[counter].append(hash.innerHTML);
+            }
+            else {
+                hash.classList.remove("ql-font-impact");
+            }
+        }
+        counter+=1;
+    }
+}
+
+/*  DEPRECATED
  *  When the user ends or breaks up a hash using punctuation, change the font at the users cursor to the font
  *  of text immediately preceding the hash, as well as changing the font of the string spliced from the # phrase if exists
  */
-function formatTextAfterHashBreak(quill, changeIndex) {
+function formatTextAfterHashBreak(quill, changeIndex, maxHashLength) {
 
     var newFont = getPrecedingFont(quill, changeIndex);
     var bodyLength = quill.getText().length;
     var changeToFontIndex = changeIndex;
 
-    while (changeToFontIndex <= bodyLength) {
+    while (changeToFontIndex <= bodyLength && Math.abs(changeToFontIndex - changeIndex) < maxHashLength) {
         font = quill.getFormat(changeToFontIndex, changeToFontIndex+1).font;
         console.log("FONT: ", font, "at index ", changeToFontIndex);
         changeToFontIndex += 1;
         if (font == null) {
             continue;
         }
-        if (font[0] == "impact" || font == "impact") {
-            continue;
+        if (typeof(font) == "string") {
+
+        }
+        else {
+            for (curFont of font) {
+                if (curFont != "impact") {
+                    font = curFont;
+                    break;
+                }
+            }
         }
         break;
     }
@@ -263,18 +335,18 @@ function formatTextAfterHashBreak(quill, changeIndex) {
 
 }
 
-/*
+/*  DEPRECATED
  *  **** HOLY SHIT I AM WRITTEN SO POORLY I FEEL LIKE A STEPHEN KING NOVEL. PLEASE REWRITE ME AT SOME POINT ****
  *  Returns the font style of text preceding the hash changed at given changeIndex
  */
-function getPrecedingFont(quill, changeIndex) {
+function getPrecedingFontDeprecated(quill, changeIndex) {
 
     var previousFontIndex = changeIndex;
     var font;
 
     while (previousFontIndex > 0) {
         font = quill.getFormat(previousFontIndex-1, previousFontIndex).font;
-        console.log(font);
+        console.log("Font at index ", previousFontIndex, ": ", font);
         previousFontIndex -= 1;
         if (previousFontIndex == 1) {
             font = "arial";
@@ -282,47 +354,21 @@ function getPrecedingFont(quill, changeIndex) {
         if (font == null) {
             continue;
         }
-        if (font[0] == "impact" || font == "impact") {
-            continue;
+        if (typeof(font) == "string") {
+
         }
-        (typeof(font) == "string") ? {} : font=font[0];
+        else {
+            for (curFont of font) {
+                if (curFont != "impact") {
+                    font = curFont;
+                    break;
+                }
+            }
+        }
         break;
     }
     console.log("previousFontIndex: ", previousFontIndex);
     return font;
-
-}
-
-/*
- *  When the user deletes the # from a hash, clear formatting on the remaining hash text
- */
-function unboldHash() {
-
-    previousHashes = document.getElementsByClassName('ql-font-impact');
-    for (hash of previousHashes) {
-        if (!hash.innerHTML.includes("#")) {
-            hash.classList.remove("ql-font-impact");
-        }
-    }
-
-}
-
-/*
- * **** DEPRECATED ****
- * **** See unboldHash() for current implementation ****
- */
-function checkUnboldHash(quill, hashBeginIndices, hashEndIndices) {
-
-    var beginClearIndex = 0;
-    var endClearIndex;
-    var clearLength;
-    while ( (endClearIndex = hashBeginIndices.shift()) )  {
-        clearLength = endClearIndex - beginClearIndex;
-        quill.formatText(beginClearIndex, clearLength, 'bold', false);
-        beginClearIndex = hashEndIndices.shift();
-    }
-    endClearIndex = quill.getText().length-1;
-    quill.formatText(beginClearIndex, endClearIndex, 'bold', false);
 
 }
 
