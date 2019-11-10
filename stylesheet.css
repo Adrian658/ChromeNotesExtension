@@ -60,7 +60,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     display: inline-block;
 }
 
-#delete-btn, #download-btn {
+#delete-btn, #download-btn, #citation-btn {
     display: block;
     margin-bottom: 5px;
 }
@@ -153,6 +153,11 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 .btn {
     cursor: pointer;
+}
+
+.ql-hash-phrase {
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 9%, rgba(0,212,255,1) 100%); 
 }
 
 /* Set customf fonts for Quill editor */

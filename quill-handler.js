@@ -1,6 +1,6 @@
 
 var changeCount = 0; //Keeps track of the number of changes made to Quill editor
-var hashtagRegexEnd = /[ .!?\\:;(){}]/
+var hashtagRegexEnd = /[ .!?\\:;(){}\t]/
 
 /*
  *  Creates the Quill editor
@@ -21,44 +21,35 @@ function createEditor() {
         bounds: '#scrolling-container'
     });
 
-    //Set Quill editor to auto-save after making changes
-    
+    registerHashFormat();
+
+    /* Inititate hash formatting and auto saving when user makes edits */
     quill.on('text-change', function(delta, oldDelta, source) {
 
         //If the change was made by a user
         if (source == "user") {
 
-            console.log(delta);
-            console.log(oldDelta);
-            console.log(source);
+            //console.log(delta);
+            //console.log(oldDelta);
 
-            quillLength = quill.getText().length;
+            var quillText = quill.getText();
+            var previousChar = quillText[delta.ops[0].retain-1];
 
-            //If the user changes the font of the whole document at once, rehighlight hashes
-            if (delta.ops[0].retain == quillLength-1) {
-                highlightHashes();
+            /* if the character is the first typed on its line, remove hash formatting */
+            if (previousChar == "\n") {
+                quill.formatText(delta.ops[0].retain, 1, 'hash', false);
             }
 
-            //Check if the user is entering the first character in the editor, and change font to Arial if so
-            if (quillLength <= 2) {
-                quill.formatText(0, 1, 'font', 'arial');
+            /* apply hash formatting depending on the character typed by the user */
+            if (delta.ops[1].insert == "#") {
+                applyHashFormatting(quill, delta.ops[0].retain, hashtagRegexEnd, 'phrase');
             }
-
-            //If the change made was the user pressing the spacebar, check if they finished or modified a hash and apply formatting
-            if (hashtagRegexEnd.exec(delta.ops[1].insert)) {
-                highlightHashes(delta.ops[0].retain, "punctuation", oldDelta);
-            } //If the user pressed backspace, check if they deleted a # and remove formatting from the truncated hash text
-            else if (delta.ops[1].delete == 1) {
-                //newGetPrecedingFormat(quill, oldDelta, delta.ops[0].retain);
-                highlightHashes(delta.ops[0].retain, "backspace", oldDelta);
+            else if (hashtagRegexEnd.exec(delta.ops[1].insert)) { //users types a character that would end a hash
+                applyHashFormatting(quill, delta.ops[0].retain+1, hashtagRegexEnd, false);
+                quill.formatText(delta.ops[0].retain, 1, 'hash', false);
             }
-            else { //highlight all hashes
-                if (delta.ops[0].retain && delta.ops[1].attributes.font == null) {
-                    console.log("Rejected");
-                }
-                else {
-                    highlightHashes();
-                }
+            else if (delta.ops[1].delete == 1) { //user backspaces which could affect hashes
+                findDeleteChar(quill, oldDelta, delta.ops[0].retain, hashtagRegexEnd);
             }
             
             //Save the note if the user does not make changes after current change
@@ -69,6 +60,19 @@ function createEditor() {
 
     });
 
+}
+
+/*
+ *  Registers the custom hash format class with Quill
+ */
+function registerHashFormat() {
+    var Parchment = Quill.import("parchment");
+
+    let CustomClass = new Parchment.Attributor.Class('hash', 'ql-hash', {
+        scope: Parchment.Scope.INLINE
+    });
+
+    Quill.register(CustomClass, true);
 }
 
 /*

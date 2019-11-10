@@ -178,7 +178,6 @@ function saveNote() {
 
     //Updated variables of current note
     var id = $("#current-note-display")[0].getAttribute("data-id");
-    //var title = $("#current-note-title").text();
     var editor = Quill.find(document.querySelector("#current-note-body"));
     var body = editor.root.innerHTML;
     var body_text = editor.getText();
@@ -204,174 +203,71 @@ function saveNote() {
 
 }
 
-function highlightHashes(changeIndex, changeType, oldDelta) {
-
-    quill = Quill.find(document.querySelector("#current-note-body"));
-    str = quill.getText();
-    var hashMatch;
-    var hashBeginIndices = [];
-    var hashLengths = [];
-    var hashEndIndices = [];
-
-    while ( (hashMatch = hashtagRegex.exec(str)) != null ) {
-        var hash = hashMatch[0];
-        var startIndex = hashMatch.index;
-        var length = hash.length;
-
-        hashBeginIndices.push(startIndex);
-        hashLengths.push(length);
-        hashEndIndices.push(hashtagRegex.lastIndex);
-        quill.formatText(startIndex, length, 'font', 'impact');
-    }
-
-    console.log(hashEndIndices, changeIndex);
-    //Depending on the user keyboard event, check for potential implications on hashes in Quill body
-    if (changeType == "punctuation" && hashBeginIndices.length > 0 && hashEndIndices.includes(changeIndex)) {
-        hashSplitFontChange(quill, oldDelta, changeIndex);
-    }
-    else if (changeType == "backspace") {
-        var font = getPrecedingFont(oldDelta, changeIndex, "backspace");
-        unboldHash(font);
-    }
-
-}
-
-function hashSplitFontChange(quill, oldDelta, changeIndex) {
-    
-    var font = getPrecedingFont(oldDelta, changeIndex, "punctuation");
-    quill.formatText(changeIndex, 1, 'font', font);
-    console.log(font);
-    unboldHash("ql-font-" + font);
-
-}
-
-/*  
- *  Returns the font style of text preceding the hash changed at given changeIndex
+/*
+ *  Applies or removes custom hash formatting starting at a given undex until the hash end
+ *  Assumes given start index corresponds to a hash so format is applied to the end of given hash
  */
-function getPrecedingFont(oldDelta, changeIndex, changeType) {
+function applyHashFormatting(quill, changeIndex, regex, format) {
 
-    var indexCounter = -1;
+    quillText = quill.getText();
+    var hashEndIndex;
+
+    //Finds where the hash ends starting from the changeIndex
+    for (hashEndIndex = changeIndex; hashEndIndex < quillText.length; hashEndIndex++) {
+        if (regex.exec(quillText[hashEndIndex])) {
+            break;
+        }
+    }
+
+    quill.formatText(changeIndex, hashEndIndex-changeIndex, 'hash', format);
+
+}
+
+/*
+ *  Called when backspace is pressed by the user
+ *  Finds the character and index at which character was deleted
+ *  Adjusts the formatting of text if a # was deleted or a hash was joined with immediately ensuing word
+ */
+function findDeleteChar(quill, oldDelta, changeIndex, regex) {
+
+    var indexCounter = 0;
     var opsCounter = -1;
-    if (changeType == "punctuation") {
-        changeIndex = changeIndex-1;
-    }
-    
-    while (indexCounter < changeIndex) {
-        opsCounter += 1;
-        var templ = oldDelta.ops[opsCounter].insert.length;
-        indexCounter += templ;
-    }
+    var delIndex = changeIndex;
+    var op;
+    var opLength;
 
-    try {
-        console.log("OpsIndex: ", opsCounter);
-        var font = oldDelta.ops[opsCounter-1].attributes.font;
-    }
-    catch (e) {
-        var font = 'arial';
-    }
-
-    //console.log("ChangedIndex, ", changeIndex);
-    console.log("Changing to font: ", font);
-    return font;
-
-}
-
-/*  
- *  When the user deletes the # from a hash, clear formatting on the remaining hash text
- */
-function unboldHash(fontClass) {
-    var previousHashes = $('.ql-font-impact');
-    var previousElements = $('.ql-font-impact').prev();
-    var counter = 0
-
-    for (hash of previousHashes) {
-        if (!hash.innerHTML.includes("#")) {
-            if (fontClass) {
-                hash.remove();
-                previousElements[counter].append(hash.innerHTML);
-            }
-            else {
-                hash.classList.remove("ql-font-impact");
-            }
-        }
-        counter+=1;
-    }
-}
-
-/*  DEPRECATED
- *  When the user ends or breaks up a hash using punctuation, change the font at the users cursor to the font
- *  of text immediately preceding the hash, as well as changing the font of the string spliced from the # phrase if exists
- */
-function formatTextAfterHashBreak(quill, changeIndex, maxHashLength) {
-
-    var newFont = getPrecedingFont(quill, changeIndex);
-    var bodyLength = quill.getText().length;
-    var changeToFontIndex = changeIndex;
-
-    while (changeToFontIndex <= bodyLength && Math.abs(changeToFontIndex - changeIndex) < maxHashLength) {
-        font = quill.getFormat(changeToFontIndex, changeToFontIndex+1).font;
-        console.log("FONT: ", font, "at index ", changeToFontIndex);
-        changeToFontIndex += 1;
-        if (font == null) {
-            continue;
-        }
-        if (typeof(font) == "string") {
-
+    //Finds the character which was deleted given the index of the change
+    while (opsCounter <= oldDelta.ops.length) {
+        opsCounter+=1;
+        op = oldDelta.ops[opsCounter].insert;
+        opLength = op.length;
+        if (indexCounter+opLength > delIndex) {
+            delIndex = delIndex-indexCounter;
+            break;
         }
         else {
-            for (curFont of font) {
-                if (curFont != "impact") {
-                    font = curFont;
-                    break;
-                }
-            }
+            indexCounter += opLength;
         }
-        break;
     }
 
-    console.log("Final Change to Index: ", changeToFontIndex);
-    var length = changeToFontIndex - changeIndex;
-    quill.formatText(changeIndex, length, 'font', newFont);
+    //User deleted a hashtag, remove formatting from truncated text
+    if (op[delIndex] == "#") {
+        applyHashFormatting(quill, changeIndex, regex, false);
+        return
+    }
+
+    //Check if the user backspaced immediately after a hash ending, meaningthey joined the following text with a hash, so format the joined text
+    opsCounter = opsCounter-1;
+    op = oldDelta.ops[opsCounter];
+    if (op.attributes && op.attributes.hash == "phrase" && changeIndex==indexCounter) {
+        applyHashFormatting(quill, changeIndex, regex, 'phrase');
+    }
 
 }
 
-/*  DEPRECATED
- *  **** HOLY SHIT I AM WRITTEN SO POORLY I FEEL LIKE A STEPHEN KING NOVEL. PLEASE REWRITE ME AT SOME POINT ****
- *  Returns the font style of text preceding the hash changed at given changeIndex
+/*
+ *  Saves the current notes title and displays the updated tile in the corresponding note tile
  */
-function getPrecedingFontDeprecated(quill, changeIndex) {
-
-    var previousFontIndex = changeIndex;
-    var font;
-
-    while (previousFontIndex > 0) {
-        font = quill.getFormat(previousFontIndex-1, previousFontIndex).font;
-        console.log("Font at index ", previousFontIndex, ": ", font);
-        previousFontIndex -= 1;
-        if (previousFontIndex == 1) {
-            font = "arial";
-        }
-        if (font == null) {
-            continue;
-        }
-        if (typeof(font) == "string") {
-
-        }
-        else {
-            for (curFont of font) {
-                if (curFont != "impact") {
-                    font = curFont;
-                    break;
-                }
-            }
-        }
-        break;
-    }
-    console.log("previousFontIndex: ", previousFontIndex);
-    return font;
-
-}
-
 function saveTitle() {
 
     var id = $("#current-note-display")[0].getAttribute("data-id");
@@ -386,6 +282,9 @@ function saveTitle() {
 
 }
 
+/*
+ *  Trims the title string so it can be displayed in a note tile
+ */
 function trimTitle(title) {
     if (title.length > 17) {
         return title.slice(0, 15) + "...";
@@ -600,6 +499,31 @@ function addNoteOptionsListener() {
 
 }
 
+function addCitationButtonListener() {
+
+    document.getElementById("citation-btn").onclick = function() {
+        
+        chrome.tabs.query({active: true}, function(tabs){
+            console.log(tabs);
+            var tabURL = tabs[0].url;
+            var quill = Quill.find(document.querySelector("#current-note-body"));
+            quill.focus();
+            var focusIndex = quill.getSelection().index
+            quill.insertText(focusIndex, tabURL);
+        });
+
+    }
+
+}
+
+function getCurrentTabURL(callback) {
+    
+}
+
+function callback(quill, url) {
+    quill.insertText(x, url);
+}
+
 function handleNoteOptionsDisplay(optionsMenu, status) {
     if (status == 'open') {
         optionsMenu.slideDown(200);
@@ -690,6 +614,7 @@ function addElementListeners() {
     addTitleListener();
     addDownloadListener();
     addNoteOptionsListener();
+    addCitationButtonListener();
 }
 
 function addFilterListener(){
@@ -706,7 +631,6 @@ function addFilterListener(){
         }
     });
 }
-
 
 /*
  * Code that is run when document loads
