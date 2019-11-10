@@ -1,12 +1,13 @@
 
 var changeCount = 0; //Keeps track of the number of changes made to Quill editor
-var hashtagRegexEnd = /[ .!?\\:;(){}\t]/
+var hashtagRegexEnd = /[ .!?\\:;(){}\t\n]/ //regex to recognize the end of a hash 
 
 /*
  *  Creates the Quill editor
  */
 function createEditor() {
 
+    /* Register custom fonts with Quill */
     var Font = Quill.import('formats/font');
     Font.whitelist = ['roboto', 'inconsolata', 'mirza', 'arial', 'snellroundhand', 'impact'];
     Quill.register(Font, true);
@@ -52,11 +53,12 @@ function createEditor() {
                 findDeleteChar(quill, oldDelta, delta.ops[0].retain, hashtagRegexEnd);
             }
             
-            //Save the note if the user does not make changes after current change
-            $('#autosave-label').text('Saving changes...');
-            changeCount += 1;
-            saveNoteWrapper(changeCount, 1500);
         }
+
+        //Save the note if the user does not make changes after current change
+        $('#autosave-label').text('Saving changes...');
+        changeCount += 1;
+        saveNoteWrapper(changeCount, 1500);
 
     });
 

@@ -3,6 +3,7 @@
 .extension-container {
     width: 600px;
     height: 600px;
+    font-family: PT Sans;
 }
 
 textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container::-webkit-scrollbar { 
@@ -12,7 +13,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 /* Classes attached to elements concerning the note index container */
 
 .note-container {
-    background-color: rgb(126, 9, 194);
+    background-color: #ffcc6f;
     overflow-x: visible;
     overflow-y: auto;
     height: 100%;
@@ -20,7 +21,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 .note-tile, .new-note-btn {
     color: #000;
-    background-color: #fdfdfd;
+    background-color: #eca92b;
+    border-color: #ea9800;
 	border-radius: 5px;
 	padding: 10px;
 	margin-top: 8px;
@@ -28,7 +30,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 .note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile, .new-note-btn:hover {
     color: white;
-    background-color: rgb(238, 150, 18, 0.8);
+    background-color: #ffb831;
+    border-color: #ea9800;
 	border-radius: 12px;
 	padding: 10px;
 	margin-top: 8px;
@@ -89,7 +92,6 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 #scrolling-container {
     height: 80%;
-    /*min-height: 100%; */
     overflow-y:auto;
 }
 
@@ -106,16 +108,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     height: inherit;
 }
 
-/* Quill editor overrides */
 
-.ql-container.ql-snow {
-    border: none;
-}
-
-#toolbar {
-    border: none;
-    border-bottom: 1px solid lightgrey;
-}
 
 /* Column and row classes */
 
@@ -155,12 +148,18 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     cursor: pointer;
 }
 
-.ql-hash-phrase {
-    background: rgb(2,0,36);
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 9%, rgba(0,212,255,1) 100%); 
+/* Quill editor overrides */
+
+.ql-container.ql-snow {
+    border: none;
 }
 
-/* Set customf fonts for Quill editor */
+#toolbar {
+    border: none;
+    border-bottom: 1px solid lightgrey;
+}
+
+/* Set custom formats for Quill editor */
 
 #toolbar .ql-font span[data-label="Sans Serif"], .ql-font-sans-serif {
     font-family: "Sans Serif";
@@ -186,6 +185,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     font-family: "Snell Roundhand";
 }
 
-.ql-font-impact {
-    font-family: "Impact";
+.ql-hash-phrase {
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgb(4, 167, 196) 0%, rgb(21, 194, 44) 9%, rgba(0,212,255,1) 100%); 
 }

@@ -4,10 +4,9 @@
 var raw_notes = [];
 var hashtagRegex = /\B(\#[a-zA-Z0-9]+\b)/g;
 
-function logNotes(){
-    console.log(raw_notes);
-}
-
+/*
+ *  DEPRECATED method for filtering notes containing key phrase in title or body
+ */
 function filterNotes(filter){
     filter = filter.toLowerCase();
     filteredIds = [];
@@ -19,9 +18,10 @@ function filterNotes(filter){
     return filteredIds;
 }
 
+/*********************************** Loading and rendering note and hash elements ***********************************/
+
 /*
- * Retrieved from Chrome storage all notes, displays previews of all notes, and brings up editing function for most recently
- * accessed note
+ * Retrieves from Chrome storage all notes, displays previews of all notes, and brings up editing function for most recently accessed note
  */
 function loadNotes(hash){
 
@@ -29,17 +29,21 @@ function loadNotes(hash){
     chrome.storage.local.get({'library': []}, function(lib){
         raw_notes = lib.library;
 
-        if (raw_notes.length == 0) { //If the user has no notes, create a default new one and open it for them
+        /* If the user has no notes, create a default new one and open it for them */
+        if (raw_notes.length == 0) {
             createNote("New Note", "Start your new note!", "green");
             openNote(-1);
             return;
         }
 
         renderNotes();
+        /* If the notes are being loaded from a hash search, filter the appropriate notes */
         if (hash) {
             chooseFilter(hash);
             document.getElementById("searcher").value = hash;
         }
+
+        /* Open a note for editing */
         chrome.storage.local.get({'activeNote':-1},function(activeID){
             openNote(activeID.activeNote);
             changeNoteHighlight(activeID.activeNote);
@@ -62,6 +66,9 @@ function renderNotes(){
 
 }
 
+/*
+ *  Loads in all hashes across all notes
+ */
 function loadHashes() {
 
     global_hashes = new Set([]);
@@ -74,11 +81,13 @@ function loadHashes() {
             global_hashes.add(hash);
         }
     }
-
     renderHashes(global_hashes);
 
 }
 
+/*
+ *  Renders the input list of hashes as tiles in the index section
+ */
 function renderHashes(hashes) {
 
     clearNotesDisplay("hashes");
@@ -89,6 +98,9 @@ function renderHashes(hashes) {
 
 }
 
+/*
+ *  Clears the current tiles from the index display
+ */
 function clearNotesDisplay(type) {
 
     noteIdx = $(".note-index");
@@ -102,10 +114,78 @@ function clearNotesDisplay(type) {
 }
 
 /*
+ *  Displays contents of the specified note in the current note display
+ */
+function openNote(id) {
+
+    console.log("opening note "+id);
+    if (id == -1) { //id is -1 when no id was found in parent function, so open first note in library
+        if(raw_notes.length>0){
+            var note = raw_notes[0];
+            populateCanvas(note["id"], note["title"], note["body"], note["hashes"]);
+        } else {
+            populateCanvas(null,"not a note","not a note", null);
+        }
+        return;
+    }
+    else { //open note with specified id
+        for (note of raw_notes) {
+            if (note["id"] == id) {
+                populateCanvas(id, note["title"], note["body"], note["hashes"]);
+                return;
+            }
+        }
+    }
+
+    console.log("Note with id ("+id+") not found");
+    openNote(-1);
+
+}
+
+/*
+ * Fill note display fields with current note values
+ */
+function populateCanvas(id,title,body,hashes){
+    $("#current-note-display").attr("data-id", id);
+    $("#current-note-title").html(title);
+    $("#tags").html(hashes);
+    Quill.find(document.querySelector("#current-note-body")).root.innerHTML = body;
+    chrome.storage.local.set({'activeNote': id}, function(){
+            console.log("Active note id("+id+") successfully saved.");
+    });
+}
+
+/*
+ * Highlights a note depending on context of arguments
+ * If no context is given, removes highlighting from the currently highlighted note
+ * If an element is given, highlights it
+ */
+function changeNoteHighlight(id) {
+
+    if (id == undefined) { //remove highlighting from currently highlighted element
+        var id = findCurrentNote();
+        var sourceElement = findNoteElement(id);
+        sourceElement.classList.remove('active-note');
+    }
+    else { //add highlighting to selected element
+        if (id == -1) {
+            var note = raw_notes[0];
+            id = note["id"];
+        }
+        var targetElement = findNoteElement(id);
+        targetElement.classList.add('active-note');
+    }
+
+}
+
+
+/*********************************** Basic CRUD functions for notes ***********************************/
+
+/*
  * Wrapper method for chrome.storage.set(library)
  * Updates the 'library' key value in chrome storage with the param value
  */
-async function saveLib(){
+function saveLib(){
     chrome.storage.local.set({'library': raw_notes}, function(){
             console.log("Library successfully saved.");
     });
@@ -114,7 +194,7 @@ async function saveLib(){
 /* 
  * Takes new note metadata as input, retrieves the Library, creates a new Note with the params, and adds to the Library
  */
-async function createNote(title,body,color){
+function createNote(title,body,color){
 
     //Get the value of idCounter
     chrome.storage.local.get({'idCounter': 0}, function(curID){
@@ -156,7 +236,7 @@ async function createNote(title,body,color){
  * Updates a notes content and replaces front end elements with updated values
  */
 
-async function editNote(id, title, body, color, hashes){
+function editNote(id, title, body, color, hashes){
 
      //Find the Note with matching ID and change values in backend storage
     for (note of raw_notes) {
@@ -193,7 +273,6 @@ function saveNote() {
     }
 
     //Save note with new variables
-    //Ideally we should just be saving the body here
     editNote(id=id, title=null, body=body, color=null, hashes=hashes);
     if ($('.note-index').hasClass('hashes')) {
         loadHashes();
@@ -202,6 +281,59 @@ function saveNote() {
     $("#tags").html(hashes);
 
 }
+
+/*
+ *  Saves the current notes title and displays the updated tile in the corresponding note tile
+ */
+function saveTitle() {
+
+    var id = $("#current-note-display")[0].getAttribute("data-id");
+    var title = $("#current-note-title").text();
+    editNote(id=id, title=title);
+
+    //Replace title of note block in notes display with new title
+    var curNote = findNoteElement(id);
+    if (curNote != null) {
+        curNote.innerHTML = trimTitle(title);
+    }
+
+}
+
+/*
+ *  Trims the title string so it can be displayed in a note tile
+ */
+function trimTitle(title) {
+    if (title.length > 17) {
+        return title.slice(0, 15) + "...";
+    }
+    return title;
+}
+
+/*
+ *  Deletes a specified note from Chrome storage and from DOM
+ */
+async function deleteNote(deleteID){
+    
+    //Find index of note to delete 
+    var delIndex = -1;
+    for (var i = 0; i < raw_notes.length; i++) {
+        if (raw_notes[i]["id"] == deleteID) {
+            delIndex = i;
+        };
+    };
+
+    //Remove note from storage
+    raw_notes.splice(delIndex,1);
+    saveLib();
+
+    //Remove note from DOM and open a different note for display
+    findNoteElement(deleteID).remove();
+    openNote(-1);
+    changeNoteHighlight(-1);
+
+}
+
+/*********************************** Dynamic hash formatting functions ***********************************/
 
 /*
  *  Applies or removes custom hash formatting starting at a given undex until the hash end
@@ -265,124 +397,30 @@ function findDeleteChar(quill, oldDelta, changeIndex, regex) {
 
 }
 
-/*
- *  Saves the current notes title and displays the updated tile in the corresponding note tile
- */
-function saveTitle() {
-
-    var id = $("#current-note-display")[0].getAttribute("data-id");
-    var title = $("#current-note-title").text();
-    editNote(id=id, title=title);
-
-    //Replace title of note block in notes display with new title
-    var curNote = findNoteElement(id);
-    if (curNote != null) {
-        curNote.innerHTML = trimTitle(title);
-    }
-
-}
+/*********************************** Functions which add event listeners to appropriate elements ***********************************/
 
 /*
- *  Trims the title string so it can be displayed in a note tile
- */
-function trimTitle(title) {
-    if (title.length > 17) {
-        return title.slice(0, 15) + "...";
-    }
-    return title;
-}
-
-/*
- *  Deletes a specified note from Chrome storage and from DOM
- */
-async function deleteNote(deleteID){
-    
-    //Find index of note to delete 
-    var delIndex = -1;
-    for (var i = 0; i < raw_notes.length; i++) {
-        if (raw_notes[i]["id"] == deleteID) {
-            delIndex = i;
-        };
-    };
-
-    //Remove note from storage
-    raw_notes.splice(delIndex,1);
-    saveLib();
-
-    //Remove note from DOM and open a different note for display
-    findNoteElement(deleteID).remove();
-    openNote(-1);
-    changeNoteHighlight(-1);
-
-}
-
-/*
- *  Displays contents of the specified note in the current note display
- */
-function openNote(id) {
-
-    console.log("opening note "+id);
-    if (id == -1) { //id is -1 when no id was found in parent function, so open first note in library
-        if(raw_notes.length>0){
-            var note = raw_notes[0];
-            populateCanvas(note["id"], note["title"], note["body"], note["hashes"]);
-        } else {
-            populateCanvas(null,"not a note","not a note", null);
-        }
-        return;
-    }
-    else { //open note with specified id
-        for (note of raw_notes) {
-            if (note["id"] == id) {
-                populateCanvas(id, note["title"], note["body"], note["hashes"]);
-                return;
-            }
-        }
-    }
-
-    console.log("Note with id ("+id+") not found");
-    openNote(-1);
-
-}
-
-/*
- * Fill note display fields with current note values
- */
-function populateCanvas(id,title,body,hashes){
-    $("#current-note-display").attr("data-id", id);
-    $("#current-note-title").html(title);
-    $("#tags").html(hashes);
-    Quill.find(document.querySelector("#current-note-body")).root.innerHTML = body;
-    chrome.storage.local.set({'activeNote': id}, function(){
-            console.log("Active note id("+id+") successfully saved.");
-    });
-}
-
-/****** Functions which add event listeners to appropriate DOM elements ******/
-
-/*
- *  
+ *  Adds listener to create note button
  */
 function addCreateNoteListener() {
-
-    lorem_ipsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet justo quis eros dapibus rutrum. Aenean pellentesque accumsan vulputate. Praesent consequat augue id urna commodo finibus. Proin bibendum tellus eros, nec imperdiet massa vehicula non. Sed pulvinar dictum leo ac eleifend. Quisque augue ex, pretium non nunc sed, accumsan porta odio. Donec id facilisis justo. Aliquam vel massa nec erat tincidunt molestie. Sed vitae nibh nec leo posuere volutpat. Mauris bibendum a magna ut pretium."
-
     document.getElementById('new-note-btn').onclick = function() {
-        createNote('New Note', lorem_ipsum, 'red');
+        createNote('New Note', "", 'red');
     }
 }
 
 /*
- *
+ *  Adds listener to delete note button
  */
 function addDeleteNoteListener() {
     document.getElementById("delete-btn").onclick = function() {
-        //Retrieve note ID and pass to deleteNote function
         var id = findCurrentNote();
         deleteNote(id);
     }
 }
 
+/*
+ *  Adds listener to display notes button
+ */
 function addFilterNoteListener() {
     document.getElementById("note-filter-btn").onclick = function() {
         document.getElementById("searcher").value = "";
@@ -390,11 +428,54 @@ function addFilterNoteListener() {
     }
 }
 
+/*
+ *  Adds listener to display hashes function 
+ */
 function addFilterHashesListener() {
     document.getElementById("tags-filter-btn").onclick = function() {
         document.getElementById("searcher").value = "";
         loadHashes();
     }
+}
+
+/*
+ *  Adds listener to download button that downloads the current note as a .txt file 
+ */
+function addDownloadListener() {
+
+    element = $('#download-btn');
+
+    /* When button is hovered, the link is set to download the current note
+       Workaround because onclick did not register the correct href */
+    element.hover(function(event){
+
+        var targetElement = $(this)[0];
+        var text = Quill.find(document.querySelector("#current-note-body")).getText();
+        var blob = new Blob([text], {type: 'text/plain'});
+        var output = window.URL.createObjectURL(blob);
+        targetElement.download = $("#current-note-title")[0].innerHTML;
+        targetElement.href = output;
+    });
+}
+
+/*
+ *  Adds listener to citation button which inserts a link to the active chrome tab in the current note body 
+ */
+function addCitationButtonListener() {
+
+    document.getElementById("citation-btn").onclick = function() {
+        
+        chrome.tabs.query({active: true}, function(tabs){
+            console.log(tabs);
+            var tabURL = tabs[0].url;
+            var quill = Quill.find(document.querySelector("#current-note-body"));
+            quill.focus();
+            var focusIndex = quill.getSelection().index
+            quill.insertText(focusIndex, tabURL, 'link', tabURL);
+        });
+
+    }
+
 }
 
 
@@ -403,6 +484,7 @@ function addFilterHashesListener() {
  */
 function addTileListener(id, type="note") {
 
+    /* Timeout needed to ensure elements are properly loaded before attaching listeners */
     setTimeout(function(){
 
         //Get all note tiles
@@ -426,7 +508,7 @@ function addTileListener(id, type="note") {
 }
 
 /*
- * Adds the open note onclick function to a specified note block div
+ * Adds the open note (hash) onclick function to a specified note (hash) block div
  */
 function addOpenNoteFunctionality(element, type) {
 
@@ -457,21 +539,9 @@ function addOpenNoteFunctionality(element, type) {
     }
 }
 
-function addDownloadListener() {
-
-    element = $('#download-btn');
-
-    element.hover(function(event){
-
-        var targetElement = $(this)[0];
-        var text = Quill.find(document.querySelector("#current-note-body")).getText();
-        var blob = new Blob([text], {type: 'text/plain'});
-        var output = window.URL.createObjectURL(blob);
-        targetElement.download = $("#current-note-title")[0].innerHTML;
-        targetElement.href = output;
-    });
-}
-
+/*
+ *  Adds listener to note options button which displays additional functions to be applied to the current note 
+ */
 function addNoteOptionsListener() {
     
     document.body.addEventListener('click', function(event) {
@@ -499,31 +569,9 @@ function addNoteOptionsListener() {
 
 }
 
-function addCitationButtonListener() {
-
-    document.getElementById("citation-btn").onclick = function() {
-        
-        chrome.tabs.query({active: true}, function(tabs){
-            console.log(tabs);
-            var tabURL = tabs[0].url;
-            var quill = Quill.find(document.querySelector("#current-note-body"));
-            quill.focus();
-            var focusIndex = quill.getSelection().index
-            quill.insertText(focusIndex, tabURL);
-        });
-
-    }
-
-}
-
-function getCurrentTabURL(callback) {
-    
-}
-
-function callback(quill, url) {
-    quill.insertText(x, url);
-}
-
+/*
+ *  Opens or closes the note options 
+ */
 function handleNoteOptionsDisplay(optionsMenu, status) {
     if (status == 'open') {
         optionsMenu.slideDown(200);
@@ -541,28 +589,8 @@ function handleNoteOptionsDisplay(optionsMenu, status) {
 }
 
 /*
- * Highlights a note depending on context of arguments
- * If no context is given, removes highlighting from the currently highlighted note
- * If an element is given, highlights it
+ *  Adds listener to current note title to save when focus is lost
  */
-function changeNoteHighlight(id) {
-
-    if (id == undefined) { //remove highlighting from currently highlighted element
-        var id = findCurrentNote();
-        var sourceElement = findNoteElement(id);
-        sourceElement.classList.remove('active-note');
-    }
-    else { //add highlighting to selected element
-        if (id == -1) {
-            var note = raw_notes[0];
-            id = note["id"];
-        }
-        var targetElement = findNoteElement(id);
-        targetElement.classList.add('active-note');
-    }
-
-}
-
 function addTitleListener() {
 
     $('#current-note-title').blur(function() {
@@ -583,40 +611,8 @@ function addTitleListener() {
 }
 
 /*
- * Find a note tile from the note tile display corresponding to passed in id
- * @param id - id of note to find from notes display
+ *  Adds listener to search input 
  */
-function findNoteElement(id) {
-    return document.querySelectorAll("[data-id='" + id + "'][class~=btn-block]")[0];
-}
-
-/*
- * Finda id of current note being displayed
- */
-function findCurrentNote() {
-    return $("#current-note-display")[0].getAttribute("data-id");
-}
-
-function findNote(id) {
-    for (note of raw_notes) {
-        if (note["id"] == id) {
-            return note;
-        }
-    }
-    return "No note with matching ID";
-}
-
-function addElementListeners() {
-    addCreateNoteListener();
-    addDeleteNoteListener();
-    addFilterNoteListener();
-    addFilterHashesListener();
-    addTitleListener();
-    addDownloadListener();
-    addNoteOptionsListener();
-    addCitationButtonListener();
-}
-
 function addFilterListener(){
     $("#searcher").on("keyup click input", function () {
         var val = $(this).val();
@@ -630,6 +626,50 @@ function addFilterListener(){
             $(".note-index .note-tile").show();
         }
     });
+}
+
+
+/*********************************** Helper functions ***********************************/
+
+/*
+ * Find a note tile from the note tile display corresponding to passed in id
+ * @param id - id of note to find from notes display
+ */
+function findNoteElement(id) {
+    return document.querySelectorAll("[data-id='" + id + "'][class~=btn-block]")[0];
+}
+
+/*
+ *  Find id of current note being displayed
+ */
+function findCurrentNote() {
+    return $("#current-note-display")[0].getAttribute("data-id");
+}
+
+/* 
+ *  Returns the given note
+ */
+function findNote(id) {
+    for (note of raw_notes) {
+        if (note["id"] == id) {
+            return note;
+        }
+    }
+    return "No note with matching ID";
+}
+
+/*
+ *  Adds all element listeners
+ */
+function addElementListeners() {
+    addCreateNoteListener();
+    addDeleteNoteListener();
+    addFilterNoteListener();
+    addFilterHashesListener();
+    addTitleListener();
+    addDownloadListener();
+    addNoteOptionsListener();
+    addCitationButtonListener();
 }
 
 /*

@@ -1,13 +1,8 @@
 {
     "name": "Chrome Notes",
     "version": "1.0",
-    "description": "Create notepad for google chrome!",
+    "description": "Take notes easily while browsing Google Chrome!",
     "permissions": ["declarativeContent", "storage", "tabs"],
-    "background": {
-        "scripts": ["background.js"],
-        "persistent": false
-    },
-    "icons": { "16": "step2.png"},
     "page_action": {
         "default_popup": "main.html"
     },
