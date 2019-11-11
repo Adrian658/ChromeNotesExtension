@@ -17,21 +17,30 @@
     <body>
         <div class="extension-container">
             <div class="cust-row note-content">
+                    <div id="collapsed-sidebar" class="cust-col-1">
+                        <i id="index-show-btn" class="text-white fas fa-long-arrow-alt-right"></i>
+                    </div>
                     <div id="note-container" class="note-container scroll-toggle cust-col-4">
-                        <div id="filter-container">
-                            <div id="note-filter-btn" class="btn btn-primary">
-                                Notes
+                        <div id="sidebar" class="cust-row">
+                            <div class="cust-col-12 pl-0 pr-0">
+                                <div id="filter-container">
+                                    <i id="index-hide-btn" class="text-white fas fa-long-arrow-alt-left"></i>
+                                    <div id="note-filter-btn" class="btn selection-btn">
+                                        Notes
+                                    </div>
+                                    <div id="tags-filter-btn" class="btn selection-btn">
+                                        Tags
+                                    </div>
+                                </div>
+                                <input type="text" id="searcher" placeholder="Search notes...">
+                                <div id="new-note-btn" class="new-note-btn btn btn-block">
+                                    Create <i class="fas fa-plus"></i>
+                                </div>
                             </div>
-                            <div id="tags-filter-btn" class="btn btn-primary">
-                                Tags
+                            <div id="note-index-container" class="scroll-toggle cust-col-12 pl-0 pr-0">
+                                <div class="note-index text-center">
+                                </div>
                             </div>
-                        </div>
-                        <input type="text" id="searcher" placeholder="Search notes...">
-                        <div id="new-note-btn" class="new-note-btn btn btn-block">
-                            Create <i class="fas fa-plus"></i>
-                        </div>
-                        <div class="note-index text-center">
-                            <!-- Here we receive a list of all notes, then we iterate through all of them, rendering a new div for each note -->
                         </div>
                     </div>
                     <div id="current-note-display" class="current-note-display cust-col-8">

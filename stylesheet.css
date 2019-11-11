@@ -13,10 +13,32 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 /* Classes attached to elements concerning the note index container */
 
 .note-container {
-    background-color: #ffcc6f;
-    overflow-x: visible;
-    overflow-y: auto;
+    /*background-color: rgb(17, 92, 190);*/
+    background: linear-gradient(90deg, rgb(57, 20, 221) 10%, rgb(175, 54, 245) 100%);
+    overflow-y: hidden;
     height: 100%;
+}
+
+#note-index-container {
+    overflow-y: auto;
+    margin-top: 20px;
+    height: 400px;
+}
+
+.selection-btn {
+    background-color: rgba(31, 30, 36, 0.6);
+    color: white;
+    width: 40%;
+    margin: 26px 0px;
+}
+
+.selection-btn:hover {
+    background-color: rgba(31, 30, 36, 0.8);
+    color: white;
+}
+
+#tags-filter-btn {
+    float: right;
 }
 
 .note-tile, .new-note-btn {
@@ -43,6 +65,11 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     border-radius: 5px;
 }
 
+#collapsed-sidebar {
+    display: none;
+    background: linear-gradient(90deg, rgb(57, 20, 221) 10%, rgb(175, 54, 245) 100%);
+}
+
 /* Classes attached to elements concerning the current note container */
 
 #current-note-display {
@@ -52,7 +79,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 .title-container {
-    background-color: rgb(48, 125, 226);
+    /*background-color: rgb(48, 125, 226);*/
+    background: linear-gradient(90deg, rgb(175, 54, 245) 10%, rgb(57, 20, 221) 100%);
 }
 
 .current-note-title-container {
@@ -119,10 +147,22 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     flex-wrap: wrap;
 }
 
+.cust-col-1 {
+    -ms-flex: 0 0 8.333333%;
+    flex: 0 0 8.333333%;
+    max-width: 8.333333%;
+  }
+
+.cust-col-2 {
+    -ms-flex: 0 0 16.666667%;
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+}
+
 .cust-col-4 {
     -ms-flex: 0 0 33.333333%;
     flex: 0 0 33.333333%;
-    /*max-width: 33.333333%;*/
+    max-width: 33.333333%;
 }
 
 .cust-col-8 {
@@ -131,13 +171,25 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     max-width: 66.666667%;
 }
 
+.cust-col-10 {
+    -ms-flex: 0 0 83.333333%;
+    flex: 0 0 83.333333%;
+    max-width: 83.333333%;
+}
+
+.cust-col-11 {
+    -ms-flex: 0 0 91.666667%;
+    flex: 0 0 91.666667%;
+    max-width: 91.666667%;
+}
+
 .cust-col-12 {
     -ms-flex: 0 0 100.00%;
     flex: 0 0 100.00%;
     max-width: 100.00%;
 }
 
-.cust-col-4, .cust-col-8, .cust-col-12 {
+.cust-col-1, .cust-col-2, .cust-col-4, .cust-col-8, .cust-col-10, .cust-col-11, .cust-col-12 {
     position: relative;
     width: 100%;
     padding-right: 15px;
@@ -186,6 +238,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 .ql-hash-phrase {
-    background: rgb(2,0,36);
-    background: linear-gradient(90deg, rgb(4, 167, 196) 0%, rgb(21, 194, 44) 9%, rgba(0,212,255,1) 100%); 
+    color: whitesmoke;
+    background: linear-gradient(90deg, rgb(57, 20, 221) 10%, rgb(175, 54, 245) 100%);
+    border-radius: 8px;
 }

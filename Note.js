@@ -58,6 +58,7 @@ function loadNotes(hash){
  */
 function renderNotes(){
 
+    $('#new-note-btn').show();
     clearNotesDisplay("notes");
     raw_notes.forEach(function(note){
         $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + note["id"] + '>' + trimTitle(note["title"]) + '</div>');
@@ -90,6 +91,7 @@ function loadHashes() {
  */
 function renderHashes(hashes) {
 
+    $('#new-note-btn').hide();
     clearNotesDisplay("hashes");
     hashes.forEach(function(hash) {
         $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + hash + '>' + hash + '</div>');
@@ -670,6 +672,7 @@ function addElementListeners() {
     addDownloadListener();
     addNoteOptionsListener();
     addCitationButtonListener();
+    addModeSwitchListeners()
 }
 
 /*
@@ -679,3 +682,37 @@ document.addEventListener("DOMContentLoaded", function(){
     loadNotes();
     addElementListeners();
 })
+
+/*********************************** Focus mode functions ***********************************/
+
+function focusMode() {
+    var sidebar = $('#note-container');
+    var curNote = $('#current-note-display');
+    var collapsedSidebar = $('#collapsed-sidebar');
+
+    sidebar.hide();
+    curNote.removeClass('cust-col-8');
+    curNote.addClass('cust-col-11');
+    collapsedSidebar.show();
+}
+
+function browseMode() {
+    var sidebar = $('#note-container');
+    var curNote = $('#current-note-display');
+    var collapsedSidebar = $('#collapsed-sidebar');
+
+    collapsedSidebar.hide();
+    sidebar.show();
+    curNote.removeClass('cust-col-11');
+    curNote.addClass('cust-col-8');
+}
+
+function addModeSwitchListeners() {
+    document.getElementById('index-hide-btn').addEventListener('click' ,function(event) {
+        focusMode();
+    });
+
+    document.getElementById('index-show-btn').addEventListener('click' ,function(event) {
+        browseMode();
+    });
+}
