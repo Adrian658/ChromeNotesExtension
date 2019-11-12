@@ -3,6 +3,10 @@
  */
 var raw_notes = [];
 var hashtagRegex = /\B(\#[a-zA-Z0-9]+\b)/g;
+/* 
+This means the # symbol of a hash must not bump into other words
+var improvedHashtagRegex = /([^a-zA-Z0-9])\B(\#[a-zA-Z0-9]+\b)/g;
+*/
 
 /*
  *  DEPRECATED method for filtering notes containing key phrase in title or body
@@ -346,6 +350,11 @@ function applyHashFormatting(quill, changeIndex, regex, format) {
     quillText = quill.getText();
     var hashEndIndex;
 
+    //Don't remove hash formatting when user types hash ending character immediately before beginning of a hash
+    if (quillText[changeIndex] == "#" && !format) {
+        return;
+    }
+
     //Finds where the hash ends starting from the changeIndex
     for (hashEndIndex = changeIndex; hashEndIndex < quillText.length; hashEndIndex++) {
         if (regex.exec(quillText[hashEndIndex])) {
@@ -393,7 +402,7 @@ function findDeleteChar(quill, oldDelta, changeIndex, regex) {
     //Check if the user backspaced immediately after a hash ending, meaningthey joined the following text with a hash, so format the joined text
     opsCounter = opsCounter-1;
     op = oldDelta.ops[opsCounter];
-    if (op.attributes && op.attributes.hash == "phrase" && changeIndex==indexCounter) {
+    if (op && op.attributes && op.attributes.hash == "phrase" && changeIndex==indexCounter) {
         applyHashFormatting(quill, changeIndex, regex, 'phrase');
     }
 
@@ -478,6 +487,15 @@ function addCitationButtonListener() {
 
     }
 
+}
+
+function findTitle(url) {
+    jQuery.get(url, function(data){
+        var html = data.responseText;
+        var regex = /\<title\>(.*)\<\/title\>/;
+        var result = regex.exec(html);
+        console.log(result);
+    });
 }
 
 

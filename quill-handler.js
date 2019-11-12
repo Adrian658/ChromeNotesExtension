@@ -30,27 +30,35 @@ function createEditor() {
         //If the change was made by a user
         if (source == "user") {
 
-            //console.log(delta);
+            console.log(delta);
             //console.log(oldDelta);
 
-            var quillText = quill.getText();
-            var previousChar = quillText[delta.ops[0].retain-1];
+            /* Store information about the change */
+            var changeIndex = delta.ops[0].retain;
+            var op1 = delta.ops[0];
+            var op2 = delta.ops[1];
+            var changeChar, backspace;
+            (!changeIndex) ? changeIndex = 0 : {};
+            (op2) ? changeChar = op2.insert : changeChar = op1.insert;
+            (op2) ? backspace = op2.delete == 1 : backspace = op1.delete == 1;
 
             /* if the character is the first typed on its line, remove hash formatting */
+            var quillText = quill.getText();
+            var previousChar = quillText[changeIndex-1];
             if (previousChar == "\n") {
-                quill.formatText(delta.ops[0].retain, 1, 'hash', false);
+                quill.formatText(changeIndex, 1, 'hash', false);
             }
 
             /* apply hash formatting depending on the character typed by the user */
-            if (delta.ops[1].insert == "#") {
-                applyHashFormatting(quill, delta.ops[0].retain, hashtagRegexEnd, 'phrase');
+            if (changeChar == "#") {
+                applyHashFormatting(quill, changeIndex, hashtagRegexEnd, 'phrase');
             }
-            else if (hashtagRegexEnd.exec(delta.ops[1].insert)) { //users types a character that would end a hash
-                applyHashFormatting(quill, delta.ops[0].retain+1, hashtagRegexEnd, false);
-                quill.formatText(delta.ops[0].retain, 1, 'hash', false);
+            else if (hashtagRegexEnd.exec(changeChar)) { //users types a character that would end a hash
+                applyHashFormatting(quill, changeIndex+1, hashtagRegexEnd, false);
+                quill.formatText(changeIndex, 1, 'hash', false);
             }
-            else if (delta.ops[1].delete == 1) { //user backspaces which could affect hashes
-                findDeleteChar(quill, oldDelta, delta.ops[0].retain, hashtagRegexEnd);
+            else if (backspace) { //user backspaces which could affect hashes
+                findDeleteChar(quill, oldDelta, changeIndex, hashtagRegexEnd);
             }
             
         }
@@ -58,7 +66,7 @@ function createEditor() {
         //Save the note if the user does not make changes after current change
         $('#autosave-label').text('Saving changes...');
         changeCount += 1;
-        saveNoteWrapper(changeCount, 1500);
+        saveNoteWrapper(changeCount);
 
     });
 
@@ -82,13 +90,13 @@ function registerHashFormat() {
  * If so, then the user has made changes since the function was called, so no action is taken.
  * If not, then the user has not made any changes for the timeout value and the current changes are saved.
  */
-function saveNoteWrapper(changeCount, timeoutValue=3000) {
+function saveNoteWrapper(changeCount, timeoutValue=1500) {
     
     localChangeCount = changeCount;
 
     setTimeout(function(){
         if (localChangeCount == changeCount) {
-            console.log("Change ", localChangeCount, " is being saved");
+            //console.log("Change ", localChangeCount, " is being saved");
             saveNote();
             changeCount = 0;
         }

@@ -238,7 +238,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 .ql-hash-phrase {
-    color: whitesmoke;
+    color: whitesmoke !important;
     background: linear-gradient(90deg, rgb(57, 20, 221) 10%, rgb(175, 54, 245) 100%);
     border-radius: 8px;
 }

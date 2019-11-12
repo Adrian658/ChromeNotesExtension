@@ -36,3 +36,5 @@ Notes are saved automatically
 - Tons of cool formatting options are available in the editor toolbar to check out, including
     - Adding images to your note
     - Adding mathematical formulas in a professional and readable format
+
+# Tips and Tricks
