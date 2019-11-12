@@ -1,11 +1,13 @@
 
 var changeCount = 0; //Keeps track of the number of changes made to Quill editor
+var hashtagRegexEnd = /[ .!?\\:;(){}\t\n]/ //regex to recognize the end of a hash 
 
 /*
  *  Creates the Quill editor
  */
 function createEditor() {
 
+    /* Register custom fonts with Quill */
     var Font = Quill.import('formats/font');
     Font.whitelist = ['roboto', 'inconsolata', 'mirza', 'arial', 'snellroundhand', 'impact'];
     Quill.register(Font, true);
@@ -20,35 +22,67 @@ function createEditor() {
         bounds: '#scrolling-container'
     });
 
-    //Set Quill editor to auto-save after making changes
-    
+    registerHashFormat();
+
+    /* Inititate hash formatting and auto saving when user makes edits */
     quill.on('text-change', function(delta, oldDelta, source) {
 
         //If the change was made by a user
         if (source == "user") {
 
-            //console.log("Delta: ", delta);
-            //If the change made was the user pressing the spacebar, check if they were finishing typing a hash
-            /*if (delta.ops[1].insert == " ") {
-                highlightHashes(delta.ops[0].retain, "space");
+            console.log(delta);
+            //console.log(oldDelta);
+
+            /* Store information about the change */
+            var changeIndex = delta.ops[0].retain;
+            var op1 = delta.ops[0];
+            var op2 = delta.ops[1];
+            var changeChar, backspace;
+            (!changeIndex) ? changeIndex = 0 : {};
+            (op2) ? changeChar = op2.insert : changeChar = op1.insert;
+            (op2) ? backspace = op2.delete == 1 : backspace = op1.delete == 1;
+
+            /* if the character is the first typed on its line, remove hash formatting */
+            var quillText = quill.getText();
+            var previousChar = quillText[changeIndex-1];
+            if (previousChar == "\n") {
+                quill.formatText(changeIndex, 1, 'hash', false);
             }
-            else if (delta.ops[1].delete == 1) {
-                highlightHashes(delta.ops[0].retain, "backspace");
+
+            /* apply hash formatting depending on the character typed by the user */
+            if (changeChar == "#") {
+                applyHashFormatting(quill, changeIndex, hashtagRegexEnd, 'phrase');
             }
-            else { //highlight all hashes
-                highlightHashes();
-            }*/
+            else if (hashtagRegexEnd.exec(changeChar)) { //users types a character that would end a hash
+                applyHashFormatting(quill, changeIndex+1, hashtagRegexEnd, false);
+                quill.formatText(changeIndex, 1, 'hash', false);
+            }
+            else if (backspace) { //user backspaces which could affect hashes
+                findDeleteChar(quill, oldDelta, changeIndex, hashtagRegexEnd);
+            }
             
-
-            $('#autosave-label').text('Saving changes...');
-            changeCount += 1;
-
-            //Save the note if the user does not make changes after current change
-            saveNoteWrapper(changeCount, 1500);
         }
+
+        //Save the note if the user does not make changes after current change
+        $('#autosave-label').text('Saving changes...');
+        changeCount += 1;
+        saveNoteWrapper(changeCount);
 
     });
 
+}
+
+/*
+ *  Registers the custom hash format class with Quill
+ */
+function registerHashFormat() {
+    var Parchment = Quill.import("parchment");
+
+    let CustomClass = new Parchment.Attributor.Class('hash', 'ql-hash', {
+        scope: Parchment.Scope.INLINE
+    });
+
+    Quill.register(CustomClass, true);
 }
 
 /*
@@ -56,13 +90,13 @@ function createEditor() {
  * If so, then the user has made changes since the function was called, so no action is taken.
  * If not, then the user has not made any changes for the timeout value and the current changes are saved.
  */
-function saveNoteWrapper(changeCount, timeoutValue=3000) {
+function saveNoteWrapper(changeCount, timeoutValue=1500) {
     
     localChangeCount = changeCount;
 
     setTimeout(function(){
         if (localChangeCount == changeCount) {
-            console.log("Change ", localChangeCount, " is being saved");
+            //console.log("Change ", localChangeCount, " is being saved");
             saveNote();
             changeCount = 0;
         }

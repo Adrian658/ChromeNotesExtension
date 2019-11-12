@@ -3,6 +3,7 @@
 .extension-container {
     width: 600px;
     height: 600px;
+    font-family: PT Sans;
 }
 
 textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container::-webkit-scrollbar { 
@@ -12,15 +13,38 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 /* Classes attached to elements concerning the note index container */
 
 .note-container {
-    background-color: rgb(126, 9, 194);
-    overflow-x: visible;
-    overflow-y: auto;
+    /*background-color: rgb(17, 92, 190);*/
+    background: linear-gradient(90deg, rgb(57, 20, 221) 10%, rgb(175, 54, 245) 100%);
+    overflow-y: hidden;
     height: 100%;
+}
+
+#note-index-container {
+    overflow-y: auto;
+    margin-top: 20px;
+    height: 400px;
+}
+
+.selection-btn {
+    background-color: rgba(31, 30, 36, 0.6);
+    color: white;
+    width: 40%;
+    margin: 26px 0px;
+}
+
+.selection-btn:hover {
+    background-color: rgba(31, 30, 36, 0.8);
+    color: white;
+}
+
+#tags-filter-btn {
+    float: right;
 }
 
 .note-tile, .new-note-btn {
     color: #000;
-    background-color: #fdfdfd;
+    background-color: #eca92b;
+    border-color: #ea9800;
 	border-radius: 5px;
 	padding: 10px;
 	margin-top: 8px;
@@ -28,7 +52,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 .note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile, .new-note-btn:hover {
     color: white;
-    background-color: rgb(238, 150, 18, 0.8);
+    background-color: #ffb831;
+    border-color: #ea9800;
 	border-radius: 12px;
 	padding: 10px;
 	margin-top: 8px;
@@ -40,6 +65,11 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     border-radius: 5px;
 }
 
+#collapsed-sidebar {
+    display: none;
+    background: linear-gradient(90deg, rgb(57, 20, 221) 10%, rgb(175, 54, 245) 100%);
+}
+
 /* Classes attached to elements concerning the current note container */
 
 #current-note-display {
@@ -49,7 +79,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 .title-container {
-    background-color: rgb(48, 125, 226);
+    /*background-color: rgb(48, 125, 226);*/
+    background: linear-gradient(90deg, rgb(175, 54, 245) 10%, rgb(57, 20, 221) 100%);
 }
 
 .current-note-title-container {
@@ -60,7 +91,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     display: inline-block;
 }
 
-#delete-btn, #download-btn {
+#delete-btn, #download-btn, #citation-btn {
     display: block;
     margin-bottom: 5px;
 }
@@ -89,7 +120,6 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 #scrolling-container {
     height: 80%;
-    /*min-height: 100%; */
     overflow-y:auto;
 }
 
@@ -106,6 +136,70 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     height: inherit;
 }
 
+
+
+/* Column and row classes */
+
+.cust-row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+.cust-col-1 {
+    -ms-flex: 0 0 8.333333%;
+    flex: 0 0 8.333333%;
+    max-width: 8.333333%;
+  }
+
+.cust-col-2 {
+    -ms-flex: 0 0 16.666667%;
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+}
+
+.cust-col-4 {
+    -ms-flex: 0 0 33.333333%;
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+}
+
+.cust-col-8 {
+    -ms-flex: 0 0 66.666667%;
+    flex: 0 0 66.666667%;
+    max-width: 66.666667%;
+}
+
+.cust-col-10 {
+    -ms-flex: 0 0 83.333333%;
+    flex: 0 0 83.333333%;
+    max-width: 83.333333%;
+}
+
+.cust-col-11 {
+    -ms-flex: 0 0 91.666667%;
+    flex: 0 0 91.666667%;
+    max-width: 91.666667%;
+}
+
+.cust-col-12 {
+    -ms-flex: 0 0 100.00%;
+    flex: 0 0 100.00%;
+    max-width: 100.00%;
+}
+
+.cust-col-1, .cust-col-2, .cust-col-4, .cust-col-8, .cust-col-10, .cust-col-11, .cust-col-12 {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.btn {
+    cursor: pointer;
+}
+
 /* Quill editor overrides */
 
 .ql-container.ql-snow {
@@ -117,45 +211,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     border-bottom: 1px solid lightgrey;
 }
 
-/* Column and row classes */
-
-.cust-row {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-}
-
-.cust-col-4 {
-    -ms-flex: 0 0 33.333333%;
-    flex: 0 0 33.333333%;
-    /*max-width: 33.333333%;*/
-}
-
-.cust-col-8 {
-    -ms-flex: 0 0 66.666667%;
-    flex: 0 0 66.666667%;
-    max-width: 66.666667%;
-}
-
-.cust-col-12 {
-    -ms-flex: 0 0 100.00%;
-    flex: 0 0 100.00%;
-    max-width: 100.00%;
-}
-
-.cust-col-4, .cust-col-8, .cust-col-12 {
-    position: relative;
-    width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
-}
-
-.btn {
-    cursor: pointer;
-}
-
-/* Set customf fonts for Quill editor */
+/* Set custom formats for Quill editor */
 
 #toolbar .ql-font span[data-label="Sans Serif"], .ql-font-sans-serif {
     font-family: "Sans Serif";
@@ -181,6 +237,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     font-family: "Snell Roundhand";
 }
 
-.ql-font-impact {
-    font-family: "Impact";
+.ql-hash-phrase {
+    color: whitesmoke !important;
+    background: linear-gradient(90deg, rgb(57, 20, 221) 10%, rgb(175, 54, 245) 100%);
+    border-radius: 8px;
 }

@@ -28,3 +28,13 @@ Search criteria input into the search bar can search through notes in two differ
 Notes are saved automatically
 - 1.5 seconds after the last change is made to the editor
 - When a new note is opened
+
+# Additional Features
+- You can download notes as .txt files
+    - Google Drive and PDF exports are being implemented
+- You can cite the active chrome tab with the click of a button which will automatically insert a link to the website at your cursor position
+- Tons of cool formatting options are available in the editor toolbar to check out, including
+    - Adding images to your note
+    - Adding mathematical formulas in a professional and readable format
+
+# Tips and Tricks
