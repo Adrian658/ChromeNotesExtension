@@ -2,7 +2,7 @@
     "name": "Chrome Notes",
     "version": "1.0",
     "description": "Take notes easily while browsing Google Chrome!",
-    "permissions": ["declarativeContent", "storage", "tabs"],
+    "permissions": ["declarativeContent", "storage", "tabs", "https://*/"],
     "page_action": {
         "default_popup": "main.html"
     },

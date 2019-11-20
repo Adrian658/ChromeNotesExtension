@@ -65,9 +65,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     border-radius: 5px;
 }
 
-#collapsed-sidebar {
+#index-show-btn {
     display: none;
-    background: linear-gradient(90deg, rgb(57, 20, 221) 10%, rgb(175, 54, 245) 100%);
 }
 
 /* Classes attached to elements concerning the current note container */
