@@ -1,5 +1,5 @@
 {
-    "name": "Chrome Notes",
+    "name": "Notility",
     "version": "1.0",
     "description": "Take notes easily while browsing Google Chrome!",
     "permissions": ["declarativeContent", "storage", "tabs"],
