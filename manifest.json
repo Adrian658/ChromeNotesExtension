@@ -5,6 +5,9 @@
     "permissions": ["declarativeContent", "storage", "tabs"],
     "page_action": {
         "default_popup": "main.html"
-    },
+	},
+	"icons": { "16": "Notility_Icon_16.png",
+           "48": "Notility_Icon_48.png",
+          "128": "Notility_Icon_128.png" },
     "manifest_version": 2
 }
