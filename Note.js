@@ -347,7 +347,7 @@ async function deleteNote(deleteID){
  */
 function applyHashFormatting(quill, changeIndex, regex, format) {
 
-    quillText = quill.getText();
+    quillText = quillGetText(quill);
     var hashEndIndex;
 
     //Don't remove hash formatting when user types hash ending character immediately before beginning of a hash
@@ -364,6 +364,25 @@ function applyHashFormatting(quill, changeIndex, regex, format) {
 
     quill.formatText(changeIndex, hashEndIndex-changeIndex, 'hash', format);
 
+}
+
+/*
+ *  Override for quill.getText()
+ *  Necessary because quill.getText() returns formulas as strings whereas the editor treats formula as a single index position
+ *  And because hash formatting relies on indices, custom method must be developed that treats formulas as a single character
+ */
+function quillGetText(quill) {
+    var contents = quill.getContents();
+    var quillText = "";
+
+    for (op of contents.ops) {
+        var opInsert = op.insert;
+        if (opInsert == "[object Object]") { //If the op is inserting a formula, insert a single char instead to simulate single index
+            opInsert = "O"; //Arbitrary value to represent a formula
+        }
+        quillText = quillText.concat(opInsert);
+    }
+    return quillText;
 }
 
 /*
@@ -477,12 +496,14 @@ function addCitationButtonListener() {
     document.getElementById("citation-btn").onclick = function() {
         
         chrome.tabs.query({active: true}, function(tabs){
-            console.log(tabs);
+            console.log("Tabs", tabs);
             var tabURL = tabs[0].url;
+            var tabTitle = tabs[0].title;
             var quill = Quill.find(document.querySelector("#current-note-body"));
             quill.focus();
             var focusIndex = quill.getSelection().index
-            quill.insertText(focusIndex, tabURL, 'link', tabURL);
+            (!tabTitle) ? tabTitle = tabURL : {};
+            quill.insertText(focusIndex, tabTitle, 'link', tabURL);
         });
 
     }
@@ -698,6 +719,7 @@ function addElementListeners() {
  */
 document.addEventListener("DOMContentLoaded", function(){
     loadNotes();
+    determineFocusMode();
     addElementListeners();
 })
 
@@ -706,31 +728,41 @@ document.addEventListener("DOMContentLoaded", function(){
 function focusMode() {
     var sidebar = $('#note-container');
     var curNote = $('#current-note-display');
-    var collapsedSidebar = $('#collapsed-sidebar');
+    var btn = $('#index-show-btn');
 
     sidebar.hide();
     curNote.removeClass('cust-col-8');
-    curNote.addClass('cust-col-11');
-    collapsedSidebar.show();
+    curNote.addClass('cust-col-12');
+    btn.show();
 }
 
 function browseMode() {
     var sidebar = $('#note-container');
     var curNote = $('#current-note-display');
-    var collapsedSidebar = $('#collapsed-sidebar');
+    var btn = $('#index-show-btn');
 
-    collapsedSidebar.hide();
     sidebar.show();
-    curNote.removeClass('cust-col-11');
+    curNote.removeClass('cust-col-12');
     curNote.addClass('cust-col-8');
+    btn.hide();
 }
 
 function addModeSwitchListeners() {
     document.getElementById('index-hide-btn').addEventListener('click' ,function(event) {
-        focusMode();
+        chrome.storage.local.set({'preferenceFocus': true}, function(){
+            focusMode(); 
+        });
     });
 
     document.getElementById('index-show-btn').addEventListener('click' ,function(event) {
-        browseMode();
+        chrome.storage.local.set({'preferenceFocus': false}, function(){
+            browseMode();
+        });
+    });
+}
+
+function determineFocusMode() {
+    chrome.storage.local.get({'preferenceFocus': 'false'}, function(store){
+        (store.preferenceFocus) ? focusMode() : {};
     });
 }

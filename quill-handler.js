@@ -31,7 +31,7 @@ function createEditor() {
         if (source == "user") {
 
             console.log(delta);
-            //console.log(oldDelta);
+            console.log(oldDelta);
 
             /* Store information about the change */
             var changeIndex = delta.ops[0].retain;
@@ -43,7 +43,7 @@ function createEditor() {
             (op2) ? backspace = op2.delete == 1 : backspace = op1.delete == 1;
 
             /* if the character is the first typed on its line, remove hash formatting */
-            var quillText = quill.getText();
+            var quillText = quillGetText(quill);
             var previousChar = quillText[changeIndex-1];
             if (previousChar == "\n") {
                 quill.formatText(changeIndex, 1, 'hash', false);
@@ -51,6 +51,7 @@ function createEditor() {
 
             /* apply hash formatting depending on the character typed by the user */
             if (changeChar == "#") {
+                console.log("true");
                 applyHashFormatting(quill, changeIndex, hashtagRegexEnd, 'phrase');
             }
             else if (hashtagRegexEnd.exec(changeChar)) { //users types a character that would end a hash
