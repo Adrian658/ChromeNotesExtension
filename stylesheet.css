@@ -14,9 +14,14 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 .note-container {
     /*background-color: rgb(17, 92, 190);*/
-    background: linear-gradient(90deg, rgb(57, 20, 221) 10%, rgb(175, 54, 245) 100%);
+    background: linear-gradient(90deg, rgb(238, 146, 7) 10%, rgb(235, 175, 10) 100%);
     overflow-y: hidden;
     height: 100%;
+}
+
+.title-container {
+    /*background-color: rgb(48, 125, 226);*/
+    background: linear-gradient(90deg, rgb(235, 175, 10) 10%, rgb(238, 146, 7) 100%);
 }
 
 #note-index-container {
@@ -43,8 +48,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 .note-tile, .new-note-btn {
     color: #000;
-    background-color: #eca92b;
-    border-color: #ea9800;
+    background-color: #802b00;
+    border: none;
 	border-radius: 5px;
 	padding: 10px;
 	margin-top: 8px;
@@ -75,11 +80,6 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     background-color: white;
     height: 100%;
     padding: 0px;
-}
-
-.title-container {
-    /*background-color: rgb(48, 125, 226);*/
-    background: linear-gradient(90deg, rgb(175, 54, 245) 10%, rgb(57, 20, 221) 100%);
 }
 
 .current-note-title-container {
@@ -238,6 +238,6 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 .ql-hash-phrase {
     color: whitesmoke !important;
-    background: linear-gradient(90deg, rgb(57, 20, 221) 10%, rgb(175, 54, 245) 100%);
+    background: linear-gradient(90deg, rgb(238, 146, 7) 10%, rgb(235, 175, 10) 100%);
     border-radius: 8px;
 }
