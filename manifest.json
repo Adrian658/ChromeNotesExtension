@@ -1,10 +1,13 @@
 {
-    "name": "Chrome Notes",
+    "name": "Notility",
     "version": "1.0",
     "description": "Take notes easily while browsing Google Chrome!",
     "permissions": ["declarativeContent", "storage", "tabs", "https://*/"],
     "browser_action": {
         "default_popup": "main.html"
-    },
+	},
+	"icons": { "16": "Notility_Icon_16.png",
+           "48": "Notility_Icon_48.png",
+          "128": "Notility_Icon_128.png" },
     "manifest_version": 2
 }
