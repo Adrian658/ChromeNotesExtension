@@ -3,6 +3,8 @@
  */
 var raw_notes = [];
 var hashtagRegex = /\B(\#[a-zA-Z0-9]+\b)/g;
+var hashtagRegexEnd = /[ .!?\\:;(){}\t\n]/ //regex to recognize the end of a hash 
+
 /* 
 This means the # symbol of a hash must not bump into other words
 var improvedHashtagRegex = /([^a-zA-Z0-9])\B(\#[a-zA-Z0-9]+\b)/g;
@@ -159,6 +161,9 @@ function populateCanvas(id,title,body,hashes){
     chrome.storage.local.set({'activeNote': id}, function(){
             console.log("Active note id("+id+") successfully saved.");
     });
+    setTimeout(function(){
+        highlightHashes(hashtagRegexEnd);
+    }, 1);
 }
 
 /*
@@ -366,6 +371,18 @@ function applyHashFormatting(quill, changeIndex, regex, format) {
 
 }
 
+function highlightHashes(regex) {
+
+    var editor = Quill.find(document.querySelector("#current-note-body"));
+    var bodyText = quillGetText(editor);
+    for (var i=0; i < bodyText.length; i++) {
+        if (bodyText[i] == "#") {
+            applyHashFormatting(editor, i, regex, 'phrase');
+        }
+    }
+
+}
+
 /*
  *  Override for quill.getText()
  *  Necessary because quill.getText() returns formulas as strings whereas the editor treats formula as a single index position
@@ -496,12 +513,12 @@ function addCitationButtonListener() {
     document.getElementById("citation-btn").onclick = function() {
         
         chrome.tabs.query({active: true}, function(tabs){
-            console.log("Tabs", tabs);
             var tabURL = tabs[0].url;
             var tabTitle = tabs[0].title;
             var quill = Quill.find(document.querySelector("#current-note-body"));
             quill.focus();
-            var focusIndex = quill.getSelection().index
+            console.log(quill.hasFocus())
+            var focusIndex = quill.getSelection().index;
             (!tabTitle) ? tabTitle = tabURL : {};
             quill.insertText(focusIndex, tabTitle, 'link', tabURL);
         });
@@ -515,7 +532,6 @@ function findTitle(url) {
         var html = data.responseText;
         var regex = /\<title\>(.*)\<\/title\>/;
         var result = regex.exec(html);
-        console.log(result);
     });
 }
 

@@ -30,8 +30,8 @@ function createEditor() {
         //If the change was made by a user
         if (source == "user") {
 
-            console.log(delta);
-            console.log(oldDelta);
+            //console.log(delta);
+            //console.log(oldDelta);
 
             /* Store information about the change */
             var changeIndex = delta.ops[0].retain;
@@ -60,6 +60,9 @@ function createEditor() {
             }
             else if (backspace) { //user backspaces which could affect hashes
                 findDeleteChar(quill, oldDelta, changeIndex, hashtagRegexEnd);
+            }
+            else if (changeIndex == 0) {
+                quill.formatText(changeIndex, 1, 'hash', false);
             }
             
         }
