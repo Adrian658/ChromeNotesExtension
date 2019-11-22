@@ -9,7 +9,7 @@ function createEditor() {
 
     /* Register custom fonts with Quill */
     var Font = Quill.import('formats/font');
-    Font.whitelist = ['roboto', 'inconsolata', 'mirza', 'arial', 'snellroundhand', 'impact'];
+    Font.whitelist = ['mirza', 'arial', 'snellroundhand', 'impact', 'timesNewRoman', 'typewriter', 'courier', 'appleChancery'];
     Quill.register(Font, true);
 
     //Assign instance of Quill to appropriate HTML section

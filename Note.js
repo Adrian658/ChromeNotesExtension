@@ -371,6 +371,9 @@ function applyHashFormatting(quill, changeIndex, regex, format) {
 
 }
 
+/*
+ *  Iterates through quill document, highlighting all hashes
+ */
 function highlightHashes(regex) {
 
     var editor = Quill.find(document.querySelector("#current-note-body"));

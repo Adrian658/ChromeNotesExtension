@@ -216,14 +216,6 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     font-family: "Sans Serif";
 }
 
-#toolbar .ql-font span[data-label="Roboto"], .ql-font-roboto {
-    font-family: "Roboto";
-}
-
-#toolbar .ql-font span[data-label="Inconsolata"], .ql-font-inconsolata {
-    font-family: "Inconsolata";
-}
-
 #toolbar .ql-font span[data-label="Mirza"], .ql-font-mirza {
     font-family: "Mirza";
 }
@@ -234,6 +226,22 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 #toolbar .ql-font span[data-label="Snell"], .ql-font-snellroundhand {
     font-family: "Snell Roundhand";
+}
+
+#toolbar .ql-font span[data-label="Times"], .ql-font-timesNewRoman {
+    font-family: "Times New Roman";
+}
+
+#toolbar .ql-font span[data-label="Typewriter"], .ql-font-typewriter {
+    font-family: "American Typewriter";
+}
+
+#toolbar .ql-font span[data-label="Courier"], .ql-font-courier {
+    font-family: "Courier New";
+}
+
+#toolbar .ql-font span[data-label="Apple"], .ql-font-appleChancery {
+    font-family: "Apple Chancery";
 }
 
 .ql-hash-phrase {
