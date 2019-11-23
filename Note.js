@@ -658,12 +658,11 @@ function addTitleListener() {
     });
 
     document.getElementById('current-note-title').addEventListener('keydown' ,function(event) {
-        console.log(event.key);
         var targetElement = event.target || event.srcElement;
         if (event.key == "Enter") {
             targetElement.blur();
         }
-        else if (targetElement.innerHTML.length > 25 && event.key != "Backspace" && event.key != "ArrowLeft" && event.key != "ArrowRight") {
+        else if (targetElement.textContent.length > 25 && event.key != "Backspace" && event.key != "ArrowLeft" && event.key != "ArrowRight") {
             event.preventDefault();
         }
     });

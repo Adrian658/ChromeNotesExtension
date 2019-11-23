@@ -20,9 +20,13 @@
             <div class="cust-row note-content">
                     <div id="note-container" class="note-container scroll-toggle cust-col-4">
                         <div id="sidebar" class="cust-row">
+                            <div class="cust-col-12 pl-0 pt-2 pb-0">
+                                <i id="index-hide-btn" class="text-white fas fa-chevron-left"></i>
+                            </div>
                             <div class="cust-col-12 pl-0 pr-0">
+                                <input type="text" id="searcher" placeholder="Search..." class="mt-2"> 
+                                <hr> 
                                 <div id="filter-container">
-                                    <i id="index-hide-btn" class="text-white fas fa-long-arrow-alt-left"></i>
                                     <div id="note-filter-btn" class="btn selection-btn">
                                         Notes
                                     </div>
@@ -30,10 +34,10 @@
                                         Tags
                                     </div>
                                 </div>
-                                <input type="text" id="searcher" placeholder="Search notes...">
-                                <div id="new-note-btn" class="new-note-btn btn btn-block">
-                                    Create <i class="fas fa-plus"></i>
+                                <div id="new-note-btn" class="new-note-btn btn btn-block mt-2">
+                                    New Note <i class="fas fa-plus"></i>
                                 </div>
+                                <hr class="">
                             </div>
                             <div id="note-index-container" class="scroll-toggle cust-col-12 pl-0 pr-0">
                                 <div class="note-index text-center">
@@ -45,7 +49,7 @@
                         <div class="title-container text-light" style="height: 15%">
                             <div class="cust-row">
                                 <div class="cust-col-12 current-note-title-container">
-                                    <i id="index-show-btn" class="text-white fas fa-long-arrow-alt-right"></i>
+                                    <i id="index-show-btn" class="text-white fas fa-chevron-right"></i>
                                     <span id="current-note-title" contenteditable="true" spellcheck="false"></span>
                                     <div id="note-options" class="btn btn-info">
                                         <i class="fas fa-sort-down"></i>
