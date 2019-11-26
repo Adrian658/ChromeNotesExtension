@@ -1,6 +1,6 @@
 
 var changeCount = 0; //Keeps track of the number of changes made to Quill editor
-var hashtagRegexEnd = /[ .!?\\:;(){}\t\n]/ //regex to recognize the end of a hash 
+var hashtagRegexEnd = /[^a-zA-Z\d\#]/ //regex to recognize the end of a hash 
 
 /*
  *  Creates the Quill editor
@@ -51,7 +51,6 @@ function createEditor() {
 
             /* apply hash formatting depending on the character typed by the user */
             if (changeChar == "#") {
-                console.log("true");
                 applyHashFormatting(quill, changeIndex, hashtagRegexEnd, 'phrase');
             }
             else if (hashtagRegexEnd.exec(changeChar)) { //users types a character that would end a hash

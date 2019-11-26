@@ -26,20 +26,24 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 #note-index-container {
     overflow-y: auto;
-    margin-top: 20px;
+    margin-top: 0px;
     height: 400px;
 }
 
 .selection-btn {
     background-color: rgba(31, 30, 36, 0.6);
     color: white;
-    width: 40%;
-    margin: 26px 0px;
+    width: 45%;
 }
 
 .selection-btn:hover {
     background-color: rgba(31, 30, 36, 0.8);
     color: white;
+}
+
+.filter-container {
+    display: inline-flex;
+    justify-content: flex-end;
 }
 
 #tags-filter-btn {
@@ -87,7 +91,12 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     padding-top: 10px;
     font-size: 1.5rem;
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+}
+
+#current-note-title {
+    margin: auto;
 }
 
 #delete-btn, #download-btn, #citation-btn {
@@ -195,8 +204,16 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     padding-left: 15px;
 }
 
-.btn {
+.btn, #index-hide-btn, #index-show-btn {
     cursor: pointer;
+}
+
+#index-hide-btn, #index-show-btn {
+    font-size: 1rem;
+}
+
+#index-hide-btn {
+    margin-top: 13px;
 }
 
 /* Quill editor overrides */
