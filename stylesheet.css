@@ -34,12 +34,16 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     background-color: rgba(31, 30, 36, 0.6);
     color: white;
     width: 45%;
-    margin: 0px 0px 0px 0px;
 }
 
 .selection-btn:hover {
     background-color: rgba(31, 30, 36, 0.8);
     color: white;
+}
+
+.filter-container {
+    display: inline-flex;
+    justify-content: flex-end;
 }
 
 #tags-filter-btn {

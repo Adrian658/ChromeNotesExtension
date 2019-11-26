@@ -3,7 +3,6 @@
  */
 var raw_notes = [];
 var hashtagRegex = /\B(\#[a-zA-Z0-9]+\b)/g;
-var hashtagRegexEnd = /[ .!?\\:;(){}\t\n]/ //regex to recognize the end of a hash 
 
 /* 
 This means the # symbol of a hash must not bump into other words
