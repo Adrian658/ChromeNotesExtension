@@ -13,15 +13,14 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 /* Classes attached to elements concerning the note index container */
 
 .note-container {
-    /*background-color: rgb(17, 92, 190);*/
-    background: linear-gradient(90deg, rgb(238, 146, 7) 10%, rgb(235, 175, 10) 100%);
+    /*background-color: #0037be;*/
+    background: linear-gradient(90deg, #0037be 10%, #004ec4 95%);
     overflow-y: hidden;
     height: 100%;
 }
 
 .title-container {
-    /*background-color: rgb(48, 125, 226);*/
-    background: linear-gradient(90deg, rgb(235, 175, 10) 10%, rgb(238, 146, 7) 100%);
+    background: linear-gradient(90deg, #004ec4 10%, #0057da 100%);
 }
 
 #note-index-container {
@@ -31,13 +30,14 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 .selection-btn {
-    background-color: rgba(31, 30, 36, 0.6);
-    color: white;
+    background-color: aquamarine;
+    color: black;
     width: 45%;
+    border-radius: 0px;
 }
 
 .selection-btn:hover {
-    background-color: rgba(31, 30, 36, 0.8);
+    background-color: #c73c94;
     color: white;
 }
 
@@ -51,31 +51,35 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 .note-tile, .new-note-btn {
-    color: #000;
-    background-color: #802b00;
+    color: white;
+    background-color: #005fed;
     border: none;
-	border-radius: 5px;
+	border-radius: 0px;
 	padding: 10px;
 	margin-top: 8px;
 }
 
 .note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile, .new-note-btn:hover {
     color: white;
-    background-color: #ffb831;
-    border-color: #ea9800;
-	border-radius: 12px;
+    background-color: #c73c94;
+	border-radius: 0px;
 	padding: 10px;
 	margin-top: 8px;
 }
 
 .active-note, .active-note:hover {
-    background-color: rgb(255, 153, 0) !important;
-    color: white;
-    border-radius: 5px;
+    background-color: aquamarine !important;
+    color: black;
+    border-radius: 0px;
 }
 
 #index-show-btn {
     display: none;
+}
+
+hr {
+    background-color: white;
+    width: 70%;
 }
 
 /* Classes attached to elements concerning the current note container */
@@ -106,6 +110,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 #note-options {
    float: right;
+   background-color: #c73c94;
+   color: white;
 }
 
 #tags-container {
@@ -223,9 +229,46 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 #toolbar {
+    position: relative;
     border: none;
     border-bottom: 1px solid lightgrey;
 }
+
+#test:after {
+    content: "";
+    background: white;
+    position: absolute;
+    top: 0;
+    left: 5%;
+    height: 1px;
+    width: 85%;
+}
+
+/*
+.ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
+    fill: white;
+}
+
+.ql-snow .ql-stroke, .ql-snow .ql-stroke.ql-fill {
+    stroke: white;
+}
+
+.ql-snow .ql-picker.ql-expanded .ql-picker-label {
+    color: white;
+}
+
+.ql-snow .ql-picker {
+    color: white;
+}
+
+.ql-snow .ql-picker-options {
+    color: black;
+}
+
+.ql-snow.ql-toolbar button:hover, .ql-snow .ql-toolbar button:hover, .ql-snow.ql-toolbar button:focus, .ql-snow .ql-toolbar button:focus, .ql-snow.ql-toolbar button.ql-active, .ql-snow .ql-toolbar button.ql-active, .ql-snow.ql-toolbar .ql-picker-label:hover, .ql-snow .ql-toolbar .ql-picker-label:hover, .ql-snow.ql-toolbar .ql-picker-label.ql-active, .ql-snow .ql-toolbar .ql-picker-label.ql-active, .ql-snow.ql-toolbar .ql-picker-item:hover, .ql-snow .ql-toolbar .ql-picker-item:hover, .ql-snow.ql-toolbar .ql-picker-item.ql-selected, .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
+    color: aquamarine !important;
+}
+*/
 
 /* Set custom formats for Quill editor */
 
@@ -263,6 +306,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 .ql-hash-phrase {
     color: whitesmoke !important;
-    background: linear-gradient(90deg, rgb(238, 146, 7) 10%, rgb(235, 175, 10) 100%);
+    background-color: #c73c94;
+    /*background: linear-gradient(90deg, rgb(238, 146, 7) 10%, rgb(235, 175, 10) 100%);*/
     border-radius: 8px;
 }
