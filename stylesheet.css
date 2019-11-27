@@ -30,6 +30,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 .selection-btn {
+    border: 2px solid aquamarine;
     background-color: aquamarine;
     color: black;
     width: 45%;
@@ -37,8 +38,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 .selection-btn:hover {
-    background-color: #c73c94;
-    color: white;
+    background: none;
+    color: aquamarine;
 }
 
 .filter-container {
