@@ -27,7 +27,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 #note-index-container {
     overflow-y: auto;
     margin-top: 0px;
-    height: 400px;
+    height: 350px;
 }
 
 .selection-btn {
