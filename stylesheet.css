@@ -13,15 +13,15 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 /* Classes attached to elements concerning the note index container */
 
 .note-container {
-    /*background-color: rgb(17, 92, 190);*/
-    background: linear-gradient(90deg, rgb(238, 146, 7) 10%, rgb(235, 175, 10) 100%);
+    /*background-color: #4a86e8;*/
+    background: linear-gradient(90deg, #018abe 10%, #62b3d1 100%);
     overflow-y: hidden;
     height: 100%;
 }
 
 .title-container {
     /*background-color: rgb(48, 125, 226);*/
-    background: linear-gradient(90deg, rgb(235, 175, 10) 10%, rgb(238, 146, 7) 100%);
+    background: linear-gradient(90deg, #62b3d1 20%, #97cadb 100%);
 }
 
 #note-index-container {
@@ -31,14 +31,14 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 .selection-btn {
-    background-color: rgba(31, 30, 36, 0.6);
-    color: white;
+    background-color: #dee8f1;
+    color: #08233c;
     width: 45%;
 }
 
 .selection-btn:hover {
-    background-color: rgba(31, 30, 36, 0.8);
-    color: white;
+    background-color: #b1b9c0;
+    color: #08233c;
 }
 
 .filter-container {
@@ -50,28 +50,50 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     float: right;
 }
 
-.note-tile, .new-note-btn {
-    color: #000;
-    background-color: #802b00;
+.note-tile {
+    color: #ffffff;
+    background-color: #0d375f;
     border: none;
 	border-radius: 5px;
 	padding: 10px;
 	margin-top: 8px;
 }
 
-.note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile, .new-note-btn:hover {
+.note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile {
     color: white;
-    background-color: #ffb831;
+    background-color: #254b6f;
+	border-color: #0d375f;
+	border-radius: 5px;
+	padding: 10px;
+	margin-top: 8px;
+}
+
+.new-note-btn {
+	color: white;
+    background-color: #e27b81;
+    border: none;
+	border-radius: 5px;
+	padding: 10px;
+	margin-top: 8px;
+}
+
+.new-note-btn:hover {
+	color: white;
+    background-color: #b96e74;
     border-color: #ea9800;
-	border-radius: 12px;
+	border-radius: 5px;
 	padding: 10px;
 	margin-top: 8px;
 }
 
 .active-note, .active-note:hover {
-    background-color: rgb(255, 153, 0) !important;
-    color: white;
+    background-color: #7cd162 !important;
+    color: #08233c;
     border-radius: 5px;
+}
+
+.note-options-btn {
+	background-color: #0d375f;
 }
 
 #index-show-btn {
@@ -105,7 +127,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 #note-options {
-   float: right;
+   position: absolute;
+   left: 88%
 }
 
 #tags-container {
@@ -117,9 +140,10 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     display: none;
     z-index: 1000;
     position: absolute;
-    left: 78%;
+	top: 81%;
+    left: 80%;
     padding: 15px 15px 10px 15px;
-    background-color: blue;
+    background-color: #c7d0d8;
 }
 
 #autosave-label {
@@ -263,6 +287,8 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 .ql-hash-phrase {
     color: whitesmoke !important;
-    background: linear-gradient(90deg, rgb(238, 146, 7) 10%, rgb(235, 175, 10) 100%);
-    border-radius: 8px;
+    background: linear-gradient(90deg, #018abe 0%,#62b3d1 40%,#62b3d1 60%,#018abe 100% );
+	border: 5px;
+	border-color: #018abe;
+    border-radius: 5px;
 }
