@@ -70,7 +70,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 .new-note-btn {
 	color: white;
-    background-color: #e27b81;
+    background-color: #39b017;
     border: none;
 	border-radius: 5px;
 	padding: 10px;
@@ -79,7 +79,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 .new-note-btn:hover {
 	color: white;
-    background-color: #b96e74;
+    background-color: #2d8c12;
     border-color: #ea9800;
 	border-radius: 5px;
 	padding: 10px;
