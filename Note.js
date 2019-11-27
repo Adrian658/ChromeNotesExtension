@@ -453,7 +453,7 @@ function findDeleteChar(quill, oldDelta, changeIndex, regex) {
  */
 function addCreateNoteListener() {
     document.getElementById('new-note-btn').onclick = function() {
-        createNote('New Note', "", 'red');
+        createNote('Untitled Note', "", 'red');
     }
 }
 
