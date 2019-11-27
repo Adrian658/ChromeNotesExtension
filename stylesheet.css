@@ -110,8 +110,9 @@ hr {
 
 #note-options {
    float: right;
-   background-color: #c73c94;
-   color: white;
+   background-color: aquamarine;
+   color: black;
+   border-radius: 0px;
 }
 
 #tags-container {
@@ -305,8 +306,8 @@ hr {
 }
 
 .ql-hash-phrase {
-    color: whitesmoke !important;
-    background-color: #c73c94;
+    color: black !important;
+    background-color: aquamarine;
     /*background: linear-gradient(90deg, rgb(238, 146, 7) 10%, rgb(235, 175, 10) 100%);*/
     border-radius: 8px;
 }
