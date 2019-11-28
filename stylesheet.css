@@ -3,7 +3,7 @@
 .extension-container {
     width: 600px;
     height: 600px;
-    font-family: PT Sans;
+    font-family: 'Freight Sans LF Pro Light';
 }
 
 textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container::-webkit-scrollbar { 
@@ -13,7 +13,6 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 /* Classes attached to elements concerning the note index container */
 
 .note-container {
-    /*background-color: #0037be;*/
     background: linear-gradient(90deg, #0037be 10%, #004ec4 95%);
     overflow-y: hidden;
     height: 100%;
@@ -26,30 +25,49 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 #note-index-container {
     overflow-y: auto;
     margin-top: 0px;
-    height: 400px;
+    height: 342px;
 }
 
-.selection-btn {
-    border: 2px solid aquamarine;
-    background-color: aquamarine;
-    color: black;
-    width: 45%;
-    border-radius: 0px;
-}
-
-.selection-btn:hover {
-    background: none;
-    color: aquamarine;
-}
-
+/* Display selection buttons */
 .filter-container {
     display: inline-flex;
     justify-content: flex-end;
 }
 
+.selection-btn {
+    background-color: #005fed;
+    color: white;
+    width: 45%;
+    border-radius: 0px;
+}
+
+.selection-btn:hover {
+    color: white;
+    background-color: #c73c94;
+}
+
 #tags-filter-btn {
     float: right;
 }
+
+.active-display {
+    transform: translateY(16px);
+    background-color: aquamarine !important;
+    color: black !important; 
+}
+
+#selection-top-hr {
+    margin-bottom: 0px;
+    width: 100%;
+    background-color: #005fed;
+}
+
+#selection-bottom-hr {
+    width: 100%;
+    background-color: aquamarine;
+}
+
+/* Note tiles */
 
 .note-tile, .new-note-btn {
     color: white;
@@ -83,6 +101,15 @@ hr {
     width: 70%;
 }
 
+#new-note-hr {
+    margin-bottom: 5px;
+}
+
+/*
+1b1b1b
+aquamarine
+*/
+
 /* Classes attached to elements concerning the current note container */
 
 #current-note-display {
@@ -104,30 +131,66 @@ hr {
     margin: auto;
 }
 
-#delete-btn, #download-btn, #citation-btn {
-    display: block;
-    margin-bottom: 5px;
-}
-
-#note-options {
-   float: right;
-   background-color: aquamarine;
-   color: black;
-   border-radius: 0px;
-}
-
 #tags-container {
     max-width: 240px;
     overflow-x: auto;
 }
 
+#note-options-btn {
+    color: black;
+    font-size: 1rem;
+    background-color: aquamarine;
+    padding: 5px 14px 0px 14px;
+    border-radius: 5px 5px 0px 0px;
+    border: 1px solid aquamarine;
+    border-bottom: none;;
+}
+
+#note-options-container:hover #note-options-btn {
+    color: #c73c94;
+    background-color: midnightblue;
+    border: 1px solid #c73c94;
+    border-bottom: none;
+}
+
 #note-options-display {
     display: none;
-    z-index: 1000;
     position: absolute;
-    left: 78%;
+    min-width: 130px;
+    right: 15px;
     padding: 15px 15px 10px 15px;
-    background-color: blue;
+    background-color: midnightblue;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+
+#note-options-display:after {
+    content: "";
+    background: #c73c94;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 1px;
+    width: 87px;
+}
+
+#delete-btn, #download-btn, #citation-btn {
+    float: none;
+    text-decoration: none;
+    display: block;
+    font-size: 1rem;
+    padding-top: 10px;
+    cursor: pointer;
+    color: white;
+}
+
+#download-btn {
+    padding-top: 0px !important;
+}
+
+#delete-btn:hover, #download-btn:hover, #citation-btn:hover {
+    color: aquamarine;
+    text-decoration: underline;
 }
 
 #autosave-label {
@@ -236,16 +299,6 @@ hr {
     border-bottom: 1px solid lightgrey;
 }
 
-#test:after {
-    content: "";
-    background: white;
-    position: absolute;
-    top: 0;
-    left: 5%;
-    height: 1px;
-    width: 85%;
-}
-
 /*
 .ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
     fill: white;
@@ -311,4 +364,14 @@ hr {
     background-color: aquamarine;
     /*background: linear-gradient(90deg, rgb(238, 146, 7) 10%, rgb(235, 175, 10) 100%);*/
     border-radius: 8px;
+}
+
+.transition-normal {
+    transition-duration: 0.5s;
+    transition: all 0.5s;
+}
+
+.transition-quick {
+    transition-duration: 0.3s;
+    transition: all 0.3s;
 }

@@ -36,7 +36,7 @@ function loadNotes(hash){
 
         /* If the user has no notes, create a default new one and open it for them */
         if (raw_notes.length == 0) {
-            createNote("New Note", "Start your new note!", "green");
+            createNote("Give Me a Title!", "Start your new note!", "green");
             openNote(-1);
             return;
         }
@@ -66,7 +66,7 @@ function renderNotes(){
     $('#new-note-btn').show();
     clearNotesDisplay("notes");
     raw_notes.forEach(function(note){
-        $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + note["id"] + '>' + trimTitle(note["title"]) + '</div>');
+        $(".note-index").append('<div class="note-tile btn btn-block transition-quick" data-id=' + note["id"] + '>' + trimTitle(note["title"]) + '</div>');
     });
     addTileListener();
 
@@ -99,7 +99,7 @@ function renderHashes(hashes) {
     $('#new-note-btn').hide();
     clearNotesDisplay("hashes");
     hashes.forEach(function(hash) {
-        $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + hash + '>' + hash + '</div>');
+        $(".note-index").append('<div class="note-tile btn btn-block transition-quick" data-id=' + hash + '>' + trimTitle(hash) + '</div>');
     });
     addTileListener(id=null, type="hash");
 
@@ -126,9 +126,9 @@ function clearNotesDisplay(type) {
 function openNote(id) {
 
     console.log("opening note "+id);
-    if (id == -1) { //id is -1 when no id was found in parent function, so open first note in library
+    if (id == -1) { //id is -1 when no id was found in parent function, so open last note in library
         if(raw_notes.length>0){
-            var note = raw_notes[0];
+            var note = raw_notes[raw_notes.length-1];
             populateCanvas(note["id"], note["title"], note["body"], note["hashes"]);
         } else {
             populateCanvas(null,"not a note","not a note", null);
@@ -179,7 +179,7 @@ function changeNoteHighlight(id) {
     }
     else { //add highlighting to selected element
         if (id == -1) {
-            var note = raw_notes[0];
+            var note = raw_notes[raw_notes.length-1];
             id = note["id"];
         }
         var targetElement = findNoteElement(id);
@@ -336,10 +336,14 @@ async function deleteNote(deleteID){
     raw_notes.splice(delIndex,1);
     saveLib();
 
+    //Find ID of new note to open
+    var openID;
+    (delIndex == 0) ? (openId = -1) : (openID = raw_notes[delIndex-1]["id"]);
+
     //Remove note from DOM and open a different note for display
     findNoteElement(deleteID).remove();
-    openNote(-1);
-    changeNoteHighlight(-1);
+    openNote(openID);
+    changeNoteHighlight(openID);
 
 }
 
@@ -453,7 +457,10 @@ function findDeleteChar(quill, oldDelta, changeIndex, regex) {
  */
 function addCreateNoteListener() {
     document.getElementById('new-note-btn').onclick = function() {
-        createNote('New Note', "", 'red');
+        createNote('Give Me a Title!', "", 'red');
+        setTimeout(function(){
+            $("#note-index-container").scrollTop($("#note-index-container")[0].scrollHeight);
+        }, 100);
     }
 }
 
@@ -474,6 +481,13 @@ function addFilterNoteListener() {
     document.getElementById("note-filter-btn").onclick = function() {
         document.getElementById("searcher").value = "";
         loadNotes();
+
+        /* Change formatting of filter buttons */
+        this.classList.add("active-display");
+        document.getElementById("tags-filter-btn").classList.remove("active-display");
+
+        $("#new-note-hr").show();
+        $("#note-index-container").css('height', '342px');
     }
 }
 
@@ -484,6 +498,13 @@ function addFilterHashesListener() {
     document.getElementById("tags-filter-btn").onclick = function() {
         document.getElementById("searcher").value = "";
         loadHashes();
+
+        /* Change formatting of filter buttons */
+        this.classList.add("active-display");
+        document.getElementById("note-filter-btn").classList.remove("active-display");
+
+        $("#new-note-hr").hide();
+        $("#note-index-container").css('height', '410px');
     }
 }
 
@@ -592,6 +613,9 @@ function addOpenNoteFunctionality(element, type) {
             var targetElement = event.target || event.srcElement;
             var hash = targetElement.innerHTML;
 
+            document.getElementById("note-filter-btn").classList.add("active-display");
+            document.getElementById("tags-filter-btn").classList.remove("active-display");
+
             loadNotes(hash);
     
         });
@@ -599,8 +623,9 @@ function addOpenNoteFunctionality(element, type) {
 }
 
 /*
+ *  DEPRECATED
  *  Adds listener to note options button which displays additional functions to be applied to the current note 
- */
+
 function addNoteOptionsListener() {
     
     document.body.addEventListener('click', function(event) {
@@ -627,10 +652,12 @@ function addNoteOptionsListener() {
     });
 
 }
+*/
 
 /*
- *  Opens or closes the note options 
- */
+ * DEPRECATED 
+ * Opens or closes the note options 
+
 function handleNoteOptionsDisplay(optionsMenu, status) {
     if (status == 'open') {
         optionsMenu.slideDown(200);
@@ -646,6 +673,7 @@ function handleNoteOptionsDisplay(optionsMenu, status) {
         console.log("Error opening or closing note options menu");
     }
 }
+*/
 
 /*
  *  Adds listener to current note title to save when focus is lost
@@ -716,6 +744,18 @@ function findNote(id) {
     return "No note with matching ID";
 }
 
+function noteOptionsListener() {
+    $("#note-options-container").hover(function(){
+        $("#note-options-display").show("blind", { direction: "up" }, 500);
+        $("#options-icon").removeClass("fa-bars");
+        $("#options-icon").addClass("fa-chevron-up");
+    }, function(){
+        $("#note-options-display").stop(true, true).hide();
+        $("#options-icon").removeClass("fa-chevron-up");
+        $("#options-icon").addClass("fa-bars");
+    });
+}
+
 /*
  *  Adds all element listeners
  */
@@ -726,9 +766,9 @@ function addElementListeners() {
     addFilterHashesListener();
     addTitleListener();
     addDownloadListener();
-    addNoteOptionsListener();
     addCitationButtonListener();
-    addModeSwitchListeners()
+    addModeSwitchListeners();
+    noteOptionsListener();
 }
 
 /*
