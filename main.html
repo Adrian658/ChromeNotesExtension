@@ -24,7 +24,6 @@
                                 <i id="index-hide-btn" class="text-white fas fa-chevron-left"></i>
                             </div>
                             <div class="cust-col-12 pl-0 pr-0">
-                                <input type="text" id="searcher" placeholder="Search..." class="mt-2"> 
                                 <hr id="selection-top-hr"> 
                                 <div id="filter-container">
                                     <div id="note-filter-btn" class="btn selection-btn active-display transition-quick">
@@ -34,7 +33,7 @@
                                         Tags
                                     </div>
                                 </div>
-                                <hr id="selection-bottom-hr">
+                                <input type="text" id="searcher" placeholder="Search..." class="">
                             </div>
                             <div id="note-index-container" class="scroll-toggle cust-col-12 pl-0 pr-0">
                                 <div class="note-index text-center">
@@ -47,39 +46,35 @@
                         </div>
                     </div>
                     <div id="current-note-display" class="current-note-display cust-col-8">
-                        <div class="title-container text-light" style="height: 16%">
+                        <div class="title-container text-light" style="height: 10%">
                             <div class="cust-row">
-                                <div class="cust-col-12 current-note-title-container">
+                                <div id="current-note-title-container" class="cust-col-12 current-note-title-container">
                                     <i id="index-show-btn" class="text-white fas fa-chevron-right"></i>
                                     <span id="current-note-title" contenteditable="true" spellcheck="false"></span>
+                                    <span id="autosave-label"></span>
                                     <div id="note-options-container">
                                         <div id="note-options-btn" class="">
-                                            <i id="options-icon" class="fas fa-bars transition-quick"></i>
+                                            <i id="options-icon" class="fas fa-ellipsis-h transition-quick"></i>
                                         </div>
                                         <div id="note-options-display" class="closed">
-                                            <a id="download-btn" download="mk" class="download-btn" href="">
-                                                Download
+                                            <a id="download-btn" download="mk" class="download-btn transition-quick" href="">
+                                                <i class="fas fa-download"></i> Download
                                             </a>
-                                            <div id="citation-btn" class="citation-btn">
-                                                Insert URL
+                                            <div id="citation-btn" class="citation-btn transition-quick">
+                                                <i class="fas fa-paste"></i> Insert URL
                                             </div>
-                                            <div id="delete-btn" class="delete-btn">
-                                                Delete Note
+                                            <div id="delete-btn" class="delete-btn transition-quick">
+                                                    <i class="fas fa-trash"></i> Delete Note
+                                            </div>
+                                            <div id="dark-mode-btn" class="dark-mode-btn transition-quick">
+                                                Dark Mode
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="cust-row">
-                                <div class="cust-col-4">
-                                    <span id="autosave-label"></span>
-                                </div>
-                                <div id="tags-container" class="cust-col-8">
-                                    <span id="tags"></span>
-                                </div>
-                            </div>
                         </div>
-                        <div class="cust-row" style="height: 84%">
+                        <div class="cust-row" style="height: 90%">
                             <div id="cur-note-body-container" class="cust-col-12" style="height: 100%">
                                 <div id="toolbar">
                                     <span class="ql-formats">
@@ -97,8 +92,6 @@
                                     <span class="ql-formats">
                                         <button class="ql-header" value="1"></button>
                                         <button class="ql-header" value="2"></button>
-                                    </span>
-                                    <span class="ql-formats">
                                         <button class="ql-blockquote"></button>
                                         <button class="ql-code-block"></button>
                                     </span>
@@ -126,11 +119,11 @@
                                         <button class="ql-clean"></button>
                                     </span>
                                 </div>
-                                <div id="scrolling-container">
-                                    <div id="current-note-body" name="editor" class="current-note-body">
-                                        Test
+                                    <div id="scrolling-container">
+                                        <div id="current-note-body" name="editor" class="current-note-body">
+                                            Test
+                                        </div>
                                     </div>
-                                </div>
                             </div>
                         </div>
     

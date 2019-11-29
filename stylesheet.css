@@ -18,14 +18,10 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     height: 100%;
 }
 
-.title-container {
-    background: linear-gradient(90deg, #004ec4 10%, #0057da 100%);
-}
-
 #note-index-container {
     overflow-y: auto;
     margin-top: 0px;
-    height: 342px;
+    height: 355px;
 }
 
 /* Display selection buttons */
@@ -38,12 +34,13 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     background-color: #005fed;
     color: white;
     width: 45%;
+    border: none;
     border-radius: 0px;
 }
 
 .selection-btn:hover {
-    color: white;
-    background-color: #c73c94;
+    color: aquamarine;
+    background-color: midnightblue;
 }
 
 #tags-filter-btn {
@@ -53,7 +50,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 .active-display {
     transform: translateY(16px);
     background-color: aquamarine !important;
-    color: black !important; 
+    color: midnightblue !important; 
 }
 
 #selection-top-hr {
@@ -62,9 +59,12 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     background-color: #005fed;
 }
 
-#selection-bottom-hr {
-    width: 100%;
-    background-color: aquamarine;
+#searcher {
+    margin-top: 0px;
+    border: 2px solid aquamarine;
+    width: 170px;
+    margin-top: 15px;
+    margin-bottom: 12px;
 }
 
 /* Note tiles */
@@ -75,20 +75,20 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     border: none;
 	border-radius: 0px;
 	padding: 10px;
-	margin-top: 8px;
+	margin-top: 4px;
+    margin-bottom: 4px;
 }
 
 .note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile, .new-note-btn:hover {
-    color: white;
-    background-color: #c73c94;
+    color: aquamarine;
+    background-color: midnightblue;
 	border-radius: 0px;
 	padding: 10px;
-	margin-top: 8px;
 }
 
 .active-note, .active-note:hover {
     background-color: aquamarine !important;
-    color: black;
+    color: midnightblue;
     border-radius: 0px;
 }
 
@@ -118,101 +118,116 @@ aquamarine
     padding: 0px;
 }
 
-.current-note-title-container {
+#current-note-title-container {
     padding-bottom: 10px;
     padding-top: 10px;
+    padding-left: 0px;
     font-size: 1.5rem;
     position: relative;
     display: inline-flex;
     align-items: center;
 }
 
+.title-container {
+    position: relative;
+    background: linear-gradient(90deg, #004ec4 10%, #0057da 100%);
+}
+
 #current-note-title {
-    margin: auto;
+    margin: 0 0 0 0;
+}
+
+#autosave-label {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    font-size: 10px;
 }
 
 #tags-container {
-    max-width: 240px;
+    max-width: 280px;
     overflow-x: auto;
 }
 
+#note-options-container {
+    margin-left: auto;
+}
+
 #note-options-btn {
-    color: black;
+    color: white;
     font-size: 1rem;
-    background-color: aquamarine;
+    min-width: 46px;
     padding: 5px 14px 0px 14px;
     border-radius: 5px 5px 0px 0px;
-    border: 1px solid aquamarine;
-    border-bottom: none;;
+    border: 1px solid rgba(0,0,0,0);
+    
 }
 
 #note-options-container:hover #note-options-btn {
-    color: #c73c94;
-    background-color: midnightblue;
-    border: 1px solid #c73c94;
-    border-bottom: none;
+    color: midnightblue;
 }
 
 #note-options-display {
     display: none;
     position: absolute;
     min-width: 130px;
-    right: 15px;
-    padding: 15px 15px 10px 15px;
-    background-color: midnightblue;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    right: 13px;
+    padding: 0px 15px 10px 15px;
     z-index: 10;
 }
 
-#note-options-display:after {
-    content: "";
-    background: #c73c94;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    height: 1px;
-    width: 87px;
+#note-options-display i {
+    margin-right: 4px;
 }
 
-#delete-btn, #download-btn, #citation-btn {
+#delete-btn, #download-btn, #citation-btn, #dark-mode-btn {
     float: none;
     text-decoration: none;
     display: block;
+    min-width: 150px;
     font-size: 1rem;
-    padding-top: 10px;
     cursor: pointer;
     color: white;
+    background-color: midnightblue;
+    border: none;
+	border-radius: 0px;
+	padding: 8px 0px 8px 10px;
+    margin-bottom: 6px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
-#download-btn {
-    padding-top: 0px !important;
-}
-
-#delete-btn:hover, #download-btn:hover, #citation-btn:hover {
-    color: aquamarine;
-    text-decoration: underline;
-}
-
-#autosave-label {
-    font-size: 10px;
+#delete-btn:hover, #download-btn:hover, #citation-btn:hover, #dark-mode-btn:hover {
+    color: #c73c94;
+    background-color: rgb(19, 19, 83);
 }
 
 #scrolling-container {
-    height: 80%;
-    overflow-y:auto;
+    height: 83%;
+    overflow-y: auto;
 }
 
 #current-note-body {
-    min-height: 80%;
+    min-height: 100%;
     height: auto;
+    background-color: white;
+    border-radius: 0px;
 }
 
 #cur-note-body-container {
-    padding: 0px;
+    padding: 10px 15px 20px 0px;
+    background: linear-gradient(90deg, #004ec4 10%, #0057da 100%)
 }
 
 .note-content {
     height: inherit;
+}
+
+#toolbar {
+    position: relative;
+    border: none;
+    border-bottom: 1px solid grey;
+    background-color: white;
+    /*background: linear-gradient(90deg, #004ec4 10%, #0057da 100%);*/
 }
 
 
@@ -293,37 +308,25 @@ aquamarine
     border: none;
 }
 
-#toolbar {
-    position: relative;
-    border: none;
-    border-bottom: 1px solid lightgrey;
+.ql-snow.ql-toolbar button:hover .ql-fill, .ql-snow .ql-toolbar button:hover .ql-fill, .ql-snow.ql-toolbar button:focus .ql-fill, .ql-snow .ql-toolbar button:focus .ql-fill, .ql-snow.ql-toolbar button.ql-active .ql-fill, .ql-snow .ql-toolbar button.ql-active .ql-fill, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-fill, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-fill, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-fill, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-fill, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-fill, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-fill, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-fill, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-fill {
+    fill: #005fed !important;
 }
 
-/*
-.ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
-    fill: white;
-}
-
-.ql-snow .ql-stroke, .ql-snow .ql-stroke.ql-fill {
-    stroke: white;
-}
-
-.ql-snow .ql-picker.ql-expanded .ql-picker-label {
-    color: white;
-}
-
-.ql-snow .ql-picker {
-    color: white;
-}
-
-.ql-snow .ql-picker-options {
-    color: black;
+.ql-snow.ql-toolbar button:hover .ql-stroke, .ql-snow .ql-toolbar button:hover .ql-stroke, .ql-snow.ql-toolbar button:focus .ql-stroke, .ql-snow .ql-toolbar button:focus .ql-stroke, .ql-snow.ql-toolbar button.ql-active .ql-stroke, .ql-snow .ql-toolbar button.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke {
+    stroke: #005fed !important;
 }
 
 .ql-snow.ql-toolbar button:hover, .ql-snow .ql-toolbar button:hover, .ql-snow.ql-toolbar button:focus, .ql-snow .ql-toolbar button:focus, .ql-snow.ql-toolbar button.ql-active, .ql-snow .ql-toolbar button.ql-active, .ql-snow.ql-toolbar .ql-picker-label:hover, .ql-snow .ql-toolbar .ql-picker-label:hover, .ql-snow.ql-toolbar .ql-picker-label.ql-active, .ql-snow .ql-toolbar .ql-picker-label.ql-active, .ql-snow.ql-toolbar .ql-picker-item:hover, .ql-snow .ql-toolbar .ql-picker-item:hover, .ql-snow.ql-toolbar .ql-picker-item.ql-selected, .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
-    color: aquamarine !important;
+    color: #005fed !important;
 }
-*/
+
+/*.ql-snow.ql-toolbar button:hover .ql-fill {
+    fill: #c73c94;
+}
+
+.ql-snow.ql-toolbar button:hover .ql-stroke {
+    stroke: #c73c94;
+}*/
 
 /* Set custom formats for Quill editor */
 
@@ -360,8 +363,8 @@ aquamarine
 }
 
 .ql-hash-phrase {
-    color: black !important;
-    background-color: aquamarine;
+    color: white !important;
+    background-color: #c73c94;
     /*background: linear-gradient(90deg, rgb(238, 146, 7) 10%, rgb(235, 175, 10) 100%);*/
     border-radius: 8px;
 }

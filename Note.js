@@ -2,6 +2,7 @@
  * Notes.js -> The main javascript file containing our implementation of Notes, Library, and important functions.
  */
 var raw_notes = [];
+var userPreferences;
 var hashtagRegex = /\B(\#[a-zA-Z0-9]+\b)/g;
 
 /* 
@@ -287,7 +288,7 @@ function saveNote() {
     if ($('.note-index').hasClass('hashes')) {
         loadHashes();
     }
-    $('#autosave-label').text('Changes saved');
+    $('#autosave-label').text('Saved');
     $("#tags").html(hashes);
 
 }
@@ -448,6 +449,100 @@ function findDeleteChar(quill, oldDelta, changeIndex, regex) {
         applyHashFormatting(quill, changeIndex, regex, 'phrase');
     }
 
+}
+
+/*********************************** Focus mode functions ***********************************/
+
+function loadUserPreferences() {
+    default_preferences = {'focusMode': false, 'darkMode': false}
+    chrome.storage.local.get({'preferences': default_preferences}, function(obj){
+        userPreferences = obj.preferences;
+        determineFocusMode();
+        determineDarkMode();
+    });
+}
+
+function focusMode() {
+    $('#note-container').hide();
+    $('#current-note-display').removeClass('cust-col-8').addClass('cust-col-12');
+    $('#index-show-btn').show();
+    $("#index-show-btn, #autosave-label").css('margin-left', '15px');
+    $("#cur-note-body-container").css('padding', '0');
+    $("#scrolling-container").css('height', '87%');
+    $("#current-note-title").css('margin', '0 0 0 auto');
+}
+
+function browseMode() {
+    $('#note-container').show();
+    $('#current-note-display').removeClass('cust-col-12').addClass('cust-col-8');
+    $('#index-show-btn').hide();
+    $("#index-show-btn, #autosave-label").css('margin-left', '0px');
+    $("#cur-note-body-container").css('padding', '10px 15px 20px 0px');
+    $("#scrolling-container").css('height', '83%');
+    $("#current-note-title").css('margin', '0 0 0 0');
+}
+
+function addModeSwitchListeners() {
+    document.getElementById('index-hide-btn').addEventListener('click' ,function(event) {
+        userPreferences.focusMode = true;
+        chrome.storage.local.set({'preferences': userPreferences}, function(){
+            focusMode(); 
+        });
+    });
+
+    document.getElementById('index-show-btn').addEventListener('click' ,function(event) {
+        userPreferences.focusMode = false;
+        chrome.storage.local.set({'preferences': userPreferences}, function(){
+            browseMode();
+        });
+    });
+}
+
+function darkMode(preference) {
+    if (preference) {
+        $("#current-note-body").css({
+            'color': 'white',
+            'background-color': '#2a2a2a'
+        });
+        $("#toolbar").css({
+            'background-color': '#1b1b1b'
+        });
+        $(".ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill").css('fill', 'white');
+        $(".ql-snow .ql-stroke, .ql-snow .ql-stroke.ql-fill").css('stroke', 'white');
+        $(".ql-snow .ql-picker .ql-picker-label").css('color', 'rgb(118, 118, 118)');
+    }
+    else {
+        $("#current-note-body").css({
+            'color': 'black',
+            'background-color': 'white'
+        });
+        $("#toolbar").css({
+            'background-color': 'white'
+        });
+        $(".ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill").css('fill', '#444');
+        $(".ql-snow .ql-stroke, .ql-snow .ql-stroke.ql-fill").css('stroke', '#444');
+        $(".ql-snow .ql-picker .ql-picker-label").css('color', 'rgb(68, 68, 68)');
+    }
+}
+
+/*
+ *  Add listener to switch dark mode
+ */
+function addDarkModeListener() {
+    document.getElementById("dark-mode-btn").addEventListener("click", function(){
+        userPreferences.darkMode = !userPreferences.darkMode;
+        chrome.storage.local.set({"preferences": userPreferences}, function(){
+            darkMode(userPreferences.darkMode);
+        });
+    });
+}
+
+function determineFocusMode() {
+    (userPreferences.focusMode) ? focusMode() : {};
+}
+
+function determineDarkMode() {
+    (userPreferences.darkMode) ? darkMode(true) : {};
 }
 
 /*********************************** Functions which add event listeners to appropriate elements ***********************************/
@@ -714,6 +809,17 @@ function addFilterListener(){
     });
 }
 
+function addNoteOptionsListener() {
+    $("#note-options-container").hover(function(){
+        $("#note-options-display").show("blind", { direction: "up" }, 500);
+        $("#options-icon").removeClass("fa-ellipsis-h");
+        $("#options-icon").addClass("fa-chevron-down");
+    }, function(){
+        $("#note-options-display").stop(true, true).hide();
+        $("#options-icon").removeClass("fa-chevron-down");
+        $("#options-icon").addClass("fa-ellipsis-h");
+    });
+}
 
 /*********************************** Helper functions ***********************************/
 
@@ -744,18 +850,6 @@ function findNote(id) {
     return "No note with matching ID";
 }
 
-function noteOptionsListener() {
-    $("#note-options-container").hover(function(){
-        $("#note-options-display").show("blind", { direction: "up" }, 500);
-        $("#options-icon").removeClass("fa-bars");
-        $("#options-icon").addClass("fa-chevron-up");
-    }, function(){
-        $("#note-options-display").stop(true, true).hide();
-        $("#options-icon").removeClass("fa-chevron-up");
-        $("#options-icon").addClass("fa-bars");
-    });
-}
-
 /*
  *  Adds all element listeners
  */
@@ -768,7 +862,8 @@ function addElementListeners() {
     addDownloadListener();
     addCitationButtonListener();
     addModeSwitchListeners();
-    noteOptionsListener();
+    addNoteOptionsListener();
+    addDarkModeListener();
 }
 
 /*
@@ -776,50 +871,6 @@ function addElementListeners() {
  */
 document.addEventListener("DOMContentLoaded", function(){
     loadNotes();
-    determineFocusMode();
+    loadUserPreferences();
     addElementListeners();
 })
-
-/*********************************** Focus mode functions ***********************************/
-
-function focusMode() {
-    var sidebar = $('#note-container');
-    var curNote = $('#current-note-display');
-    var btn = $('#index-show-btn');
-
-    sidebar.hide();
-    curNote.removeClass('cust-col-8');
-    curNote.addClass('cust-col-12');
-    btn.show();
-}
-
-function browseMode() {
-    var sidebar = $('#note-container');
-    var curNote = $('#current-note-display');
-    var btn = $('#index-show-btn');
-
-    sidebar.show();
-    curNote.removeClass('cust-col-12');
-    curNote.addClass('cust-col-8');
-    btn.hide();
-}
-
-function addModeSwitchListeners() {
-    document.getElementById('index-hide-btn').addEventListener('click' ,function(event) {
-        chrome.storage.local.set({'preferenceFocus': true}, function(){
-            focusMode(); 
-        });
-    });
-
-    document.getElementById('index-show-btn').addEventListener('click' ,function(event) {
-        chrome.storage.local.set({'preferenceFocus': false}, function(){
-            browseMode();
-        });
-    });
-}
-
-function determineFocusMode() {
-    chrome.storage.local.get({'preferenceFocus': 'false'}, function(store){
-        (store.preferenceFocus) ? focusMode() : {};
-    });
-}
