@@ -1,4 +1,4 @@
-/* General and multipurpose classes */
+/* Main container classes */
 
 .extension-container {
     width: 600px;
@@ -6,25 +6,25 @@
     font-family: 'Freight Sans LF Pro Light';
 }
 
-textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container::-webkit-scrollbar { 
-    width: 0 !important;
-}
-
-/* Classes attached to elements concerning the note index container */
-
 .note-container {
     background: linear-gradient(90deg, #0037be 10%, #004ec4 95%);
     overflow-y: hidden;
     height: 100%;
 }
 
+textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container::-webkit-scrollbar { 
+    width: 0 !important;
+}
+
+
 #note-index-container {
     overflow-y: auto;
     margin-top: 0px;
-    height: 355px;
+    height: 360px;
 }
 
-/* Display selection buttons */
+/***** SIDEBAR CLASSES *****/
+
 .filter-container {
     display: inline-flex;
     justify-content: flex-end;
@@ -67,7 +67,20 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     margin-bottom: 12px;
 }
 
-/* Note tiles */
+#index-show-btn {
+    display: none;
+}
+
+hr {
+    background-color: white;
+    width: 70%;
+}
+
+#new-note-hr {
+    margin-bottom: 5px;
+}
+
+/***** NOTE TILES *****/
 
 .note-tile, .new-note-btn {
     color: white;
@@ -92,25 +105,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     border-radius: 0px;
 }
 
-#index-show-btn {
-    display: none;
-}
-
-hr {
-    background-color: white;
-    width: 70%;
-}
-
-#new-note-hr {
-    margin-bottom: 5px;
-}
-
-/*
-1b1b1b
-aquamarine
-*/
-
-/* Classes attached to elements concerning the current note container */
+/* CURRENT NOTE TITLE CLASSES */
 
 #current-note-display {
     background-color: white;
@@ -149,6 +144,8 @@ aquamarine
     overflow-x: auto;
 }
 
+/****** NOTE OPTIONS CLASSES *****/
+
 #note-options-container {
     margin-left: auto;
 }
@@ -180,7 +177,7 @@ aquamarine
     margin-right: 4px;
 }
 
-#delete-btn, #download-btn, #citation-btn, #dark-mode-btn {
+#delete-btn, #download-btn, #citation-btn {
     float: none;
     text-decoration: none;
     display: block;
@@ -196,9 +193,76 @@ aquamarine
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
-#delete-btn:hover, #download-btn:hover, #citation-btn:hover, #dark-mode-btn:hover {
+#delete-btn:hover, #download-btn:hover, #citation-btn:hover {
     color: #c73c94;
     background-color: rgb(19, 19, 83);
+}
+
+/***** SLIDER BUTTON *****/
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+    margin-bottom: 0;
+}
+.switch input { /*makescheckbox invisible*/
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 2px; left: 0; right: 0; bottom: 2px;
+    background-color: #444;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+input:checked + .slider {
+    background-color: white;
+}
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+input:checked + .slider:before {
+    -webkit-transform: translateX(18px);
+    -ms-transform: translateX(18px);
+    transform: translateX(18px);
+    background-color: #2a2a2a;
+}
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/***** EDITOR CLASSES *****/
+
+#toolbar {
+    position: relative;
+    border: none;
+    border-bottom: 1px solid grey;
+    background-color: white;
+    /*background: linear-gradient(90deg, #004ec4 10%, #0057da 100%);*/
+}
+
+#cur-note-body-container {
+    padding: 0px 15px 20px 0px;
+    background: linear-gradient(90deg, #004ec4 10%, #0057da 100%)
 }
 
 #scrolling-container {
@@ -213,26 +277,27 @@ aquamarine
     border-radius: 0px;
 }
 
-#cur-note-body-container {
-    padding: 10px 15px 20px 0px;
-    background: linear-gradient(90deg, #004ec4 10%, #0057da 100%)
-}
-
 .note-content {
     height: inherit;
 }
 
-#toolbar {
-    position: relative;
-    border: none;
-    border-bottom: 1px solid grey;
-    background-color: white;
-    /*background: linear-gradient(90deg, #004ec4 10%, #0057da 100%);*/
+/***** FOCUS MODE BUTTONS ******/
+
+.btn, #index-hide-btn, #index-show-btn {
+    cursor: pointer;
+}
+
+#index-hide-btn, #index-show-btn {
+    font-size: 1rem;
+}
+
+#index-hide-btn {
+    margin-top: 13px;
 }
 
 
 
-/* Column and row classes */
+/***** COLUMNS AND ROW STYLING *****/
 
 .cust-row {
     display: -ms-flexbox;
@@ -290,43 +355,41 @@ aquamarine
     padding-left: 15px;
 }
 
-.btn, #index-hide-btn, #index-show-btn {
-    cursor: pointer;
+/***** TRANSITIONS *****/
+
+.transition-normal {
+    transition-duration: 0.5s;
+    transition: all 0.5s;
 }
 
-#index-hide-btn, #index-show-btn {
-    font-size: 1rem;
+.transition-quick {
+    transition-duration: 0.3s;
+    transition: all 0.3s;
 }
 
-#index-hide-btn {
-    margin-top: 13px;
-}
-
-/* Quill editor overrides */
+/***** QUILL EDITOR OVERIDES *****/
 
 .ql-container.ql-snow {
     border: none;
 }
 
 .ql-snow.ql-toolbar button:hover .ql-fill, .ql-snow .ql-toolbar button:hover .ql-fill, .ql-snow.ql-toolbar button:focus .ql-fill, .ql-snow .ql-toolbar button:focus .ql-fill, .ql-snow.ql-toolbar button.ql-active .ql-fill, .ql-snow .ql-toolbar button.ql-active .ql-fill, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-fill, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-fill, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-fill, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-fill, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-fill, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-fill, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-fill, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-fill {
-    fill: #005fed !important;
+    fill: #3279e2 !important;
 }
 
 .ql-snow.ql-toolbar button:hover .ql-stroke, .ql-snow .ql-toolbar button:hover .ql-stroke, .ql-snow.ql-toolbar button:focus .ql-stroke, .ql-snow .ql-toolbar button:focus .ql-stroke, .ql-snow.ql-toolbar button.ql-active .ql-stroke, .ql-snow .ql-toolbar button.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke {
-    stroke: #005fed !important;
+    stroke: #3279e2 !important;
 }
 
 .ql-snow.ql-toolbar button:hover, .ql-snow .ql-toolbar button:hover, .ql-snow.ql-toolbar button:focus, .ql-snow .ql-toolbar button:focus, .ql-snow.ql-toolbar button.ql-active, .ql-snow .ql-toolbar button.ql-active, .ql-snow.ql-toolbar .ql-picker-label:hover, .ql-snow .ql-toolbar .ql-picker-label:hover, .ql-snow.ql-toolbar .ql-picker-label.ql-active, .ql-snow .ql-toolbar .ql-picker-label.ql-active, .ql-snow.ql-toolbar .ql-picker-item:hover, .ql-snow .ql-toolbar .ql-picker-item:hover, .ql-snow.ql-toolbar .ql-picker-item.ql-selected, .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
-    color: #005fed !important;
+    color: #3279e2 !important;
 }
 
-/*.ql-snow.ql-toolbar button:hover .ql-fill {
-    fill: #c73c94;
+.ql-hash-phrase {
+    color: white !important;
+    background-color: #c73c94;
+    border-radius: 8px;
 }
-
-.ql-snow.ql-toolbar button:hover .ql-stroke {
-    stroke: #c73c94;
-}*/
 
 /* Set custom formats for Quill editor */
 
@@ -360,21 +423,4 @@ aquamarine
 
 #toolbar .ql-font span[data-label="Apple"], .ql-font-appleChancery {
     font-family: "Apple Chancery";
-}
-
-.ql-hash-phrase {
-    color: white !important;
-    background-color: #c73c94;
-    /*background: linear-gradient(90deg, rgb(238, 146, 7) 10%, rgb(235, 175, 10) 100%);*/
-    border-radius: 8px;
-}
-
-.transition-normal {
-    transition-duration: 0.5s;
-    transition: all 0.5s;
-}
-
-.transition-quick {
-    transition-duration: 0.3s;
-    transition: all 0.3s;
 }

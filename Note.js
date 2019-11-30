@@ -65,6 +65,8 @@ function loadNotes(hash){
 function renderNotes(){
 
     $('#new-note-btn').show();
+    $("#new-note-hr").show();
+    $("#note-index-container").css('height', '360px');
     clearNotesDisplay("notes");
     raw_notes.forEach(function(note){
         $(".note-index").append('<div class="note-tile btn btn-block transition-quick" data-id=' + note["id"] + '>' + trimTitle(note["title"]) + '</div>');
@@ -98,6 +100,8 @@ function loadHashes() {
 function renderHashes(hashes) {
 
     $('#new-note-btn').hide();
+    $("#new-note-hr").hide();
+    $("#note-index-container").css('height', '410px');
     clearNotesDisplay("hashes");
     hashes.forEach(function(hash) {
         $(".note-index").append('<div class="note-tile btn btn-block transition-quick" data-id=' + hash + '>' + trimTitle(hash) + '</div>');
@@ -477,7 +481,7 @@ function browseMode() {
     $('#current-note-display').removeClass('cust-col-12').addClass('cust-col-8');
     $('#index-show-btn').hide();
     $("#index-show-btn, #autosave-label").css('margin-left', '0px');
-    $("#cur-note-body-container").css('padding', '10px 15px 20px 0px');
+    $("#cur-note-body-container").css('padding', '0px 15px 20px 0px');
     $("#scrolling-container").css('height', '83%');
     $("#current-note-title").css('margin', '0 0 0 0');
 }
@@ -499,7 +503,7 @@ function addModeSwitchListeners() {
 }
 
 function darkMode(preference) {
-    if (preference) {
+    if (preference) { //turn dark mode on
         $("#current-note-body").css({
             'color': 'white',
             'background-color': '#2a2a2a'
@@ -510,8 +514,12 @@ function darkMode(preference) {
         $(".ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill").css('fill', 'white');
         $(".ql-snow .ql-stroke, .ql-snow .ql-stroke.ql-fill").css('stroke', 'white');
         $(".ql-snow .ql-picker .ql-picker-label").css('color', 'rgb(118, 118, 118)');
+
+        //Change dark mode button colors
+        $("#dark-mode-btn")[0].checked = true;
+        $("#dark-mode-bulb").css('color', 'white');
     }
-    else {
+    else { //turn dark mode off
         $("#current-note-body").css({
             'color': 'black',
             'background-color': 'white'
@@ -522,6 +530,10 @@ function darkMode(preference) {
         $(".ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill").css('fill', '#444');
         $(".ql-snow .ql-stroke, .ql-snow .ql-stroke.ql-fill").css('stroke', '#444');
         $(".ql-snow .ql-picker .ql-picker-label").css('color', 'rgb(68, 68, 68)');
+
+        //Change dark mode button colors
+        $("#dark-mode-btn")[0].checked = false;
+        $("#dark-mode-bulb").css('color', '#444')
     }
 }
 
@@ -580,9 +592,6 @@ function addFilterNoteListener() {
         /* Change formatting of filter buttons */
         this.classList.add("active-display");
         document.getElementById("tags-filter-btn").classList.remove("active-display");
-
-        $("#new-note-hr").show();
-        $("#note-index-container").css('height', '342px');
     }
 }
 
@@ -597,9 +606,6 @@ function addFilterHashesListener() {
         /* Change formatting of filter buttons */
         this.classList.add("active-display");
         document.getElementById("note-filter-btn").classList.remove("active-display");
-
-        $("#new-note-hr").hide();
-        $("#note-index-container").css('height', '410px');
     }
 }
 
@@ -706,7 +712,7 @@ function addOpenNoteFunctionality(element, type) {
         element.addEventListener("click", function(event){ 
     
             var targetElement = event.target || event.srcElement;
-            var hash = targetElement.innerHTML;
+            var hash = targetElement.getAttribute("data-id");
 
             document.getElementById("note-filter-btn").classList.add("active-display");
             document.getElementById("tags-filter-btn").classList.remove("active-display");

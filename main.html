@@ -66,9 +66,6 @@
                                             <div id="delete-btn" class="delete-btn transition-quick">
                                                     <i class="fas fa-trash"></i> Delete Note
                                             </div>
-                                            <div id="dark-mode-btn" class="dark-mode-btn transition-quick">
-                                                Dark Mode
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -90,10 +87,9 @@
                                         <select class="ql-size"></select>
                                     </span>
                                     <span class="ql-formats">
-                                        <button class="ql-header" value="1"></button>
-                                        <button class="ql-header" value="2"></button>
-                                        <button class="ql-blockquote"></button>
-                                        <button class="ql-code-block"></button>
+                                        <button class="ql-list" value="ordered"></button>
+                                        <button class="ql-list" value="bullet"></button>
+                                        <select class="ql-align"></select>
                                     </span>
                                     <span class="ql-formats">
                                         <button class="ql-bold"></button>
@@ -104,19 +100,29 @@
                                         <button class="ql-script" value="super"></button>
                                     </span>
                                     <span class="ql-formats">
-                                        <select class="ql-color"></select>
-                                        <select class="ql-background"></select>
+                                        <button class="ql-header" value="1"></button>
+                                        <button class="ql-header" value="2"></button>
                                     </span>
                                     <span class="ql-formats">
-                                        <button class="ql-list" value="ordered"></button>
-                                        <button class="ql-list" value="bullet"></button>
-                                        <select class="ql-align"></select>
+                                        <button class="ql-blockquote"></button>
+                                        <button class="ql-code-block"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <select class="ql-color"></select>
+                                        <select class="ql-background"></select>
                                     </span>
                                     <span class="ql-formats">
                                         <button class="ql-formula"></button>
                                         <button class="ql-image"></button>
                                         <button class="ql-link"></button>
                                         <button class="ql-clean"></button>
+                                    </span>
+                                    <span class="ql-formats" style="position: relative;">
+                                        <i id="dark-mode-bulb" class="far fa-lightbulb"></i>
+                                        <label class="switch">
+                                            <input id="dark-mode-btn" type="checkbox">
+                                            <span class="slider round"></span>
+                                        </label>
                                     </span>
                                 </div>
                                     <div id="scrolling-container">
