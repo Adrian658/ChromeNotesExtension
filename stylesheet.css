@@ -1,3 +1,17 @@
+:root {
+    --color_dark: #7B886F;
+    --color_dark_hover: rgb(74, 82, 66);
+    --color_gradient_mid: #7B886F;
+    --color_gradient_end: #B4DC7F;
+    --color_light: #FEFFA5;
+    --color_accent1: #DAB6C4;
+    --color_accent2: #FFA0AC;
+    --color_light_accent: black;
+    --color_dark_accent: black;
+}
+/* 1F363D, 40798C, 70A9A1, 9EC1A3, CFE0C3 */
+/* F6F7EB, E94F37, 393E41, 3F88C5, 44BBA4 */
+
 /* Main container classes */
 
 .extension-container {
@@ -7,7 +21,7 @@
 }
 
 .note-container {
-    background: linear-gradient(90deg, #0037be 10%, #004ec4 95%);
+    background: linear-gradient(90deg, var(--color_dark) 10%, var(--color_gradient_mid) 95%);
     overflow-y: hidden;
     height: 100%;
 }
@@ -31,16 +45,19 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 .selection-btn {
-    background-color: #005fed;
-    color: white;
+    background-color: var(--color_light);
+    color: var(--color_light_accent);
     width: 45%;
-    border: none;
-    border-radius: 0px;
+    border-radius: 2px;
+    border: 1px solid var(--color_light);
+    border-top: none;
 }
 
 .selection-btn:hover {
-    color: aquamarine;
-    background-color: midnightblue;
+    color: var(--color_accent1);
+    background: none;
+    border: 1px solid var(--color_accent1);
+    border-top: none;
 }
 
 #tags-filter-btn {
@@ -49,19 +66,21 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 .active-display {
     transform: translateY(16px);
-    background-color: aquamarine !important;
-    color: midnightblue !important; 
+    background-color: var(--color_accent1) !important;
+    color: var(--color_dark) !important; 
+    border: 1px solid var(--color_accent1);
+    border-top: none;
 }
 
 #selection-top-hr {
     margin-bottom: 0px;
     width: 100%;
-    background-color: #005fed;
+    background-color: var(--color_light);
 }
 
 #searcher {
     margin-top: 0px;
-    border: 2px solid aquamarine;
+    border: 2px solid var(--color_accent1);
     width: 170px;
     margin-top: 15px;
     margin-bottom: 12px;
@@ -72,7 +91,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 hr {
-    background-color: white;
+    background-color: var(--color_light);
     width: 70%;
 }
 
@@ -83,37 +102,38 @@ hr {
 /***** NOTE TILES *****/
 
 .note-tile, .new-note-btn {
-    color: white;
-    background-color: #005fed;
-    border: none;
-	border-radius: 0px;
+    color: var(--color_light_accent);
+    background-color: var(--color_light);
+    border: 1px solid var(--color_light);
+	border-radius: 2px;
 	padding: 10px;
 	margin-top: 4px;
     margin-bottom: 4px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
 .note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile, .new-note-btn:hover {
-    color: aquamarine;
-    background-color: midnightblue;
-	border-radius: 0px;
-	padding: 10px;
+    color: var(--color_accent1);
+    background: none;
+    border: 1px solid var(--color_accent1);
 }
 
 .active-note, .active-note:hover {
-    background-color: aquamarine !important;
-    color: midnightblue;
-    border-radius: 0px;
+    background-color: var(--color_accent1) !important;
+    color: var(--color_dark_accent);
+    border: 1px solid var(--color_accent1) !important;
 }
 
 /* CURRENT NOTE TITLE CLASSES */
 
 #current-note-display {
-    background-color: white;
+    background: linear-gradient(90deg, var(--color_gradient_mid) 10%, var(--color_gradient_end) 100%);
     height: 100%;
     padding: 0px;
 }
 
 #current-note-title-container {
+    color: white;
     padding-bottom: 10px;
     padding-top: 10px;
     padding-left: 0px;
@@ -125,7 +145,7 @@ hr {
 
 .title-container {
     position: relative;
-    background: linear-gradient(90deg, #004ec4 10%, #0057da 100%);
+    background: none;
 }
 
 #current-note-title {
@@ -151,17 +171,14 @@ hr {
 }
 
 #note-options-btn {
-    color: white;
     font-size: 1rem;
     min-width: 46px;
     padding: 5px 14px 0px 14px;
-    border-radius: 5px 5px 0px 0px;
-    border: 1px solid rgba(0,0,0,0);
     
 }
 
 #note-options-container:hover #note-options-btn {
-    color: midnightblue;
+    color: var(--color_dark_accent);
 }
 
 #note-options-display {
@@ -184,18 +201,18 @@ hr {
     min-width: 150px;
     font-size: 1rem;
     cursor: pointer;
-    color: white;
-    background-color: midnightblue;
+    color: var(--color_light_accent);
+    background-color: var(--color_dark);
     border: none;
-	border-radius: 0px;
+	border-radius: 2px;
 	padding: 8px 0px 8px 10px;
     margin-bottom: 6px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
 }
 
 #delete-btn:hover, #download-btn:hover, #citation-btn:hover {
-    color: #c73c94;
-    background-color: rgb(19, 19, 83);
+    color: var(--color_accent2);
+    background-color: var(--color_dark_hover);
 }
 
 /***** SLIDER BUTTON *****/
@@ -233,9 +250,6 @@ hr {
 input:checked + .slider {
     background-color: white;
 }
-input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
-}
 input:checked + .slider:before {
     -webkit-transform: translateX(18px);
     -ms-transform: translateX(18px);
@@ -257,24 +271,27 @@ input:checked + .slider:before {
     border: none;
     border-bottom: 1px solid grey;
     background-color: white;
-    /*background: linear-gradient(90deg, #004ec4 10%, #0057da 100%);*/
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.6);
+    border-radius: 4px 4px 0 0;
+    /*background: linear-gradient(90deg, #004ec4 10%, var(--color_gradient_end) 100%);*/
 }
 
 #cur-note-body-container {
     padding: 0px 15px 20px 0px;
-    background: linear-gradient(90deg, #004ec4 10%, #0057da 100%)
+    background: none;
 }
 
 #scrolling-container {
     height: 83%;
     overflow-y: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.6);
 }
 
 #current-note-body {
     min-height: 100%;
     height: auto;
     background-color: white;
-    border-radius: 0px;
+    border-radius: 0 0 4px 4px;
 }
 
 .note-content {
@@ -387,7 +404,7 @@ input:checked + .slider:before {
 
 .ql-hash-phrase {
     color: white !important;
-    background-color: #c73c94;
+    background-color: var(--color_accent2);
     border-radius: 8px;
 }
 

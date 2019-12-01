@@ -455,7 +455,7 @@ function findDeleteChar(quill, oldDelta, changeIndex, regex) {
 
 }
 
-/*********************************** Focus mode functions ***********************************/
+/*********************************** User preference functions ***********************************/
 
 function loadUserPreferences() {
     default_preferences = {'focusMode': false, 'darkMode': false}
@@ -472,8 +472,10 @@ function focusMode() {
     $('#index-show-btn').show();
     $("#index-show-btn, #autosave-label").css('margin-left', '15px');
     $("#cur-note-body-container").css('padding', '0');
-    $("#scrolling-container").css('height', '87%');
+    $("#scrolling-container").css('height', '88%');
     $("#current-note-title").css('margin', '0 0 0 auto');
+    $("#current-note-body").css('border-radius', '0');
+    $("#toolbar").css("border-radius", "0");
 }
 
 function browseMode() {
@@ -484,6 +486,8 @@ function browseMode() {
     $("#cur-note-body-container").css('padding', '0px 15px 20px 0px');
     $("#scrolling-container").css('height', '83%');
     $("#current-note-title").css('margin', '0 0 0 0');
+    $("#current-note-body").css('border-radius', '0 0 4px 4px');
+    $("#toolbar").css("border-radius", "4px 4px 0 0");
 }
 
 function addModeSwitchListeners() {
@@ -535,6 +539,35 @@ function darkMode(preference) {
         $("#dark-mode-btn")[0].checked = false;
         $("#dark-mode-bulb").css('color', '#444')
     }
+}
+
+function setColorScheme(style) {
+
+    var rootStyle = document.documentElement.style;
+
+    switch(style) {
+        case "Blue":
+            setBlueColorScheme(rootStyle);
+            break;
+        default:
+            setBlueColorScheme(rootStyle);
+    }
+
+}
+
+/**
+ * Set CSS colors for Blue color scheme
+ */
+function setBlueColorScheme(rootStyle) {
+    rootStyle.setProperty("--color_dark", "midnightblue");
+    rootStyle.setProperty("--color_dark_hover", "rgb(15, 15, 112)");
+    rootStyle.setProperty("--color_gradient_mid", "#0043a8");
+    rootStyle.setProperty("--color_gradient_end", "#0057da");
+    rootStyle.setProperty("--color_light", "#005fed");
+    rootStyle.setProperty("--color_accent1", "aquamarine");
+    rootStyle.setProperty("--color_accent2", "#c73c94");
+    rootStyle.setProperty("--color_light_accent", "white");
+    rootStyle.setProperty("--color_dark_accent", "black");
 }
 
 /*
