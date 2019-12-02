@@ -1,3 +1,5 @@
+https://chrome.google.com/webstore/detail/notility/hogihdfpkilgcmenhklcllklgnkndglp?hl=en-US
+
 # ChromeNotesExtension
 
 Steps to test our project:
