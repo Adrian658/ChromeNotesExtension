@@ -4,6 +4,8 @@
 var raw_notes = [];
 var userPreferences;
 var hashtagRegex = /\B(\#[a-zA-Z0-9]+\b)/g;
+var colorSchemes = [0, 1, 2, 3, 4, 5]
+var curColorScheme = 0
 
 /* 
 This means the # symbol of a hash must not bump into other words
@@ -457,15 +459,22 @@ function findDeleteChar(quill, oldDelta, changeIndex, regex) {
 
 /*********************************** User preference functions ***********************************/
 
+/**
+ * Loads user preferences from chrome storage and configures app accordingly
+ */
 function loadUserPreferences() {
-    default_preferences = {'focusMode': false, 'darkMode': false}
+    default_preferences = {'focusMode': false, 'darkMode': false, 'colorScheme': 0}
     chrome.storage.local.get({'preferences': default_preferences}, function(obj){
         userPreferences = obj.preferences;
         determineFocusMode();
         determineDarkMode();
+        determineColorScheme();
     });
 }
 
+/**
+ * Changes UI to focus mode
+ */
 function focusMode() {
     $('#note-container').hide();
     $('#current-note-display').removeClass('cust-col-8').addClass('cust-col-12');
@@ -478,6 +487,9 @@ function focusMode() {
     $("#toolbar").css("border-radius", "0");
 }
 
+/**
+ * Changes UI to browse mode
+ */
 function browseMode() {
     $('#note-container').show();
     $('#current-note-display').removeClass('cust-col-12').addClass('cust-col-8');
@@ -490,6 +502,10 @@ function browseMode() {
     $("#toolbar").css("border-radius", "4px 4px 0 0");
 }
 
+/**
+ * Event listeners for focus and browse mode
+ * Change user preferences and initiate function to change UI
+ */
 function addModeSwitchListeners() {
     document.getElementById('index-hide-btn').addEventListener('click' ,function(event) {
         userPreferences.focusMode = true;
@@ -506,6 +522,9 @@ function addModeSwitchListeners() {
     });
 }
 
+/**
+ * Changes UI for editor and toolbar based on whether dark mode param is set
+ */
 function darkMode(preference) {
     if (preference) { //turn dark mode on
         $("#current-note-body").css({
@@ -541,33 +560,71 @@ function darkMode(preference) {
     }
 }
 
-function setColorScheme(style) {
-
-    var rootStyle = document.documentElement.style;
-
-    switch(style) {
-        case "Blue":
-            setBlueColorScheme(rootStyle);
-            break;
-        default:
-            setBlueColorScheme(rootStyle);
-    }
-
+/**
+ * Add listener to notility banner and changes color scheme on click
+ */
+function addColorSchemeListener() {
+    document.getElementById('themes-btn').addEventListener('click' ,function(event) {
+        (curColorScheme == colorSchemes.length-1) ? (curColorScheme=0) : (curColorScheme=curColorScheme+1);
+        userPreferences.colorScheme = curColorScheme;
+        chrome.storage.local.set({'preferences': userPreferences}, function(){
+            setColorScheme(curColorScheme);
+        });
+    });
 }
 
 /**
- * Set CSS colors for Blue color scheme
+ * Determines the users preferred color scheme when they first open the extension
  */
-function setBlueColorScheme(rootStyle) {
-    rootStyle.setProperty("--color_dark", "midnightblue");
-    rootStyle.setProperty("--color_dark_hover", "rgb(15, 15, 112)");
-    rootStyle.setProperty("--color_gradient_mid", "#0043a8");
-    rootStyle.setProperty("--color_gradient_end", "#0057da");
-    rootStyle.setProperty("--color_light", "#005fed");
-    rootStyle.setProperty("--color_accent1", "aquamarine");
-    rootStyle.setProperty("--color_accent2", "#c73c94");
-    rootStyle.setProperty("--color_light_accent", "white");
-    rootStyle.setProperty("--color_dark_accent", "black");
+function determineColorScheme() {
+    curColorScheme = userPreferences.colorScheme;
+    setColorScheme(curColorScheme);
+}
+
+/**
+ * Initiates color scheme change based on style parameter
+ */
+function setColorScheme(style) {
+
+    var rootStyle = document.documentElement.style;
+    var color_keys = ["--color_dark", "--color_dark_hover", "--color_gradient_end", "--color_light", "--color_accent1", "--color_accent2", "--color_accent3", "--color_button_txt", "--color_highlighted_txt", "--color_options_txt"];
+
+    switch(style) {
+        case 0: //Blue with aqua accent
+            var color_vals = ["midnightblue", "rgb(15, 15, 112)", "#0057da", "#005fed", "aquamarine", "#c73c94", "#0043a8", "white", "black", "white"];
+            applyCSSColorChanges(rootStyle, color_keys, color_vals);
+            break;
+        case 1: //Light blue and green pastel with orange and yellow accent
+            var color_vals = ["#5BC0EB", "rgb(54, 116, 143)", "#9BC53D", "#FA7921", "#FDE74C", "#E55934", "#5BC0EB", "white", "black", "white"];
+            applyCSSColorChanges(rootStyle, color_keys, color_vals);
+            break;
+        case 2: //Dark red with yellow accent
+            var color_vals = ["#481D24", "rgb(39, 16, 20)", "#901E2D", "#901E2D", "#FFC857", "#FFC857", "#481D24", "white", "black", "white"];
+            applyCSSColorChanges(rootStyle, color_keys, color_vals);
+            break;
+        case 3: //Sea blue and green
+            var color_vals = ["#05668d", "#033b52", "#00a896", "#f0f3bd", "#02c39a", "#02c39a", "#02c39a", "black", "black", "white"];
+            applyCSSColorChanges(rootStyle, color_keys, color_vals);
+            break;
+        case 4: //Pink, Pink, PINK
+            var color_vals = ["#481D24", "rgb(48, 19, 24)", "#b5838d", "#b5838d", "#ffb4a2", "#ffb4a2", "#e5989b", "black", "black", "white"];
+            applyCSSColorChanges(rootStyle, color_keys, color_vals);
+            break;
+        case 5: //Sunset orange with mahogany and yellow accent
+            var color_vals = ["#da670a", "a8510a", "#f0720b", "#571f06", "#ffe66d", "#ffe66d", "#ffe66d", "white", "black", "white"];
+            applyCSSColorChanges(rootStyle, color_keys, color_vals);
+            break;
+    }
+}
+
+/**
+ * Applies css color changes specified in color_vals to the given variable names in color_keys
+ */
+function applyCSSColorChanges(rootStyle, color_keys, color_vals) {
+    console.log("OK");
+    for (var i=0; i < color_keys.length; i++) {
+        rootStyle.setProperty(color_keys[i], color_vals[i]);
+    }
 }
 
 /*
@@ -582,10 +639,16 @@ function addDarkModeListener() {
     });
 }
 
+/**
+ * Determines if user preferences indicate focus mode
+ */
 function determineFocusMode() {
     (userPreferences.focusMode) ? focusMode() : {};
 }
 
+/**
+ * Determines if user preferences indicate dark mode
+ */
 function determineDarkMode() {
     (userPreferences.darkMode) ? darkMode(true) : {};
 }
@@ -620,6 +683,7 @@ function addDeleteNoteListener() {
 function addFilterNoteListener() {
     document.getElementById("note-filter-btn").onclick = function() {
         document.getElementById("searcher").value = "";
+        $("#searcher").css('border-radius', '0 4px 4px 4px')
         loadNotes();
 
         /* Change formatting of filter buttons */
@@ -634,6 +698,7 @@ function addFilterNoteListener() {
 function addFilterHashesListener() {
     document.getElementById("tags-filter-btn").onclick = function() {
         document.getElementById("searcher").value = "";
+        $("#searcher").css('border-radius', '4px 0 4px 4px')
         loadHashes();
 
         /* Change formatting of filter buttons */
@@ -683,15 +748,6 @@ function addCitationButtonListener() {
     }
 
 }
-
-function findTitle(url) {
-    jQuery.get(url, function(data){
-        var html = data.responseText;
-        var regex = /\<title\>(.*)\<\/title\>/;
-        var result = regex.exec(html);
-    });
-}
-
 
 /* 
  * Add onclick function to each note tile that displays its contents in the editor
@@ -755,59 +811,6 @@ function addOpenNoteFunctionality(element, type) {
         });
     }
 }
-
-/*
- *  DEPRECATED
- *  Adds listener to note options button which displays additional functions to be applied to the current note 
-
-function addNoteOptionsListener() {
-    
-    document.body.addEventListener('click', function(event) {
-
-        var optionsBtn = document.getElementById('note-options');
-        var optionsMenu = $('#note-options-display');
-        var path = event.path;
-        var element = event.target;
-
-        if (path.includes(optionsBtn)) {
-            if (optionsMenu.hasClass('closed')) {
-                handleNoteOptionsDisplay(optionsMenu, 'open');
-            }
-            else {
-                handleNoteOptionsDisplay(optionsMenu, 'closed');
-            }
-        }
-        else {
-            if (optionsMenu.hasClass('open')) {
-                handleNoteOptionsDisplay(optionsMenu, 'closed');
-            }
-        }
-
-    });
-
-}
-*/
-
-/*
- * DEPRECATED 
- * Opens or closes the note options 
-
-function handleNoteOptionsDisplay(optionsMenu, status) {
-    if (status == 'open') {
-        optionsMenu.slideDown(200);
-        optionsMenu.removeClass('closed');
-        optionsMenu.addClass('open');
-    }
-    else if (status == 'closed') {
-        optionsMenu.slideUp(200);
-        optionsMenu.removeClass('open');
-        optionsMenu.addClass('closed');
-    }
-    else {
-        console.log("Error opening or closing note options menu");
-    }
-}
-*/
 
 /*
  *  Adds listener to current note title to save when focus is lost
@@ -903,6 +906,7 @@ function addElementListeners() {
     addModeSwitchListeners();
     addNoteOptionsListener();
     addDarkModeListener();
+    addColorSchemeListener();
 }
 
 /*

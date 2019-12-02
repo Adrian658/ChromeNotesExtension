@@ -1,18 +1,24 @@
 :root {
-    --color_dark: #7B886F;
-    --color_dark_hover: rgb(74, 82, 66);
-    --color_gradient_mid: #7B886F;
-    --color_gradient_end: #B4DC7F;
-    --color_light: #FEFFA5;
-    --color_accent1: #DAB6C4;
-    --color_accent2: #FFA0AC;
-    --color_light_accent: black;
-    --color_dark_accent: black;
+    --color_dark: #da670a;
+    --color_dark_hover: #a8510a;
+    --color_gradient_end: #f0720b;
+    --color_light: #571f06;
+    --color_accent1: #ffe66d;
+    --color_accent2: #ffe66d;
+    --color_accent3: #e5989b;
+    --color_button_txt: white;
+    --color_highlighted_txt: black;
+    --color_options_txt: white;
+
+    --trans_duration: 0.5s;
 }
-/* 1F363D, 40798C, 70A9A1, 9EC1A3, CFE0C3 */
-/* F6F7EB, E94F37, 393E41, 3F88C5, 44BBA4 */
 
 /* Main container classes */
+
+.note-content {
+    background: linear-gradient(90deg, var(--color_dark) 10%, var(--color_gradient_end) 95%);
+    height: inherit;
+}
 
 .extension-container {
     width: 600px;
@@ -21,7 +27,7 @@
 }
 
 .note-container {
-    background: linear-gradient(90deg, var(--color_dark) 10%, var(--color_gradient_mid) 95%);
+    background: none;
     overflow-y: hidden;
     height: 100%;
 }
@@ -39,16 +45,25 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 /***** SIDEBAR CLASSES *****/
 
-.filter-container {
+#sidebar-top {
     display: inline-flex;
-    justify-content: flex-end;
+}
+
+#themes-btn {
+    margin: auto;
+    margin-top: 8px;
+    padding: 0 4px 0 4px;
+    border-radius: 4px;
+    background-color: var(--color_accent1);
+    color: var(--color_highlighted_text);
+    cursor: pointer;
 }
 
 .selection-btn {
     background-color: var(--color_light);
-    color: var(--color_light_accent);
+    color: var(--color_button_txt);
     width: 45%;
-    border-radius: 2px;
+    border-radius: 0 0 6px 6px;
     border: 1px solid var(--color_light);
     border-top: none;
 }
@@ -67,9 +82,10 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 .active-display {
     transform: translateY(16px);
     background-color: var(--color_accent1) !important;
-    color: var(--color_dark) !important; 
+    color: var(--color_highlighted_txt) !important; 
     border: 1px solid var(--color_accent1);
     border-top: none;
+    border-radius: 6px 6px 0 0;
 }
 
 #selection-top-hr {
@@ -81,6 +97,7 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 #searcher {
     margin-top: 0px;
     border: 2px solid var(--color_accent1);
+    border-radius: 0 4px 4px 4px;
     width: 170px;
     margin-top: 15px;
     margin-bottom: 12px;
@@ -102,10 +119,10 @@ hr {
 /***** NOTE TILES *****/
 
 .note-tile, .new-note-btn {
-    color: var(--color_light_accent);
+    color: var(--color_button_txt);
     background-color: var(--color_light);
     border: 1px solid var(--color_light);
-	border-radius: 2px;
+	border-radius: 6px;
 	padding: 10px;
 	margin-top: 4px;
     margin-bottom: 4px;
@@ -120,14 +137,14 @@ hr {
 
 .active-note, .active-note:hover {
     background-color: var(--color_accent1) !important;
-    color: var(--color_dark_accent);
+    color: var(--color_highlighted_txt);
     border: 1px solid var(--color_accent1) !important;
 }
 
 /* CURRENT NOTE TITLE CLASSES */
 
 #current-note-display {
-    background: linear-gradient(90deg, var(--color_gradient_mid) 10%, var(--color_gradient_end) 100%);
+    background: none;
     height: 100%;
     padding: 0px;
 }
@@ -178,7 +195,7 @@ hr {
 }
 
 #note-options-container:hover #note-options-btn {
-    color: var(--color_dark_accent);
+    color: var(--color_highlighted_txt);
 }
 
 #note-options-display {
@@ -201,10 +218,10 @@ hr {
     min-width: 150px;
     font-size: 1rem;
     cursor: pointer;
-    color: var(--color_light_accent);
+    color: var(--color_options_txt);
     background-color: var(--color_dark);
     border: none;
-	border-radius: 2px;
+	border-radius: 6px;
 	padding: 8px 0px 8px 10px;
     margin-bottom: 6px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
@@ -273,7 +290,6 @@ input:checked + .slider:before {
     background-color: white;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.6);
     border-radius: 4px 4px 0 0;
-    /*background: linear-gradient(90deg, #004ec4 10%, var(--color_gradient_end) 100%);*/
 }
 
 #cur-note-body-container {
@@ -292,10 +308,6 @@ input:checked + .slider:before {
     height: auto;
     background-color: white;
     border-radius: 0 0 4px 4px;
-}
-
-.note-content {
-    height: inherit;
 }
 
 /***** FOCUS MODE BUTTONS ******/
@@ -374,14 +386,8 @@ input:checked + .slider:before {
 
 /***** TRANSITIONS *****/
 
-.transition-normal {
-    transition-duration: 0.5s;
-    transition: all 0.5s;
-}
-
 .transition-quick {
-    transition-duration: 0.3s;
-    transition: all 0.3s;
+    transition: all var(--trans_duration);
 }
 
 /***** QUILL EDITOR OVERIDES *****/
