@@ -2,7 +2,10 @@
  * Notes.js -> The main javascript file containing our implementation of Notes, Library, and important functions.
  */
 var raw_notes = [];
+var userPreferences;
 var hashtagRegex = /\B(\#[a-zA-Z0-9]+\b)/g;
+var colorSchemes = [0, 1, 2, 3, 4, 5]
+var curColorScheme = 0
 
 /* 
 This means the # symbol of a hash must not bump into other words
@@ -36,7 +39,7 @@ function loadNotes(hash){
 
         /* If the user has no notes, create a default new one and open it for them */
         if (raw_notes.length == 0) {
-            createNote("New Note", "Start your new note!", "green");
+            createNote("Welcome to Notility!", "", "");
             openNote(-1);
             return;
         }
@@ -64,9 +67,11 @@ function loadNotes(hash){
 function renderNotes(){
 
     $('#new-note-btn').show();
+    $("#new-note-hr").show();
+    $("#note-index-container").css('height', '360px');
     clearNotesDisplay("notes");
     raw_notes.forEach(function(note){
-        $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + note["id"] + '>' + trimTitle(note["title"]) + '</div>');
+        $(".note-index").append('<div class="note-tile btn btn-block transition-quick" data-id=' + note["id"] + '>' + trimTitle(note["title"]) + '</div>');
     });
     addTileListener();
 
@@ -97,9 +102,11 @@ function loadHashes() {
 function renderHashes(hashes) {
 
     $('#new-note-btn').hide();
+    $("#new-note-hr").hide();
+    $("#note-index-container").css('height', '410px');
     clearNotesDisplay("hashes");
     hashes.forEach(function(hash) {
-        $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + hash + '>' + hash + '</div>');
+        $(".note-index").append('<div class="note-tile btn btn-block transition-quick" data-id=' + hash + '>' + trimTitle(hash) + '</div>');
     });
     addTileListener(id=null, type="hash");
 
@@ -126,9 +133,9 @@ function clearNotesDisplay(type) {
 function openNote(id) {
 
     console.log("opening note "+id);
-    if (id == -1) { //id is -1 when no id was found in parent function, so open first note in library
+    if (id == -1) { //id is -1 when no id was found in parent function, so open last note in library
         if(raw_notes.length>0){
-            var note = raw_notes[0];
+            var note = raw_notes[raw_notes.length-1];
             populateCanvas(note["id"], note["title"], note["body"], note["hashes"]);
         } else {
             populateCanvas(null,"not a note","not a note", null);
@@ -179,7 +186,7 @@ function changeNoteHighlight(id) {
     }
     else { //add highlighting to selected element
         if (id == -1) {
-            var note = raw_notes[0];
+            var note = raw_notes[raw_notes.length-1];
             id = note["id"];
         }
         var targetElement = findNoteElement(id);
@@ -287,7 +294,7 @@ function saveNote() {
     if ($('.note-index').hasClass('hashes')) {
         loadHashes();
     }
-    $('#autosave-label').text('Changes saved');
+    $('#autosave-label').text('Saved');
     $("#tags").html(hashes);
 
 }
@@ -336,10 +343,14 @@ async function deleteNote(deleteID){
     raw_notes.splice(delIndex,1);
     saveLib();
 
+    //Find ID of new note to open
+    var openID;
+    (delIndex == 0) ? (openId = -1) : (openID = raw_notes[delIndex-1]["id"]);
+
     //Remove note from DOM and open a different note for display
     findNoteElement(deleteID).remove();
-    openNote(-1);
-    changeNoteHighlight(-1);
+    openNote(openID);
+    changeNoteHighlight(openID);
 
 }
 
@@ -446,6 +457,202 @@ function findDeleteChar(quill, oldDelta, changeIndex, regex) {
 
 }
 
+/*********************************** User preference functions ***********************************/
+
+/**
+ * Loads user preferences from chrome storage and configures app accordingly
+ */
+function loadUserPreferences() {
+    default_preferences = {'focusMode': false, 'darkMode': false, 'colorScheme': 0}
+    chrome.storage.local.get({'preferences': default_preferences}, function(obj){
+        userPreferences = obj.preferences;
+        determineFocusMode();
+        determineDarkMode();
+        determineColorScheme();
+    });
+}
+
+/**
+ * Changes UI to focus mode
+ */
+function focusMode() {
+    $('#note-container').hide();
+    $('#current-note-display').removeClass('cust-col-8').addClass('cust-col-12');
+    $('#index-show-btn').show();
+    $("#index-show-btn, #autosave-label").css('margin-left', '15px');
+    $("#cur-note-body-container").css('padding', '0');
+    $("#scrolling-container").css('height', '88%');
+    $("#current-note-title").css('margin', '0 0 0 auto');
+    $("#current-note-body").css('border-radius', '0');
+    $("#toolbar").css("border-radius", "0");
+}
+
+/**
+ * Changes UI to browse mode
+ */
+function browseMode() {
+    $('#note-container').show();
+    $('#current-note-display').removeClass('cust-col-12').addClass('cust-col-8');
+    $('#index-show-btn').hide();
+    $("#index-show-btn, #autosave-label").css('margin-left', '0px');
+    $("#cur-note-body-container").css('padding', '0px 15px 20px 0px');
+    $("#scrolling-container").css('height', '83%');
+    $("#current-note-title").css('margin', '0 0 0 0');
+    $("#current-note-body").css('border-radius', '0 0 4px 4px');
+    $("#toolbar").css("border-radius", "4px 4px 0 0");
+}
+
+/**
+ * Event listeners for focus and browse mode
+ * Change user preferences and initiate function to change UI
+ */
+function addModeSwitchListeners() {
+    document.getElementById('index-hide-btn').addEventListener('click' ,function(event) {
+        userPreferences.focusMode = true;
+        chrome.storage.local.set({'preferences': userPreferences}, function(){
+            focusMode(); 
+        });
+    });
+
+    document.getElementById('index-show-btn').addEventListener('click' ,function(event) {
+        userPreferences.focusMode = false;
+        chrome.storage.local.set({'preferences': userPreferences}, function(){
+            browseMode();
+        });
+    });
+}
+
+/**
+ * Changes UI for editor and toolbar based on whether dark mode param is set
+ */
+function darkMode(preference) {
+    if (preference) { //turn dark mode on
+        $("#current-note-body").css({
+            'color': 'white',
+            'background-color': '#2a2a2a'
+        });
+        $("#toolbar").css({
+            'background-color': '#1b1b1b'
+        });
+        $(".ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill").css('fill', 'white');
+        $(".ql-snow .ql-stroke, .ql-snow .ql-stroke.ql-fill").css('stroke', 'white');
+        $(".ql-snow .ql-picker .ql-picker-label").css('color', 'rgb(118, 118, 118)');
+
+        //Change dark mode button colors
+        $("#dark-mode-btn")[0].checked = true;
+        $("#dark-mode-bulb").css('color', 'white');
+    }
+    else { //turn dark mode off
+        $("#current-note-body").css({
+            'color': 'black',
+            'background-color': 'white'
+        });
+        $("#toolbar").css({
+            'background-color': 'white'
+        });
+        $(".ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill").css('fill', '#444');
+        $(".ql-snow .ql-stroke, .ql-snow .ql-stroke.ql-fill").css('stroke', '#444');
+        $(".ql-snow .ql-picker .ql-picker-label").css('color', 'rgb(68, 68, 68)');
+
+        //Change dark mode button colors
+        $("#dark-mode-btn")[0].checked = false;
+        $("#dark-mode-bulb").css('color', '#444')
+    }
+}
+
+/**
+ * Add listener to notility banner and changes color scheme on click
+ */
+function addColorSchemeListener() {
+    document.getElementById('themes-btn').addEventListener('click' ,function(event) {
+        (curColorScheme == colorSchemes.length-1) ? (curColorScheme=0) : (curColorScheme=curColorScheme+1);
+        userPreferences.colorScheme = curColorScheme;
+        chrome.storage.local.set({'preferences': userPreferences}, function(){
+            setColorScheme(curColorScheme);
+        });
+    });
+}
+
+/**
+ * Determines the users preferred color scheme when they first open the extension
+ */
+function determineColorScheme() {
+    curColorScheme = userPreferences.colorScheme;
+    setColorScheme(curColorScheme);
+}
+
+/**
+ * Initiates color scheme change based on style parameter
+ */
+function setColorScheme(style) {
+
+    var rootStyle = document.documentElement.style;
+    var color_keys = ["--color_dark", "--color_dark_hover", "--color_gradient_end", "--color_light", "--color_accent1", "--color_accent2", "--color_accent3", "--color_button_txt", "--color_highlighted_txt", "--color_options_txt"];
+
+    switch(style) {
+        case 0: //Blue with aqua accent
+            var color_vals = ["midnightblue", "rgb(15, 15, 112)", "#0057da", "#005fed", "aquamarine", "#c73c94", "#0043a8", "white", "black", "white"];
+            applyCSSColorChanges(rootStyle, color_keys, color_vals);
+            break;
+        case 1: //Light blue and green pastel with orange and yellow accent
+            var color_vals = ["#5BC0EB", "rgb(54, 116, 143)", "#9BC53D", "#FA7921", "#FDE74C", "#E55934", "#5BC0EB", "white", "black", "white"];
+            applyCSSColorChanges(rootStyle, color_keys, color_vals);
+            break;
+        case 2: //Dark red with yellow accent
+            var color_vals = ["#481D24", "rgb(39, 16, 20)", "#901E2D", "#901E2D", "#FFC857", "#FFC857", "#481D24", "white", "black", "white"];
+            applyCSSColorChanges(rootStyle, color_keys, color_vals);
+            break;
+        case 3: //Sea blue and green
+            var color_vals = ["#05668d", "#033b52", "#00a896", "#f0f3bd", "#02c39a", "#02c39a", "#02c39a", "black", "black", "white"];
+            applyCSSColorChanges(rootStyle, color_keys, color_vals);
+            break;
+        case 4: //Pink, Pink, PINK
+            var color_vals = ["#481D24", "rgb(48, 19, 24)", "#b5838d", "#b5838d", "#ffb4a2", "#ffb4a2", "#e5989b", "black", "black", "white"];
+            applyCSSColorChanges(rootStyle, color_keys, color_vals);
+            break;
+        case 5: //Sunset orange with mahogany and yellow accent
+            var color_vals = ["#da670a", "a8510a", "#f0720b", "#571f06", "#ffe66d", "#ffe66d", "#ffe66d", "white", "black", "white"];
+            applyCSSColorChanges(rootStyle, color_keys, color_vals);
+            break;
+    }
+}
+
+/**
+ * Applies css color changes specified in color_vals to the given variable names in color_keys
+ */
+function applyCSSColorChanges(rootStyle, color_keys, color_vals) {
+    console.log("OK");
+    for (var i=0; i < color_keys.length; i++) {
+        rootStyle.setProperty(color_keys[i], color_vals[i]);
+    }
+}
+
+/*
+ *  Add listener to switch dark mode
+ */
+function addDarkModeListener() {
+    document.getElementById("dark-mode-btn").addEventListener("click", function(){
+        userPreferences.darkMode = !userPreferences.darkMode;
+        chrome.storage.local.set({"preferences": userPreferences}, function(){
+            darkMode(userPreferences.darkMode);
+        });
+    });
+}
+
+/**
+ * Determines if user preferences indicate focus mode
+ */
+function determineFocusMode() {
+    (userPreferences.focusMode) ? focusMode() : {};
+}
+
+/**
+ * Determines if user preferences indicate dark mode
+ */
+function determineDarkMode() {
+    (userPreferences.darkMode) ? darkMode(true) : {};
+}
+
 /*********************************** Functions which add event listeners to appropriate elements ***********************************/
 
 /*
@@ -453,7 +660,10 @@ function findDeleteChar(quill, oldDelta, changeIndex, regex) {
  */
 function addCreateNoteListener() {
     document.getElementById('new-note-btn').onclick = function() {
-        createNote('Untitled Note', "", 'red');
+        createNote('Give Me a Title!', "", 'red');
+        setTimeout(function(){
+            $("#note-index-container").scrollTop($("#note-index-container")[0].scrollHeight);
+        }, 100);
     }
 }
 
@@ -473,7 +683,12 @@ function addDeleteNoteListener() {
 function addFilterNoteListener() {
     document.getElementById("note-filter-btn").onclick = function() {
         document.getElementById("searcher").value = "";
+        $("#searcher").css('border-radius', '0 4px 4px 4px')
         loadNotes();
+
+        /* Change formatting of filter buttons */
+        this.classList.add("active-display");
+        document.getElementById("tags-filter-btn").classList.remove("active-display");
     }
 }
 
@@ -483,7 +698,12 @@ function addFilterNoteListener() {
 function addFilterHashesListener() {
     document.getElementById("tags-filter-btn").onclick = function() {
         document.getElementById("searcher").value = "";
+        $("#searcher").css('border-radius', '4px 0 4px 4px')
         loadHashes();
+
+        /* Change formatting of filter buttons */
+        this.classList.add("active-display");
+        document.getElementById("note-filter-btn").classList.remove("active-display");
     }
 }
 
@@ -528,15 +748,6 @@ function addCitationButtonListener() {
     }
 
 }
-
-function findTitle(url) {
-    jQuery.get(url, function(data){
-        var html = data.responseText;
-        var regex = /\<title\>(.*)\<\/title\>/;
-        var result = regex.exec(html);
-    });
-}
-
 
 /* 
  * Add onclick function to each note tile that displays its contents in the editor
@@ -590,60 +801,14 @@ function addOpenNoteFunctionality(element, type) {
         element.addEventListener("click", function(event){ 
     
             var targetElement = event.target || event.srcElement;
-            var hash = targetElement.innerHTML;
+            var hash = targetElement.getAttribute("data-id");
+
+            document.getElementById("note-filter-btn").classList.add("active-display");
+            document.getElementById("tags-filter-btn").classList.remove("active-display");
 
             loadNotes(hash);
     
         });
-    }
-}
-
-/*
- *  Adds listener to note options button which displays additional functions to be applied to the current note 
- */
-function addNoteOptionsListener() {
-    
-    document.body.addEventListener('click', function(event) {
-
-        var optionsBtn = document.getElementById('note-options');
-        var optionsMenu = $('#note-options-display');
-        var path = event.path;
-        var element = event.target;
-
-        if (path.includes(optionsBtn)) {
-            if (optionsMenu.hasClass('closed')) {
-                handleNoteOptionsDisplay(optionsMenu, 'open');
-            }
-            else {
-                handleNoteOptionsDisplay(optionsMenu, 'closed');
-            }
-        }
-        else {
-            if (optionsMenu.hasClass('open')) {
-                handleNoteOptionsDisplay(optionsMenu, 'closed');
-            }
-        }
-
-    });
-
-}
-
-/*
- *  Opens or closes the note options 
- */
-function handleNoteOptionsDisplay(optionsMenu, status) {
-    if (status == 'open') {
-        optionsMenu.slideDown(200);
-        optionsMenu.removeClass('closed');
-        optionsMenu.addClass('open');
-    }
-    else if (status == 'closed') {
-        optionsMenu.slideUp(200);
-        optionsMenu.removeClass('open');
-        optionsMenu.addClass('closed');
-    }
-    else {
-        console.log("Error opening or closing note options menu");
     }
 }
 
@@ -686,6 +851,17 @@ function addFilterListener(){
     });
 }
 
+function addNoteOptionsListener() {
+    $("#note-options-container").hover(function(){
+        $("#note-options-display").show("blind", { direction: "up" }, 500);
+        $("#options-icon").removeClass("fa-ellipsis-h");
+        $("#options-icon").addClass("fa-chevron-down");
+    }, function(){
+        $("#note-options-display").stop(true, true).hide();
+        $("#options-icon").removeClass("fa-chevron-down");
+        $("#options-icon").addClass("fa-ellipsis-h");
+    });
+}
 
 /*********************************** Helper functions ***********************************/
 
@@ -726,9 +902,11 @@ function addElementListeners() {
     addFilterHashesListener();
     addTitleListener();
     addDownloadListener();
-    addNoteOptionsListener();
     addCitationButtonListener();
-    addModeSwitchListeners()
+    addModeSwitchListeners();
+    addNoteOptionsListener();
+    addDarkModeListener();
+    addColorSchemeListener();
 }
 
 /*
@@ -736,50 +914,6 @@ function addElementListeners() {
  */
 document.addEventListener("DOMContentLoaded", function(){
     loadNotes();
-    determineFocusMode();
+    loadUserPreferences();
     addElementListeners();
 })
-
-/*********************************** Focus mode functions ***********************************/
-
-function focusMode() {
-    var sidebar = $('#note-container');
-    var curNote = $('#current-note-display');
-    var btn = $('#index-show-btn');
-
-    sidebar.hide();
-    curNote.removeClass('cust-col-8');
-    curNote.addClass('cust-col-12');
-    btn.show();
-}
-
-function browseMode() {
-    var sidebar = $('#note-container');
-    var curNote = $('#current-note-display');
-    var btn = $('#index-show-btn');
-
-    sidebar.show();
-    curNote.removeClass('cust-col-12');
-    curNote.addClass('cust-col-8');
-    btn.hide();
-}
-
-function addModeSwitchListeners() {
-    document.getElementById('index-hide-btn').addEventListener('click' ,function(event) {
-        chrome.storage.local.set({'preferenceFocus': true}, function(){
-            focusMode(); 
-        });
-    });
-
-    document.getElementById('index-show-btn').addEventListener('click' ,function(event) {
-        chrome.storage.local.set({'preferenceFocus': false}, function(){
-            browseMode();
-        });
-    });
-}
-
-function determineFocusMode() {
-    chrome.storage.local.get({'preferenceFocus': 'false'}, function(store){
-        (store.preferenceFocus) ? focusMode() : {};
-    });
-}

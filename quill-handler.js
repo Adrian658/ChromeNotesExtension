@@ -67,7 +67,7 @@ function createEditor() {
         }
 
         //Save the note if the user does not make changes after current change
-        $('#autosave-label').text('Saving changes...');
+        $('#autosave-label').text('Saving...');
         changeCount += 1;
         saveNoteWrapper(changeCount);
 
