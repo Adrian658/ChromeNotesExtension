@@ -123,22 +123,24 @@ hr {
     background-color: var(--color_light);
     border: 1px solid var(--color_light);
 	border-radius: 6px;
-	padding: 10px;
+	padding: 8px 0 8px 0;
 	margin-top: 4px;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
-.note-tile:hover, .btn-tile:focus, .btn-tile:active, .btn-tileactive, .open>.dropdown-toggle.btn-tile, .new-note-btn:hover {
+.note-tile:hover, .new-note-btn:hover {
     color: var(--color_accent1);
     background: none;
     border: 1px solid var(--color_accent1);
+    border-radius: 12px;
 }
 
 .active-note, .active-note:hover {
     background-color: var(--color_accent1) !important;
     color: var(--color_highlighted_txt);
     border: 1px solid var(--color_accent1) !important;
+    border-radius: 6px;
 }
 
 /* CURRENT NOTE TITLE CLASSES */

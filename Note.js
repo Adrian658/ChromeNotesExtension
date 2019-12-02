@@ -39,7 +39,7 @@ function loadNotes(hash){
 
         /* If the user has no notes, create a default new one and open it for them */
         if (raw_notes.length == 0) {
-            createNote("Give Me a Title!", "Start your new note!", "green");
+            createNote("Welcome to Notility!", "", "");
             openNote(-1);
             return;
         }
