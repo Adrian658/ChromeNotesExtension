@@ -34,7 +34,6 @@
 
 textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container::-webkit-scrollbar { 
     width: 0 !important;
-}
 
 
 #note-index-container {
@@ -101,6 +100,10 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     width: 170px;
     margin-top: 15px;
     margin-bottom: 12px;
+}
+
+.note-options-btn {
+	background-color: #0d375f;
 }
 
 #index-show-btn {
