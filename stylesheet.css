@@ -34,6 +34,7 @@
 
 textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container::-webkit-scrollbar { 
     width: 0 !important;
+}
 
 
 #note-index-container {
@@ -50,10 +51,10 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 
 #themes-btn {
     margin: auto;
-    margin-top: 8px;
+    margin-top: 0px;
     padding: 0 4px 0 4px;
     border-radius: 4px;
-    background-color: var(--color_accent1);
+    /*background-color: var(--color_accent1);*/
     color: var(--color_highlighted_text);
     cursor: pointer;
 }
