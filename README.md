@@ -1,13 +1,6 @@
-https://chrome.google.com/webstore/detail/notility/hogihdfpkilgcmenhklcllklgnkndglp?hl=en-US
-
 # ChromeNotesExtension
 
-Steps to test our project:
-1. Clone/Download our project from github
-2. Navigate to manage extensions in Chrome settings
-3. Switch the developer mode switch on
-4. Click 'load unpacked' and select the folder of our project
-5. Click the little c in the upper right of the browser to open the extension
+Download the extension here: https://chrome.google.com/webstore/detail/notility/hogihdfpkilgcmenhklcllklgnkndglp?hl=en-US
 
 # Tagging Notes
 You can tag a note by adding # immediately followed by a tag phrase anywhere within the note body.
