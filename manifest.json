@@ -1,12 +1,13 @@
 {
-    "name": "Notility",
+    "name": "Notility - A Simple and Unique Note Taking Experience",
 	"short_name": "Notility",
-    "version": "1.0",
-    "description": "Take notes like never before!",
-    "permissions": ["declarativeContent", "storage", "tabs", "activeTab", "downloads"],
+    "version": "1.2.3",
+    "description": "The easiest and coolest way to take notes in your browser. Unique organization system, fun themes, tons of formatting options, etc.",
+    "permissions": ["storage", "activeTab"],
     "browser_action": {
         "default_popup": "main.html"
-	},
+    },
+    "offline_enabled": true,
 	"icons": { "16": "Notility_Icon_16.png",
            "48": "Notility_Icon_48.png",
           "128": "Notility_Icon_128.png" },

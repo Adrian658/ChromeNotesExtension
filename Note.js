@@ -857,7 +857,7 @@ function addDownloadListener() {
     });
 
     /* PDF Download */
-    document.getElementById('pdf-download').addEventListener('click', function(){
+    /*document.getElementById('pdf-download').addEventListener('click', function(){
         
         html2canvas(document.querySelector('#download-btn')).then(canvas => {
 			let pdf = new jsPDF('p', 'mm', 'a4');
@@ -865,10 +865,10 @@ function addDownloadListener() {
 			pdf.save("test.pdf");
         });
         
-    });
+    });*/
 }
 
-function printPDF () {
+/*function printPDF () {
     const domElement = document.getElementById('current-note-body')
     html2canvas(domElement, { onclone: (document) => {
     }})
@@ -878,7 +878,7 @@ function printPDF () {
         pdf.addImage(img, 'JPEG', 0, 0, 400, 1400);
         pdf.save('test.pdf');
     })
-}
+}*/
 
 
 /*

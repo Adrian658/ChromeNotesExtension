@@ -411,7 +411,7 @@ input:checked + .slider:before {
 }
 
 #current-note-body {
-    min-height: 98%;
+    min-height: 100%;
     height: auto;
     background-color: white;
     border-radius: 0 0 4px 4px;
@@ -560,10 +560,6 @@ input:checked + .slider:before {
 }
 
 /***** QUILL EDITOR OVERIDES *****/
-
-.ql-editor {
-    padding-bottom: 6px;
-}
 
 .ql-container.ql-snow {
     border: none;
