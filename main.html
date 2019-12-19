@@ -2,11 +2,15 @@
 <html>
     <head>
         <link rel="stylesheet" href="katex/katex.min.css">
-        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-        <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet"> 
+        <!-- <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">  -->
+        <link rel="stylesheet" href="fa/css/all.css">
         <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" media="screen">
+        <link rel="stylesheet" href="quill-snow.css" media="screen">
         <link rel="stylesheet" href="stylesheet.css" media="screen">
 
+        <script src="htmlToRtf.js"></script>
+        <script src="jspdf/dist/jspdf.min.js"></script>
+        <script src="html2canvas/dist/html2canvas.min.js"></script>
         <script src="katex/katex.min.js"></script>
         <script src="quill-1.3.6.js"></script>
         <script src="quill-handler.js"></script>
@@ -16,13 +20,44 @@
     </head>
 
     <body>
-        <div class="extension-container">
+        <div id="extension-container" class="extension-container">
             <div class="cust-row note-content">
                     <div id="note-container" class="note-container scroll-toggle cust-col-4">
                         <div id="sidebar" class="cust-row">
                             <div id="sidebar-top" class="cust-col-12 pl-0 pt-2 pb-0">
-                                <i id="index-hide-btn" class="text-white fas fa-chevron-left"></i>
-                              <img id="themes-btn" src="Notility Banner.png" style="position: absolute; height: 40px; margin-left: 30px;"></img>
+                                <div id="ext-options-container">
+                                    <i id="ext-options-btn" class="fas fa-bars transition-quick"></i>
+                                    <div id="ext-options-display" class="" style="display: none;">
+                                        <i id="index-hide-btn" class="text-white fas fa-search-plus separator"></i>
+                                        <div class="separator"></div>
+                                        <div id="resize-container">
+                                            <i id="resize-btn" class="text-white fas fa-expand-arrows-alt"></i>
+                                            <div id="resize-display" class="">
+                                                <div id="large-btn" class="resize-btn transition-quick">
+                                                    Large
+                                                </div>
+                                                <div id="normal-btn" class="resize-btn transition-quick">
+                                                    Normal
+                                                </div>
+                                                <div id="small-btn" class="resize-btn transition-quick">
+                                                    Small
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="separator"></div>
+                                        <div id="themes-container">
+                                            <i id="themes-btn" class="text-white fas fa-palette"></i>
+                                            <div id="themes-display">
+                                                <div id="Spotify" class="theme-btn">Spotify</div>
+                                                <div id="Rainbow" class="theme-btn">Be Happy</div>
+                                                <div id="Facebook" class="theme-btn">Facebook</div>
+                                                <div id="Metallic" class="theme-btn">Metallic</div>
+                                                <div id="Forest" class="theme-btn">Forest</div>
+                                                <div id="Royalty" class="theme-btn">Royalty</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="cust-col-12 pl-0 pr-0">
                                 <hr id="selection-top-hr"> 
@@ -34,7 +69,7 @@
                                         Tags
                                     </div>
                                 </div>
-                                <input type="text" id="searcher" placeholder="Search..." class="">
+                                <input type="text" id="searcher" placeholder="Search..." class="transition-quick">
                             </div>
                             <div id="note-index-container" class="scroll-toggle cust-col-12 pl-0 pr-0">
                                 <div class="note-index text-center"></div>
@@ -46,10 +81,11 @@
                         </div>
                     </div>
                     <div id="current-note-display" class="current-note-display cust-col-8">
-                        <div class="title-container text-light" style="height: 10%">
-                            <div class="cust-row">
-                                <div id="current-note-title-container" class="cust-col-12 current-note-title-container">
-                                    <i id="index-show-btn" class="fas fa-chevron-right"></i>
+                        <div id="title-container" class="title-container text-light" style="height: 10%">
+                            <div id="title-container-row" class="cust-row">
+                                 <!-- Extension options menu inserted here -->
+                                <div id="current-note-title-container" class="cust-col-12 current-note-title-container">                                 
+                                    <i id="index-show-btn" class="fas fa-search-minus"></i>                                    
                                     <span id="current-note-title" contenteditable="true" spellcheck="false"></span>
                                     <span id="autosave-label"></span>
                                     <div id="note-options-container">
@@ -57,21 +93,50 @@
                                             <i id="options-icon" class="fas fa-ellipsis-h transition-quick"></i>
                                         </div>
                                         <div id="note-options-display" class="closed">
-                                            <a id="download-btn" download="mk" class="download-btn transition-quick" href="">
-                                                <i class="fas fa-download"></i> Download
-                                            </a>
-                                            <div id="citation-btn" class="citation-btn transition-quick">
+                                            <div id="citation-btn" class="citation-btn transition-quick options-btn">
                                                 <i class="fas fa-paste"></i> Insert URL
                                             </div>
-                                            <div id="delete-btn" class="delete-btn transition-quick">
-                                                    <i class="fas fa-trash"></i> Delete Note
+                                            <div id="download-container">
+                                                <div id="download-expand-btn" class="transition-quick options-btn">
+                                                    <i class="fas fa-download"></i> Download
+                                                </div>
+                                                <div id="download-display" class="">
+                                                    <a id="download-btn" download="mk" class="transition-quick options-btn" href="">
+                                                        Plain Text (.txt)
+                                                    </a>
+                                                    <a id="download-rtf-btn" download="mk" class="transition-quick options-btn" href="">
+                                                        Rich Text (.rtf)
+                                                    </a>
+                                                    <div id="download-html-btn" class="transition-quick options-btn">
+                                                        HTML (.html)
+                                                    </div>
+                                                    <div id="pdf-download" class="transition-quick options-btn">
+                                                        PDF (.pdf)
+                                                    </div>
+                                                </div>
+                                            </div>                                            
+                                            <div id="delete-prompt-btn" class="transition-quick options-btn">
+                                                <i class="fas fa-trash"></i> Delete Note
+                                            </div>
+                                            <div id="modal-delete">
+                                                <div id="modal-content">
+                                                    <i id="modal-close-btn" class="fas fa-times"></i>
+                                                    <div id="delete-confirm-msg">
+                                                        Are you sure you want to delete:
+                                                        <div id="delete-note-title"></div>
+                                                    </div>
+                                                    <div id="delete-btn-container">
+                                                        <div id="delete-confirm-btn" class="transition-quick">Delete</div>
+                                                        <div id="delete-cancel-btn" class="transition-quick">Cancel</div>
+                                                    </div>                                                                                                   
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="cust-row" style="height: 90%">
+                        <div id="note-row" class="cust-row" style="height: 90%">
                             <div id="cur-note-body-container" class="cust-col-12" style="height: 100%">
                                 <div id="toolbar">
                                     <span class="ql-formats">

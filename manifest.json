@@ -2,8 +2,8 @@
     "name": "Notility",
 	"short_name": "Notility",
     "version": "1.0",
-    "description": "Take notes easily while browsing Google Chrome!",
-    "permissions": ["declarativeContent", "storage", "tabs", "actvieTab"],
+    "description": "Take notes like never before!",
+    "permissions": ["declarativeContent", "storage", "tabs", "activeTab", "downloads"],
     "browser_action": {
         "default_popup": "main.html"
 	},

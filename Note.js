@@ -1,11 +1,21 @@
 /*
  * Notes.js -> The main javascript file containing our implementation of Notes, Library, and important functions.
  */
+
 var raw_notes = [];
 var userPreferences;
 var hashtagRegex = /\B(\#[a-zA-Z0-9]+\b)/g;
-var colorSchemes = [0, 1, 2, 3, 4, 5]
-var curColorScheme = 0
+var titleDisplayLen = 17;
+var HTMLDocumentation = "<blockquote><strong>Thanks for downloading </strong><strong class='ql-hash-phrase'>#Notility</strong><strong>!</strong> We provide a clean and simple solution for in-browser note taking. This project is a work in progress so don't expect Google Docs level editing, but we are consistently making improvements. If you notice any bugs or have any suggestions leave us a comment on the <a href='https://chrome.google.com/webstore/detail/notility-simple-note-taki/hogihdfpkilgcmenhklcllklgnkndglp' target='_blank'>Chrome Store</a>.</blockquote><p><br></p><p><span class='ql-hash-phrase'>#Documentation</span></p><h2><strong>Tagging Notes</strong></h2><p>You can tag a note by adding <span style='color: white;' class='ql-hash-phrase'>#</span> immediately followed by a tag phrase anywhere within the note body. This will assign that tag to the note.</p><p>You can then:</p><ul><li>view all tags across all notes through the 'Tags' menu in the left sidebar and filter notes by said tags</li><li>search for tags (see Searching section)</li><li>double click on a tag in the editor to display all notes with the corresponding tag</li></ul><p><br></p><h2><strong>Storage</strong></h2><p>Notes are currently stored locally, ie. on the machine you are currently using. There is a 5MB limit on storage for google chrome extensions. We are in the process of migrating to Google Cloud storage so notes can be shared across your Google User profile.</p><p><br></p><h2><strong>Searching</strong></h2><p>Search criteria input into the search bar can search through notes in two different ways</p><ul><li>if a normal text string is entered: notes with titles that contain the search criteria will be returned</li><li>if the search criteria begins with a <span style='color: white;' class='ql-hash-phrase'>#</span>: notes that contain hashes matching the search criteria will be returned</li></ul><p><br></p><h2><strong>Auto-Saving</strong></h2><p>Notes are saved automatically</p><ul><li>1.5 seconds after the last change is made to the editor</li><li>when a new note is opened</li><li>when the extension is closed</li></ul><p><br></p><h2><strong>Pull URL</strong></h2><p>Automatically insert a link to the current chrome tab using the 'Insert URL' button located in the note options menu (top right)</p><p><br></p><h2><strong>Download Notes</strong></h2><p>Download notes as:</p><ul><li>raw text files (.txt)</li><li>rich text files (.rtf)</li><li>HTML files (.html)</li></ul><p>*RTF downloads do not support all styling attributes, namely coloring</p><p>*We are working on PDF export capability</p><p><br></p><h2><strong>Focus Mode</strong></h2><p>Expand your note to full screen by clicking on the magnifying glass in the main options menu (upper left)</p><p><br></p><h2><strong>Change Color Scheme</strong></h2><p>Change the color scheme to fit your personal taste by navigating to the color palette icon in the main options menu</p><p><br></p><h2><strong>Resizing</strong></h2><p>Modify the size of the extension by navigating to the expand icon in the main options menu</p><p><br></p><h2><strong>Dark Mode</strong></h2><p>Click the toggle switch in the toolbar to toggle dark mode</p><p><br></p><p><br></p><h2 class='ql-align-center'><u>Known Bugs</u></h2><p>Pasting content after a hashtag indiscriminately applies formatting to the pasted content.</p><p>.rtf downloads do not support all styles and as a result are sometimes corrupted when downloading heavily styled notes.</p>"
+var colorSchemes = {
+    "Spotify": ["#191314", "#3f3b3c", "#64d761", "#3f9ed7", "#64d761", "#64d761", "white", "white", "white"],
+    "Rainbow": ["#5BC0EB", "#64d761", "#FA7921", "#FDE74C", "#E55934", "#FDE74C", "white", "black", "black"],
+    "Facebook": ["#191970", "#0057da", "#005fed", "#7fffd4", "#7fffd4", "#7fffd4", "white", "black", "black"],
+    "Metallic": ["#171A21", "#617073", "#92BCEA", "#AFB3F7", "#ffb4a2", "#AFB3F7", "black", "black", "black"]    ,
+    "Forest": ["#11270B", "#3C5A14", "#50241b", "#3C5A14", "#669D31", "#71B340", "white", "white", "white"],
+    "Royalty": ["#481D24", "#901E2D", "#901E2D", "#FFC857", "#FFC857", "#FFC857", "white", "black", "black"]
+}
+
 
 /* 
 This means the # symbol of a hash must not bump into other words
@@ -39,7 +49,7 @@ function loadNotes(hash){
 
         /* If the user has no notes, create a default new one and open it for them */
         if (raw_notes.length == 0) {
-            createNote("Welcome to Notility!", "", "");
+            createNote("Welcome to Notility!", HTMLDocumentation, "");
             openNote(-1);
             return;
         }
@@ -65,23 +75,20 @@ function loadNotes(hash){
  *  Renders a new note tile div for each note in storage in the note index section
  */
 function renderNotes(){
-
     $('#new-note-btn').show();
     $("#new-note-hr").show();
-    $("#note-index-container").css('height', '360px');
+    $("#note-index-container").css('height', '');
     clearNotesDisplay("notes");
     raw_notes.forEach(function(note){
-        $(".note-index").append('<div class="note-tile btn btn-block transition-quick" data-id=' + note["id"] + '>' + trimTitle(note["title"]) + '</div>');
+        $(".note-index").append('<div class="note-tile btn btn-block transition-quick" data-id=' + note["id"] + '>' + trimTitle(note["title"], titleDisplayLen) + '</div>');
     });
     addTileListener();
-
 }
 
 /*
  *  Loads in all hashes across all notes
  */
 function loadHashes() {
-
     global_hashes = new Set([]);
     for (note of raw_notes) {
         hashes = note["hashes"];
@@ -92,8 +99,7 @@ function loadHashes() {
             global_hashes.add(hash);
         }
     }
-    renderHashes(global_hashes);
-
+    renderHashes(Array.from(global_hashes).sort((a,b) => a.localeCompare(b)));
 }
 
 /*
@@ -106,7 +112,7 @@ function renderHashes(hashes) {
     $("#note-index-container").css('height', '410px');
     clearNotesDisplay("hashes");
     hashes.forEach(function(hash) {
-        $(".note-index").append('<div class="note-tile btn btn-block transition-quick" data-id=' + hash + '>' + trimTitle(hash) + '</div>');
+        $(".note-index").append('<div class="note-tile btn btn-block transition-quick" data-id=' + hash + '>' + trimTitle(hash, titleDisplayLen) + '</div>');
     });
     addTileListener(id=null, type="hash");
 
@@ -168,7 +174,9 @@ function populateCanvas(id,title,body,hashes){
             console.log("Active note id("+id+") successfully saved.");
     });
     setTimeout(function(){
+        Quill.find(document.querySelector("#current-note-body")).history.stack.undo = [];
         highlightHashes(hashtagRegexEnd);
+        $(".ql-cursor").remove();
     }, 1);
 }
 
@@ -294,6 +302,7 @@ function saveNote() {
     if ($('.note-index').hasClass('hashes')) {
         loadHashes();
     }
+    addHashListener();
     $('#autosave-label').text('Saved');
     $("#tags").html(hashes);
 
@@ -311,7 +320,7 @@ function saveTitle() {
     //Replace title of note block in notes display with new title
     var curNote = findNoteElement(id);
     if (curNote != null) {
-        curNote.innerHTML = trimTitle(title);
+        curNote.innerHTML = trimTitle(title, titleDisplayLen);
     }
 
 }
@@ -319,9 +328,9 @@ function saveTitle() {
 /*
  *  Trims the title string so it can be displayed in a note tile
  */
-function trimTitle(title) {
-    if (title.length > 17) {
-        return title.slice(0, 15) + "...";
+function trimTitle(title, trimLen) {
+    if (title.length > trimLen) {
+        return title.slice(0, trimLen-2) + "...";
     }
     return title;
 }
@@ -462,13 +471,18 @@ function findDeleteChar(quill, oldDelta, changeIndex, regex) {
 /**
  * Loads user preferences from chrome storage and configures app accordingly
  */
-function loadUserPreferences() {
-    default_preferences = {'focusMode': false, 'darkMode': false, 'colorScheme': 0}
-    chrome.storage.local.get({'preferences': default_preferences}, function(obj){
+function loadUserPreferences(preload=false) {
+    default_preferences = {'focusMode': false, 'darkMode': false, 'colorScheme': 'Spotify', 'size': 'normal'};
+    chrome.storage.local.get({'preferences': default_preferences}, function(obj) {
         userPreferences = obj.preferences;
-        determineFocusMode();
-        determineDarkMode();
-        determineColorScheme();
+        if (preload) {
+            determineSize(true);
+        }
+        else {
+            determineFocusMode();
+            determineDarkMode();
+            determineColorScheme();
+        }
     });
 }
 
@@ -480,11 +494,9 @@ function focusMode() {
     $('#current-note-display').removeClass('cust-col-8').addClass('cust-col-12');
     $('#index-show-btn').show();
     $("#index-show-btn, #autosave-label").css('margin-left', '15px');
-    $("#cur-note-body-container").css('padding', '0');
-    $("#scrolling-container").css('height', '88%');
+    $("#cur-note-body-container").css('padding', '0 15px 15px 15px');
+    $("#scrolling-container").css('height', '87%');
     $("#current-note-title").css('margin', '0 0 0 auto');
-    $("#current-note-body").css('border-radius', '0');
-    $("#toolbar").css("border-radius", "0");
 }
 
 /**
@@ -496,10 +508,30 @@ function browseMode() {
     $('#index-show-btn').hide();
     $("#index-show-btn, #autosave-label").css('margin-left', '0px');
     $("#cur-note-body-container").css('padding', '0px 15px 20px 0px');
+    $("#cur-note-body-container").css('background', 'none');
     $("#scrolling-container").css('height', '83%');
     $("#current-note-title").css('margin', '0 0 0 0');
-    $("#current-note-body").css('border-radius', '0 0 4px 4px');
-    $("#toolbar").css("border-radius", "4px 4px 0 0");
+}
+
+function browseModeWrapper() {
+    userPreferences.focusMode = false;
+    chrome.storage.local.set({'preferences': userPreferences}, function(){
+        browseMode();
+    });
+}
+
+function focusModeWrapper() {
+    userPreferences.focusMode = true;
+    chrome.storage.local.set({'preferences': userPreferences}, function(){
+        focusMode(); 
+    });
+}
+
+/**
+ * Determines if user preferences indicate focus mode
+ */
+function determineFocusMode() {
+    (userPreferences.focusMode) ? focusMode() : {};
 }
 
 /**
@@ -508,17 +540,98 @@ function browseMode() {
  */
 function addModeSwitchListeners() {
     document.getElementById('index-hide-btn').addEventListener('click' ,function(event) {
-        userPreferences.focusMode = true;
-        chrome.storage.local.set({'preferences': userPreferences}, function(){
-            focusMode(); 
-        });
+        focusModeWrapper();
     });
 
     document.getElementById('index-show-btn').addEventListener('click' ,function(event) {
-        userPreferences.focusMode = false;
-        chrome.storage.local.set({'preferences': userPreferences}, function(){
-            browseMode();
-        });
+        browseModeWrapper();
+    });
+}
+
+/**
+ * Changes UI to small mode and minimizes to only the editor
+ */
+function smallMode(initiate=true) {
+    if (initiate) {
+        $('#note-container').hide();
+        $('#current-note-display').removeClass('cust-col-8').addClass('cust-col-12');
+        $("#index-show-btn, #autosave-label").css('margin-left', '15px');
+        $("#cur-note-body-container").css('padding', '0 15px 15px 15px');
+        $("#scrolling-container").css('height', '82%');
+        $("#current-note-title").css('margin', '0 0 0 15px');
+
+        document.getElementById('title-container-row').insertBefore(document.getElementById('ext-options-container'), document.getElementById('current-note-title-container'));
+        $("#ext-options-container").css("padding", "0 15px 0 15px");
+        $("#current-note-title-container").css("padding-top", "0");
+        $("#title-container").css("height", "15%");
+        $("#note-row").css("height", "85%");
+        $("#index-hide-btn").hide();
+        $("#resize-display").css('left', '-15px');
+    }
+    else {
+        document.getElementById('sidebar-top').appendChild(document.getElementById('ext-options-container'));
+        $("#ext-options-container").css("padding", "");
+        $("#current-note-title-container").css("padding-top", "");
+        $("#title-container").css("height", "10%");
+        $("#note-row").css("height", "90%");
+        $("#index-hide-btn").show();
+        $("#resize-display").css('left', '');
+    }
+}
+
+/**
+ * Changes the size of the extension based on discrete input size
+ */
+function changeSize(size, initial) {
+    var fromSmall = false;
+    (userPreferences.size == 'small') ? fromSmall = true : {};
+    userPreferences.size = size;
+    chrome.storage.local.set({'preferences': userPreferences}, function(){
+        switch(size) {
+            case "small":
+                $('#extension-container').css('width', '400px');
+                titleDisplayLen = 8;
+                smallMode();
+                break;
+            case "normal":
+                if (fromSmall) {
+                    browseModeWrapper(); smallMode(false);
+                }
+                titleDisplayLen = 17;
+                (!initial) ? loadNotes() : {};
+                $('#extension-container').css('width', '600px');
+                break;
+            case "large":
+                if (fromSmall) {
+                    browseModeWrapper(); smallMode(false);
+                }
+                titleDisplayLen = 28;
+                (!initial) ? loadNotes() : {};
+                $('#extension-container').css('width', '800px');
+                break;
+        }
+    });
+}
+
+/*
+*   Determines and sets size of extension according to user preferences
+*/
+function determineSize(initial=false) {
+    changeSize(userPreferences.size, initial);
+}
+
+/**
+ * Adds listeners to resize buttons
+ */
+function addResizeListener() {
+    document.getElementById('large-btn').addEventListener('click', function(event){
+        changeSize('large');
+    });
+    document.getElementById('normal-btn').addEventListener('click', function(event){
+        changeSize('normal');
+    });
+    document.getElementById('small-btn').addEventListener('click', function(event){
+        changeSize('small');
     });
 }
 
@@ -561,70 +674,10 @@ function darkMode(preference) {
 }
 
 /**
- * Add listener to notility banner and changes color scheme on click
+ * Determines if user preferences indicate dark mode
  */
-function addColorSchemeListener() {
-    document.getElementById('themes-btn').addEventListener('click' ,function(event) {
-        (curColorScheme == colorSchemes.length-1) ? (curColorScheme=0) : (curColorScheme=curColorScheme+1);
-        userPreferences.colorScheme = curColorScheme;
-        chrome.storage.local.set({'preferences': userPreferences}, function(){
-            setColorScheme(curColorScheme);
-        });
-    });
-}
-
-/**
- * Determines the users preferred color scheme when they first open the extension
- */
-function determineColorScheme() {
-    curColorScheme = userPreferences.colorScheme;
-    setColorScheme(curColorScheme);
-}
-
-/**
- * Initiates color scheme change based on style parameter
- */
-function setColorScheme(style) {
-
-    var rootStyle = document.documentElement.style;
-    var color_keys = ["--color_dark", "--color_dark_hover", "--color_gradient_end", "--color_light", "--color_accent1", "--color_accent2", "--color_accent3", "--color_button_txt", "--color_highlighted_txt", "--color_options_txt"];
-
-    switch(style) {
-        case 0: //Blue with aqua accent
-            var color_vals = ["midnightblue", "rgb(15, 15, 112)", "#0057da", "#005fed", "aquamarine", "#c73c94", "#0043a8", "white", "black", "white"];
-            applyCSSColorChanges(rootStyle, color_keys, color_vals);
-            break;
-        case 1: //Light blue and green pastel with orange and yellow accent
-            var color_vals = ["#5BC0EB", "rgb(54, 116, 143)", "#9BC53D", "#FA7921", "#FDE74C", "#E55934", "#5BC0EB", "white", "black", "white"];
-            applyCSSColorChanges(rootStyle, color_keys, color_vals);
-            break;
-        case 2: //Dark red with yellow accent
-            var color_vals = ["#481D24", "rgb(39, 16, 20)", "#901E2D", "#901E2D", "#FFC857", "#FFC857", "#481D24", "white", "black", "white"];
-            applyCSSColorChanges(rootStyle, color_keys, color_vals);
-            break;
-        case 3: //Sea blue and green
-            var color_vals = ["#05668d", "#033b52", "#00a896", "#f0f3bd", "#02c39a", "#02c39a", "#02c39a", "black", "black", "white"];
-            applyCSSColorChanges(rootStyle, color_keys, color_vals);
-            break;
-        case 4: //Pink, Pink, PINK
-            var color_vals = ["#481D24", "rgb(48, 19, 24)", "#b5838d", "#b5838d", "#ffb4a2", "#ffb4a2", "#e5989b", "black", "black", "white"];
-            applyCSSColorChanges(rootStyle, color_keys, color_vals);
-            break;
-        case 5: //Sunset orange with mahogany and yellow accent
-            var color_vals = ["#da670a", "a8510a", "#f0720b", "#571f06", "#ffe66d", "#ffe66d", "#ffe66d", "white", "black", "white"];
-            applyCSSColorChanges(rootStyle, color_keys, color_vals);
-            break;
-    }
-}
-
-/**
- * Applies css color changes specified in color_vals to the given variable names in color_keys
- */
-function applyCSSColorChanges(rootStyle, color_keys, color_vals) {
-    console.log("OK");
-    for (var i=0; i < color_keys.length; i++) {
-        rootStyle.setProperty(color_keys[i], color_vals[i]);
-    }
+function determineDarkMode() {
+    (userPreferences.darkMode) ? darkMode(true) : {};
 }
 
 /*
@@ -640,17 +693,53 @@ function addDarkModeListener() {
 }
 
 /**
- * Determines if user preferences indicate focus mode
+ * Initiates color scheme change based on style parameter
  */
-function determineFocusMode() {
-    (userPreferences.focusMode) ? focusMode() : {};
+function setColorScheme(style) {
+    var rootStyle = document.documentElement.style;
+    var color_keys = ["--color_dark", "--color_gradient_end", "--color_light", "--color_accent1", "--color_accent2", "--color_accent3", "--color_button_txt", "--color_highlighted_txt", "--color_options_txt"];
+    applyCSSColorChanges(rootStyle, color_keys, colorSchemes[style]);
 }
 
 /**
- * Determines if user preferences indicate dark mode
+ * Applies css color changes specified in color_vals to the given variable names in color_keys
  */
-function determineDarkMode() {
-    (userPreferences.darkMode) ? darkMode(true) : {};
+function applyCSSColorChanges(rootStyle, color_keys, color_vals) {
+    for (var i=0; i < color_keys.length; i++) {
+        rootStyle.setProperty(color_keys[i], color_vals[i]);
+    }
+}
+
+/**
+ * Determines the users preferred color scheme when they first open the extension
+ */
+function determineColorScheme() {
+    setColorScheme(userPreferences.colorScheme);
+}
+
+/**
+ * Add listener to notility banner and changes color scheme on click
+ */
+function addColorSchemeListener() {
+    
+    var elements = $('.theme-btn');
+
+    elements.click(function(self) {
+        userPreferences.colorScheme = self.currentTarget.id;
+        chrome.storage.local.set({'preferences': userPreferences}, function(){
+            setColorScheme(userPreferences.colorScheme);
+        });
+    });
+
+    elements.hover(function(self) {
+        var rootStyle = document.documentElement.style;
+        color = self.currentTarget.id;
+        colors = colorSchemes[color];
+        rootStyle.setProperty('--preview_color_dark', colors[0])
+        rootStyle.setProperty('--preview_color_light', colors[2])
+        rootStyle.setProperty('--preview_color_accent1', colors[3])
+    }, function() {});
+
 }
 
 /*********************************** Functions which add event listeners to appropriate elements ***********************************/
@@ -671,9 +760,22 @@ function addCreateNoteListener() {
  *  Adds listener to delete note button
  */
 function addDeleteNoteListener() {
-    document.getElementById("delete-btn").onclick = function() {
+
+    function closeDeletePrompt() {
+        $("#modal-delete").css("display", "none");
+        $("#note-options-display").hide();
+    }
+
+    document.getElementById("delete-prompt-btn").onclick = function() {
+        $("#modal-delete").css("display", "block");
+        $("#delete-note-title").html($("#current-note-title")[0].innerHTML);
+    }
+    document.getElementById("modal-close-btn").onclick = closeDeletePrompt;
+    document.getElementById("delete-cancel-btn").onclick = closeDeletePrompt;
+    document.getElementById("delete-confirm-btn").onclick = function() {
         var id = findCurrentNote();
         deleteNote(id);
+        closeDeletePrompt();
     }
 }
 
@@ -712,12 +814,12 @@ function addFilterHashesListener() {
  */
 function addDownloadListener() {
 
-    element = $('#download-btn');
-
     /* When button is hovered, the link is set to download the current note
        Workaround because onclick did not register the correct href */
-    element.hover(function(event){
 
+    /* .txt Download */
+    element = $('#download-btn');
+    element.hover(function(event){
         var targetElement = $(this)[0];
         var text = Quill.find(document.querySelector("#current-note-body")).getText();
         var blob = new Blob([text], {type: 'text/plain'});
@@ -725,7 +827,59 @@ function addDownloadListener() {
         targetElement.download = $("#current-note-title")[0].innerHTML;
         targetElement.href = output;
     });
+
+    /* .html Download */
+    element1 = $('#download-html-btn');
+    element1.click(function(event){
+        
+        var html = Quill.find(document.querySelector("#current-note-body")).root.innerHTML;
+        var element = document.createElement('a');
+
+        element.setAttribute('href', 'data:text/html;charset=utf-8,' + encodeURIComponent(html));
+        element.setAttribute('download', $("#current-note-title")[0].innerHTML);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    });
+
+    /* .rtf Download */
+    element2 = $('#download-rtf-btn')
+    element2.hover(function(event){
+        var targetElement = $(this)[0];
+        var html = Quill.find(document.querySelector("#current-note-body")).root.innerHTML;
+        var rtf = convertHtmlToRtf(html);
+        var blob = new Blob([rtf], {type: 'application/rtf'});
+        var output = window.URL.createObjectURL(blob);
+        targetElement.download = $("#current-note-title")[0].innerHTML;
+        targetElement.href = output;
+    });
+
+    /* PDF Download */
+    document.getElementById('pdf-download').addEventListener('click', function(){
+        
+        html2canvas(document.querySelector('#download-btn')).then(canvas => {
+			let pdf = new jsPDF('p', 'mm', 'a4');
+			pdf.addImage(canvas.toDataURL('image/jpeg'), 'jpeg', 0, 0, 211, 298);
+			pdf.save("test.pdf");
+        });
+        
+    });
 }
+
+function printPDF () {
+    const domElement = document.getElementById('current-note-body')
+    html2canvas(domElement, { onclone: (document) => {
+    }})
+    .then((canvas) => {
+        const img = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        pdf.addImage(img, 'JPEG', 0, 0, 400, 1400);
+        pdf.save('test.pdf');
+    })
+}
+
 
 /*
  *  Adds listener to citation button which inserts a link to the active chrome tab in the current note body 
@@ -826,7 +980,7 @@ function addTitleListener() {
         if (event.key == "Enter") {
             targetElement.blur();
         }
-        else if (targetElement.textContent.length > 25 && event.key != "Backspace" && event.key != "ArrowLeft" && event.key != "ArrowRight") {
+        else if (targetElement.textContent.length > 31 && event.key != "Backspace" && event.key != "ArrowLeft" && event.key != "ArrowRight") {
             event.preventDefault();
         }
     });
@@ -851,9 +1005,11 @@ function addFilterListener(){
     });
 }
 
-function addNoteOptionsListener() {
+function addOptionsListeners() {
+
+    //Add listener for main note options menu
     $("#note-options-container").hover(function(){
-        $("#note-options-display").show("blind", { direction: "up" }, 500);
+        $("#note-options-display").show("blind", { direction: "up" }, 250);
         $("#options-icon").removeClass("fa-ellipsis-h");
         $("#options-icon").addClass("fa-chevron-down");
     }, function(){
@@ -861,6 +1017,58 @@ function addNoteOptionsListener() {
         $("#options-icon").removeClass("fa-chevron-down");
         $("#options-icon").addClass("fa-ellipsis-h");
     });
+
+    //Add listener for download menu
+    $("#download-container").hover(function(){
+        $("#download-display").show("blind", { direction: "right" }, 250);
+        $("#download-display-btn").css("color", "var(--color_accent2)");
+    }, function(){
+        $("#download-display").stop(true, true).hide();
+        $("#download-display-btn").css("color", "var(--color_options_txt)");
+    });
+
+    //Add listener for extension options menu
+    $("#ext-options-btn").click(function(self){
+        console.log('clicked');
+        if ($("#ext-options-display").is(":hidden")) {
+            $(this).css("width", "100%");
+            $("#ext-options-btn").removeClass("fa-bars").addClass("fa-caret-right");
+            $("#ext-options-display").show("blind", { direction: "left" }, 250);
+        }
+        else {
+            $(this).css("width", "");
+            $("#ext-options-btn").removeClass("fa-caret-right").addClass("fa-bars");
+            $("#ext-options-display").hide("blind", { direction: "left" }, 250);
+        }
+    });
+
+    //Add listener for resize menu
+    $("#resize-container").hover(function(){
+        $("#resize-display").show("fade", null, 250);
+        $("#resize-display-btn").css("color", "var(--color_accent2)");
+    }, function(){
+        $("#resize-display").stop(true, true).hide("fade", null, 250);
+        $("#resize-display-btn").css("color", "var(--color_options_txt)");
+    });
+
+    //Add listener for themes menu
+    $("#themes-container").hover(function(){
+        $("#themes-display").show("fade", null, 250);
+    }, function(){
+        $("#themes-display").stop(true, true).hide("fade", null, 250);
+    });
+}
+
+function addHashListener() {
+    $(".ql-hash-phrase").dblclick(function(){
+        loadNotes(this.innerHTML);
+    });
+}
+
+function addOnCloseListener() {
+    window.onblur = function(){
+        saveNote();
+    }
 }
 
 /*********************************** Helper functions ***********************************/
@@ -896,6 +1104,9 @@ function findNote(id) {
  *  Adds all element listeners
  */
 function addElementListeners() {
+    addDarkModeListener();
+    addColorSchemeListener();
+    addResizeListener();
     addCreateNoteListener();
     addDeleteNoteListener();
     addFilterNoteListener();
@@ -904,14 +1115,14 @@ function addElementListeners() {
     addDownloadListener();
     addCitationButtonListener();
     addModeSwitchListeners();
-    addNoteOptionsListener();
-    addDarkModeListener();
-    addColorSchemeListener();
+    addOnCloseListener();
+    addOptionsListeners();
 }
 
 /*
  * Code that is run when document loads
  */
+loadUserPreferences(true);
 document.addEventListener("DOMContentLoaded", function(){
     loadNotes();
     loadUserPreferences();

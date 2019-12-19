@@ -2,15 +2,16 @@
 var changeCount = 0; //Keeps track of the number of changes made to Quill editor
 var hashtagRegexEnd = /[^a-zA-Z\d\#]/ //regex to recognize the end of a hash 
 
+/* Register custom fonts with Quill */
+var Font = Quill.import('formats/font');
+Font.whitelist = ['mirza', 'arial', 'snellroundhand', 'impact', 'timesNewRoman', 'typewriter', 'courier', 'appleChancery'];
+Quill.register(Font, true);
+registerHashFormat();
+
 /*
  *  Creates the Quill editor
  */
 function createEditor() {
-
-    /* Register custom fonts with Quill */
-    var Font = Quill.import('formats/font');
-    Font.whitelist = ['mirza', 'arial', 'snellroundhand', 'impact', 'timesNewRoman', 'typewriter', 'courier', 'appleChancery'];
-    Quill.register(Font, true);
 
     //Assign instance of Quill to appropriate HTML section
     var quill = new Quill('#current-note-body', {
@@ -22,15 +23,13 @@ function createEditor() {
         bounds: '#scrolling-container'
     });
 
-    registerHashFormat();
-
     /* Inititate hash formatting and auto saving when user makes edits */
     quill.on('text-change', function(delta, oldDelta, source) {
 
         //If the change was made by a user
         if (source == "user") {
 
-            //console.log(delta);
+            //console.log(source);
             //console.log(oldDelta);
 
             /* Store information about the change */
@@ -63,14 +62,11 @@ function createEditor() {
             else if (changeIndex == 0) {
                 quill.formatText(changeIndex, 1, 'hash', false);
             }
-            
+            //Save the note if the user does not make changes after current change
+            $('#autosave-label').text('Saving...');
+            changeCount += 1;
+            saveNoteWrapper(changeCount);
         }
-
-        //Save the note if the user does not make changes after current change
-        $('#autosave-label').text('Saving...');
-        changeCount += 1;
-        saveNoteWrapper(changeCount);
-
     });
 
 }
