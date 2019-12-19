@@ -1,6 +1,6 @@
 # ChromeNotesExtension
 
-
+Download the extension here: https://chrome.google.com/webstore/detail/notility/hogihdfpkilgcmenhklcllklgnkndglp?hl=en-US
 
 # Tagging Notes
 You can tag a note by adding # immediately followed by a tag phrase anywhere within the note body.
