@@ -5,17 +5,18 @@
         <!-- <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">  -->
         <link rel="stylesheet" href="fa/css/all.css">
         <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" media="screen">
+        <link rel="stylesheet" href="jquery-ui.min.css">
         <link rel="stylesheet" href="quill-snow.css" media="screen">
         <link rel="stylesheet" href="stylesheet.css" media="screen">
 
+        <script src="jquery.min.js"></script>
+        <script src="jquery-sortable.js"></script>
+        <script src="jquery-ui.min.js"></script>
         <script src="htmlToRtf.js"></script>
-        <script src="html2canvas/dist/html2canvas.min.js"></script>
         <script src="katex/katex.min.js"></script>
         <script src="quill-1.3.6.js"></script>
         <script src="quill-handler.js"></script>
         <script src="Note.js"></script>
-        <script src="jquery.min.js"></script>
-        <script src="jquery-ui.min.js"></script>
     </head>
 
     <body>
@@ -50,9 +51,14 @@
                                                 <div id="Spotify" class="theme-btn">Spotify</div>
                                                 <div id="Rainbow" class="theme-btn">DontWorryBeHappy</div>
                                                 <div id="Facebook" class="theme-btn">Blooberry</div>
-                                                <div id="Metallic" class="theme-btn">Metallic</div>
-                                                <div id="Forest" class="theme-btn">Forest</div>
+                                                <div id="IKEA" class="theme-btn">Lime Butter</div>
                                                 <div id="Royalty" class="theme-btn">Royalty</div>
+                                                <div id="Elegant" class="theme-btn">Elegant</div>
+                                                <div id="Peachy" class="theme-btn">Peachy</div>
+                                                <div id="Chillaxation" class="theme-btn">Chillaxation</div>
+                                                <div id="Sunset" class="theme-btn">Sunset</div>
+                                                <div id="Mountains" class="theme-btn">Mountains</div>
+                                                <div id="SunFlower" class="theme-btn">SunFlower</div>
                                             </div>
                                         </div>
                                     </div>
@@ -61,7 +67,7 @@
                             <div class="cust-col-12 pl-0 pr-0">
                                 <hr id="selection-top-hr"> 
                                 <div id="filter-container">
-                                    <div id="note-filter-btn" class="btn selection-btn active-display transition-quick">
+                                    <div id="note-filter-btn" draggable="true" class="btn selection-btn active-display transition-quick">
                                         Notes
                                     </div>
                                     <div id="tags-filter-btn" class="btn selection-btn transition-quick">
@@ -71,7 +77,8 @@
                                 <input type="text" id="searcher" placeholder="Search..." class="transition-quick">
                             </div>
                             <div id="note-index-container" class="scroll-toggle cust-col-12 pl-0 pr-0">
-                                <div class="note-index text-center"></div>
+                                <ul id="note-index" class="note-index text-center">
+                                </ul>
                             </div>
                             <hr id="new-note-hr">
                             <div id="new-note-btn" class="new-note-btn btn btn-block transition-quick mt-2">
@@ -82,7 +89,6 @@
                     <div id="current-note-display" class="current-note-display cust-col-8">
                         <div id="title-container" class="title-container text-light" style="height: 10%">
                             <div id="title-container-row" class="cust-row">
-                                 <!-- Extension options menu inserted here -->
                                 <div id="current-note-title-container" class="cust-col-12 current-note-title-container">                                 
                                     <i id="index-show-btn" class="fas fa-search-minus"></i>                                    
                                     <span id="current-note-title" contenteditable="true" spellcheck="false"></span>
@@ -196,6 +202,7 @@
                         </div>
     
                     </div>
+                    
             </div>
         </div>
     </body>

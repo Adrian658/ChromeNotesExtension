@@ -8,12 +8,17 @@ var hashtagRegex = /\B(\#[a-zA-Z0-9]+\b)/g;
 var titleDisplayLen = 17;
 var HTMLDocumentation = "<blockquote><strong>Thanks for downloading </strong><strong class='ql-hash-phrase'>#Notility</strong><strong>!</strong> We provide a clean and simple solution for in-browser note taking. This project is a work in progress so don't expect Google Docs level editing, but we are consistently making improvements. If you notice any bugs or have any suggestions leave us a comment on the <a href='https://chrome.google.com/webstore/detail/notility-simple-note-taki/hogihdfpkilgcmenhklcllklgnkndglp' target='_blank'>Chrome Store</a>.</blockquote><p><br></p><p><span class='ql-hash-phrase'>#Documentation</span></p><h2><strong>Tagging Notes</strong></h2><p>You can tag a note by adding <span style='color: white;' class='ql-hash-phrase'>#</span> immediately followed by a tag phrase anywhere within the note body. This will assign that tag to the note.</p><p>You can then:</p><ul><li>view all tags across all notes through the 'Tags' menu in the left sidebar and filter notes by said tags</li><li>search for tags (see Searching section)</li><li>double click on a tag in the editor to display all notes with the corresponding tag</li></ul><p><br></p><h2><strong>Storage</strong></h2><p>Notes are currently stored locally, ie. on the machine you are currently using. There is a 5MB limit on storage for google chrome extensions. We are in the process of migrating to Google Cloud storage so notes can be shared across your Google User profile.</p><p><br></p><h2><strong>Searching</strong></h2><p>Search criteria input into the search bar can search through notes in two different ways</p><ul><li>if a normal text string is entered: notes with titles that contain the search criteria will be returned</li><li>if the search criteria begins with a <span style='color: white;' class='ql-hash-phrase'>#</span>: notes that contain hashes matching the search criteria will be returned</li></ul><p><br></p><h2><strong>Auto-Saving</strong></h2><p>Notes are saved automatically</p><ul><li>1.5 seconds after the last change is made to the editor</li><li>when a new note is opened</li><li>when the extension is closed</li></ul><p><br></p><h2><strong>Pull URL</strong></h2><p>Automatically insert a link to the current chrome tab using the 'Insert URL' button located in the note options menu (top right)</p><p><br></p><h2><strong>Download Notes</strong></h2><p>Download notes as:</p><ul><li>raw text files (.txt)</li><li>rich text files (.rtf)</li><li>HTML files (.html)</li></ul><p>*RTF downloads do not support all styling attributes, namely coloring</p><p>*We are working on PDF export capability</p><p><br></p><h2><strong>Focus Mode</strong></h2><p>Expand your note to full screen by clicking on the magnifying glass in the main options menu (upper left)</p><p><br></p><h2><strong>Change Color Scheme</strong></h2><p>Change the color scheme to fit your personal taste by navigating to the color palette icon in the main options menu</p><p><br></p><h2><strong>Resizing</strong></h2><p>Modify the size of the extension by navigating to the expand icon in the main options menu</p><p><br></p><h2><strong>Dark Mode</strong></h2><p>Click the toggle switch in the toolbar to toggle dark mode</p><p><br></p><p><br></p><h2 class='ql-align-center'><u>Known Bugs</u></h2><p>Pasting content after a hashtag indiscriminately applies formatting to the pasted content.</p><p>.rtf downloads do not support all styles and as a result are sometimes corrupted when downloading heavily styled notes.</p>"
 var colorSchemes = {
-    "Spotify": ["#191314", "#3f3b3c", "#64d761", "#3f9ed7", "#64d761", "#64d761", "white", "white", "white"],
-    "Rainbow": ["#5BC0EB", "#64d761", "#FA7921", "#FDE74C", "#E55934", "#FDE74C", "white", "black", "black"],
+    "Spotify": ["#191314", "#3f3b3c", "#64d761", "#3f9ed7", "#64d761", "#64d761", "black", "#dddddd", "white"],
+    "Rainbow": ["#5BC0EB", "#64d761", "#FA7921", "#FDE74C", "#E55934", "#FDE74C", "whitesmoke", "black", "black"],
     "Facebook": ["#191970", "#0057da", "#005fed", "#7fffd4", "#7fffd4", "#7fffd4", "white", "black", "black"],
-    "Metallic": ["#171A21", "#617073", "#92BCEA", "#AFB3F7", "#ffb4a2", "#AFB3F7", "black", "black", "black"]    ,
-    "Forest": ["#11270B", "#3C5A14", "#50241b", "#3C5A14", "#669D31", "#71B340", "white", "white", "white"],
-    "Royalty": ["#481D24", "#901E2D", "#901E2D", "#FFC857", "#FFC857", "#FFC857", "white", "black", "black"]
+    "IKEA": ["#293250", "#08176b", "#ffd55a", "#6dd47e", "#6dd47e", "#ffd55a", "black", "white", "white"],
+    "Royalty": ["#481D24", "#901E2D", "#901E2D", "#FFC857", "#FFC857", "#FFC857", "whitesmoke", "black", "black"],
+    "Elegant": ["#143d59", "#1f5b86", "#f4b41a", "#f5f5f5", "#f4b41a", "#f4b41a", "black", "black", "black"],
+    "Peachy": ["#5B0E2D", "#7c133d", "#f9858b", "#ed335f", "#ffa781", "#ffa781", "black", "#dddddd", "black"],
+    "Chillaxation": ["#104c91", "#1f8ac0", "#efc98f", "#25a0dd", "#25a0dd", "#efc98f", "black", "whitesmoke", "white"],
+    "Sunset": ["#2c4096", "#c73967", "#fa6164", "#fdd422", "#fdd422", "#fdd422", "black", "black", "black"],
+    "Mountains": ["#945562", "#cb906d", "#452b40", "#ffb74c", "#452b40", "#452b40", "white", "black", "white"],
+    "SunFlower": ["#153d02", "#5b9b37", "#ffdf00", "#a94300", "#ffb000", "#ffdf00", "black", "black", "black"]
 }
 
 
@@ -53,8 +58,12 @@ function loadNotes(hash){
             openNote(-1);
             return;
         }
+        raw_notes.sort(function(a,b){
+            return (a.order-b.order);
+        });
 
         renderNotes();
+        initSortable();
         /* If the notes are being loaded from a hash search, filter the appropriate notes */
         if (hash) {
             chooseFilter(hash);
@@ -71,6 +80,24 @@ function loadNotes(hash){
     
 }
 
+function initSortable() {
+    sortable = $("#note-index");
+    sortable.sortable({
+        update: function(event, ui) {
+            setNoteOrder();
+        }
+    });
+}
+
+function setNoteOrder() {
+    order = sortable.sortable('toArray', {attribute: 'data-id'});
+    for (note of raw_notes) {
+        id = note.id;
+        note.order = order.indexOf(id.toString());
+    }
+    saveLib();
+}
+
 /*
  *  Renders a new note tile div for each note in storage in the note index section
  */
@@ -80,9 +107,12 @@ function renderNotes(){
     $("#note-index-container").css('height', '');
     clearNotesDisplay("notes");
     raw_notes.forEach(function(note){
-        $(".note-index").append('<div class="note-tile btn btn-block transition-quick" data-id=' + note["id"] + '>' + trimTitle(note["title"], titleDisplayLen) + '</div>');
+        $(".note-index").append('<li class="note-tile btn btn-block transition-quick" data-id=' + note["id"] + '>' + trimTitle(note["title"], titleDisplayLen) + '</li>');
     });
     addTileListener();
+    $(function() {
+        $("#note-index").sortable();
+    });
 }
 
 /*
@@ -233,7 +263,8 @@ function createNote(title,body,color){
             "title": title,
             "body": body,
             "color": color,
-            "hashes": []
+            "hashes": [],
+            "order": raw_notes.length
         };
 
         //Increment value of idCounter
@@ -245,7 +276,7 @@ function createNote(title,body,color){
         saveLib();
 
         //Add note tile to notes display
-        $(".note-index").append('<div class="note-tile btn btn-block" data-id=' + curID + '>' + title + '</div>');
+        $(".note-index").append('<div class="note-tile btn btn-block transition-quick" data-id=' + curID + '>' + title + '</div>');
         try {
             changeNoteHighlight();
         }
@@ -567,6 +598,7 @@ function smallMode(initiate=true) {
         $("#note-row").css("height", "85%");
         $("#index-hide-btn").hide();
         $("#resize-display").css('left', '-15px');
+        $("#themes-display").css('left', '-25px');
     }
     else {
         document.getElementById('sidebar-top').appendChild(document.getElementById('ext-options-container'));
@@ -576,6 +608,7 @@ function smallMode(initiate=true) {
         $("#note-row").css("height", "90%");
         $("#index-hide-btn").show();
         $("#resize-display").css('left', '');
+        $("#themes-display").css('left', '-85px');
     }
 }
 
@@ -887,7 +920,6 @@ function addDownloadListener() {
 function addCitationButtonListener() {
 
     document.getElementById("citation-btn").onclick = function() {
-        
         chrome.tabs.query({active: true}, function(tabs){
             var tabURL = tabs[0].url;
             var tabTitle = tabs[0].title;
@@ -898,7 +930,7 @@ function addCitationButtonListener() {
             (!tabTitle) ? tabTitle = tabURL : {};
             quill.insertText(focusIndex, tabTitle, 'link', tabURL);
         });
-
+        $("#note-options-display").hide();
     }
 
 }
@@ -1049,6 +1081,9 @@ function addOptionsListeners() {
     }, function(){
         $("#resize-display").stop(true, true).hide("fade", null, 250);
         $("#resize-display-btn").css("color", "var(--color_options_txt)");
+    });
+    $(".resize-btn").click(function(){
+        $("#resize-display").hide();
     });
 
     //Add listener for themes menu

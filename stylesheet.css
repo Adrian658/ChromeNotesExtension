@@ -1,13 +1,13 @@
 :root {
-    --color_dark: #11270B;
-    --color_gradient_end: #3C5A14;
-    --color_light: #50241b;
-    --color_accent1: #3C5A14;
-    --color_accent2: #669D31;
-    --color_accent3: #71B340;
-    --color_button_txt: white;
+    --color_dark: #153d02;
+    --color_gradient_end: #5b9b37;
+    --color_light: #ffdf00;
+    --color_accent1: #a94300;
+    --color_accent2: #ffb000;
+    --color_accent3: #ffb000;
+    --color_button_txt: black;
     --color_highlighted_txt: white;
-    --color_options_txt: white;
+    --color_options_txt: black;
 
     --preview_color_dark: none;
     --preview_color_light: none;
@@ -19,7 +19,7 @@
 /* Main container classes */
 
 .note-content {
-    background: linear-gradient(90deg, var(--color_dark) 10%, var(--color_gradient_end) 95%);
+    background: linear-gradient(180deg, var(--color_dark) 10%, var(--color_gradient_end) 95%);
     height: inherit;
 }
 
@@ -51,9 +51,14 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 #ext-options-btn {
-    color: white;
+    color: rgb(235, 235, 235);
     margin: 12px 0px 12px 0;
     min-width: 14px;
+    cursor: pointer;
+}
+
+#ext-options-btn:hover {
+    color: white;
 }
 
 #ext-options-display {
@@ -139,7 +144,9 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
 }
 
 #themes-display {
-    left: -60px;
+    left: -80px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 /* Note options menu */
@@ -147,6 +154,16 @@ textarea::-webkit-scrollbar, .scroll-toggle::-webkit-scrollbar, #tags-container:
     overflow-y: auto;
     margin-top: 8px;
     height: 348px;
+}
+
+.default {
+    background: #cedc98;
+    border: 1px solid #DDDDDD;
+    color: #333333;
+}
+
+#note-index {
+    padding-inline-start: 0px;
 }
 
 .selection-btn {
@@ -286,7 +303,7 @@ hr {
 #note-options-display, #download-display {
     display: none;
     position: absolute;
-    background-color: var(--color_dark);
+    background-color: var(--color_gradient_end);
     min-width: 130px;
     border-radius: 3px;
     padding: 12px;
@@ -306,6 +323,7 @@ hr {
     color: var(--color_accent3);
     border: 1px solid var(--color_accent3);
     padding: 4px 0 4px 0;
+    border-radius: 3px;
     margin-bottom: 10px;
     text-align: center;
     text-decoration: none;
@@ -491,7 +509,7 @@ input:checked + .slider:before {
 }
 
 #delete-cancel-btn {
-    color: var(--color_highlighted_txt);
+    color: var(--color_options_txt);
     background-color: var(--color_accent3);
 }
 
@@ -556,7 +574,13 @@ input:checked + .slider:before {
 /***** TRANSITIONS *****/
 
 .transition-quick {
-    transition: all var(--trans_duration);
+    transition: background var(--trans_duration) ease-in-out,
+                border-radius var(--trans_duration) linear,
+                border-color var(--trans_duration) ease-in-out,
+                color var(--trans_duration) ease-in-out,
+                opacity var(--trans_duration) ease-in-out,
+                padding var(--trans_duration) ease-in-out,
+                transform var(--trans_duration) ease-in-out;
 }
 
 /***** QUILL EDITOR OVERIDES *****/
